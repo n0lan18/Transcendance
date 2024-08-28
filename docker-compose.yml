@@ -19,22 +19,22 @@ services:
       - postgres
     environment:
       DATABASE_URL: postgres://user:password@postgres:5432/mydatabase
-    expose:
-      - "8000"
+#    expose:
+#      - "8000"
 
   frontend:
     build: ./frontend
     volumes:
       - ./frontend:/usr/share/nginx/html
-    expose:
-      - "443"
-    depends_on:
-      - django
+#    expose:
+#      - "443"
+#    depends_on:
+#      - django
 
   nginx:
     build: ./nginx
-    volumes:
-      - ./frontend:/usr/share/nginx/html
+#    volumes:
+#      - ./frontend:/usr/share/nginx/html
     ports:
       - "8443:8443"
     depends_on:

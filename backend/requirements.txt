@@ -1,4 +1,4 @@
 Django>=4.2
 gunicorn
 psycopg2-binary
-
+dj_database_url==0.5.0

@@ -4,6 +4,9 @@ from django.shortcuts import render
 
 from django.http import JsonResponse
 
+def spa_view(request):
+    return render(request, 'index.html')
+
 def data_view(request):
     data = {
         "message": "Hello, world!"
