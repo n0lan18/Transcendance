@@ -1,5 +1,23 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: red;
-    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+#modelContainer {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.model-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.model-item:last-child {
+    border-bottom: none;
 }

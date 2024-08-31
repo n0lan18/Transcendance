@@ -20,8 +20,8 @@ echo "Applying migrations..."
 python manage.py migrate
 
 # Collecter les fichiers statiques
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
+#echo "Collecting static files..."
+#python manage.py collectstatic --noinput
 
 # Créer un superutilisateur si les variables d'environnement sont définies
 if [ "$DJANGO_SUPERUSER_USERNAME" ] && [ "$DJANGO_SUPERUSER_PASSWORD" ] && [ "$DJANGO_SUPERUSER_EMAIL" ]; then
