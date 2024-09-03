@@ -1,6 +1,11 @@
-// Remplacez cette URL par l'URL réelle de votre API
-const apiUrl = 'https://localhost:8443/api/items/';
+import { loadAuthentificationPage } from "./auth.js";
 
+document.addEventListener('DOMContentLoaded', () => 
+    {
+    loadAuthentificationPage();
+});
+
+/*
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('itemForm');
 
@@ -40,3 +45,4 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => console.error('Error:', error));
     });
 });
+*/

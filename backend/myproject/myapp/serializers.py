@@ -1,8 +1,8 @@
 # myapp/serializers.py
 from rest_framework import serializers
-from .models import Item
+from .models import Auth
 
-class ItemSerializer(serializers.ModelSerializer):
+class AuthSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
-        fields = ['id', 'name', 'description']
+        model = Auth
+        fields = ['id', 'username', 'email']
