@@ -1,5 +1,5 @@
-import { loadRegisterPage } from "./register.js";
 
+/*
 const apiUrl = 'https://localhost:8443/api/auth/';
 
 export function loadAuthentificationPage()
@@ -29,8 +29,8 @@ export function loadAuthentificationPage()
         loadRegisterPage();
     });
 }
-
-function generateAuthentificationHTML()
+*/
+export function generateAuthentificationHTML(appElement)
 {
     let principalStr = "I've an account";
     let emailUsernameStr = "Username or e-mail adress";
@@ -38,10 +38,10 @@ function generateAuthentificationHTML()
 	let buttonStr = "Send";
 	let accountStr = "Don't you have account ?";
 	let registerStr = "Registrer to Pong";
-    return `
+    appElement.innerHTML = `
         <div id="authentification">
             <h1>${principalStr}</h1>
-            <form>
+            <form id=authForm>
                 <div id="loginPlace">                  
                     <label for="usernameEmailLogin">${emailUsernameStr}</label><br>
                     <input type="text" id="usernameEmailLogin" name="usernameEmailLogin" autocomplete="userEmailLogin" placeholder="${emailUsernameStr}" required><br>

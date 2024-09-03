@@ -1,5 +1,5 @@
-import { loadAuthentificationPage } from "./auth.js";
 
+/*
 export function loadRegisterPage() {
     // Mettre à jour le contenu de l'élément avec l'ID "app" avec le HTML généré pour l'inscription
     document.getElementById("app").innerHTML = generateRegisterHTML();
@@ -8,48 +8,51 @@ export function loadRegisterPage() {
     document.addEventListener('DOMContentLoaded', () => {
         // Attacher les événements d'écoute pour les champs du formulaire
         let champsUsername = document.getElementById("usernameRegister");
-        if (champsUsername) {
+//        if (champsUsername) {
             champsUsername.addEventListener("input", (event) => {
                 let usernameValue = champsUsername.value;
                 console.log(usernameValue);
             });
-        }
+//        }
 
         let champsEmail = document.getElementById("emailRegister");
-        if (champsEmail) {
+//        if (champsEmail) {
             champsEmail.addEventListener("input", (event) => {
                 let userValue = champsEmail.value;
                 console.log(userValue);
             });
-        }
+//        }
 
         let champsPassword = document.getElementById("passwordRegister");
-        if (champsPassword) {
+//        if (champsPassword) {
             champsPassword.addEventListener("input", (event) => {
                 let passwordValue = champsPassword.value;
                 console.log(passwordValue);
             });
-        }
+//        }
 
         let switchPageRegisterToLogin = document.getElementById("switchPageRegisterToLogin");
-        if (switchPageRegisterToLogin) {
+//        if (switchPageRegisterToLogin) {
             switchPageRegisterToLogin.addEventListener("click", (event) => {
                 event.preventDefault();
                 loadAuthentificationPage();
             });
-        }
+//        }
 
         // Ajouter l'écouteur d'événement pour le formulaire une fois que le DOM est chargé
-        let form = document.getElementById('authForm');	
+        let form = document.getElementById('registerForm');
+        console.log("DD");
         if (form) {
-            form.addEventListener('submit', async (event) => {
+            console.log("QQQQQ");
+            form.addEventListener('click', async (event) => {
+                console.log("QQQQQ");
                 event.preventDefault();
 
                 const formData = new FormData(form);
                 const data = {
-                    username: formData.get('usernameRegister'),
-                    email: formData.get('emailRegister'),
-                    password: formData.get('passwordRegister'),
+                    usernameRegister: formData.get('usernameRegister'),
+                    emailRegister: formData.get('emailRegister'),
+                    passwordRegister: formData.get('passwordRegister'),
                 };
 
                 try {
@@ -74,8 +77,8 @@ export function loadRegisterPage() {
         }
     });
 }
-
-function generateRegisterHTML() {
+*/
+export function generateRegisterHTML(appElement) {
     let usernameStr = "Username";
     let principalStr = "Register to play";
     let emailStr = "E-mail address";  // Correction: "adress" -> "address"
@@ -83,10 +86,10 @@ function generateRegisterHTML() {
     let buttonStr = "Send";
     let accountStr = "Don't you have an account?";
     let loginStr = "Login to Pong";
-    return `
+    appElement.innerHTML = `
         <div id="register">
             <h1>${principalStr}</h1>
-            <form id="authForm">
+            <form id="registerForm">
                 <div id="RegisterPlace">
                     <label for="usernameRegister">${usernameStr}</label><br>
                     <input type="text" id="usernameRegister" name="usernameRegister" autocomplete="username" placeholder="${usernameStr}" required><br> 
@@ -100,7 +103,7 @@ function generateRegisterHTML() {
                         <li>10 characters</li>
                     </ul>
                 </div>
-                <input type="submit" value="${buttonStr}">
+                <button type="submit">${buttonStr}</button>
             </form>
             <div id="redirectToLoginPage">
                 <p>${accountStr}</p>

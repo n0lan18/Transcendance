@@ -1,8 +1,9 @@
-import { loadAuthentificationPage } from "./auth.js";
+import { navigate, setupNavigation } from "./router.js";
 
-document.addEventListener('DOMContentLoaded', () => 
-    {
-    loadAuthentificationPage();
+document.addEventListener('DOMContentLoaded', () => {
+    const initialPage = location.hash.slice(1) || 'login';
+    navigate(initialPage);
+    setupNavigation();
 });
 
 /*
