@@ -15,23 +15,26 @@ if [ ! -d "myapp" ]; then
     python manage.py startapp myapp
 fi
 
+echo "Applying makemigrations..."
+python manage.py makemigrations
+
 # Appliquer les migrations
 echo "Applying migrations..."
 python manage.py migrate
 
-# Collecter les fichiers statiques
-#echo "Collecting static files..."
-#python manage.py collectstatic --noinput
+# Mise a jour des fichiers static files
+echo "Collect static files..."
+python manage.py collectstatic --noinput
 
 # Créer un superutilisateur si les variables d'environnement sont définies
-if [ "$DJANGO_SUPERUSER_USERNAME" ] && [ "$DJANGO_SUPERUSER_PASSWORD" ] && [ "$DJANGO_SUPERUSER_EMAIL" ]; then
-    echo "Creating superuser..."
-    python manage.py shell <<EOF
-from django.contrib.auth.models import User
-if not User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
-    User.objects.create_superuser('$DJANGO_SUPERUSER_USERNAME', '$DJANGO_SUPERUSER_EMAIL', '$DJANGO_SUPERUSER_PASSWORD')
-EOF
-fi
+#if [ "$DJANGO_SUPERUSER_USERNAME" ] && [ "$DJANGO_SUPERUSER_PASSWORD" ] && [ "$DJANGO_SUPERUSER_EMAIL" ]; then
+#    echo "Creating superuser..."
+#    python manage.py shell <<EOF
+#from django.contrib.auth.models import User
+#if not User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists():
+#    User.objects.create_superuser('$DJANGO_SUPERUSER_USERNAME', '$DJANGO_SUPERUSER_EMAIL', '$DJANGO_SUPERUSER_PASSWORD')
+#EOF
+#fi
 
 # Démarrer le serveur Gunicorn
 echo "Starting Gunicorn..."

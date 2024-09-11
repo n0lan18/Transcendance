@@ -16,6 +16,7 @@ services:
     volumes:
       - ./backend:/app
       - static_volume:/app/myproject/staticfiles
+      - ./frontend:/app/myproject/myapp/static/myapp
     depends_on:
       - postgres
     env_file: .env

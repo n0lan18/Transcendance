@@ -1,84 +1,84 @@
+import { loadAuthentificationPage } from "./auth.js";
 
-/*
 export function loadRegisterPage() {
-    // Mettre à jour le contenu de l'élément avec l'ID "app" avec le HTML généré pour l'inscription
     document.getElementById("app").innerHTML = generateRegisterHTML();
+    let champsUsername = document.getElementById("usernameRegister");
+    if (champsUsername) {
+        champsUsername.addEventListener("input", (event) => {
+            let usernameValue = champsUsername.value;
+            console.log(usernameValue);
+        });
+    }
 
-    // Attacher les écouteurs d'événements une fois que le contenu est chargé
-    document.addEventListener('DOMContentLoaded', () => {
-        // Attacher les événements d'écoute pour les champs du formulaire
-        let champsUsername = document.getElementById("usernameRegister");
-//        if (champsUsername) {
-            champsUsername.addEventListener("input", (event) => {
-                let usernameValue = champsUsername.value;
-                console.log(usernameValue);
-            });
-//        }
+    let champsEmail = document.getElementById("emailRegister");
+    if (champsEmail) {
+        champsEmail.addEventListener("input", (event) => {
+            let userValue = champsEmail.value;
+            console.log(userValue);
+        });
+    }
 
-        let champsEmail = document.getElementById("emailRegister");
-//        if (champsEmail) {
-            champsEmail.addEventListener("input", (event) => {
-                let userValue = champsEmail.value;
-                console.log(userValue);
-            });
-//        }
+    let champsPassword = document.getElementById("passwordRegister");
+    if (champsPassword) {
+        champsPassword.addEventListener("input", (event) => {
+            let passwordValue = champsPassword.value;
+            console.log(passwordValue);
+        });
+    }
 
-        let champsPassword = document.getElementById("passwordRegister");
-//        if (champsPassword) {
-            champsPassword.addEventListener("input", (event) => {
-                let passwordValue = champsPassword.value;
-                console.log(passwordValue);
-            });
-//        }
+    let switchPageRegisterToLogin = document.getElementById("switchPageRegisterToLogin");
+    if (switchPageRegisterToLogin) {
+        switchPageRegisterToLogin.addEventListener("click", (event) => {                event.preventDefault();
+        	loadAuthentificationPage();
+    	});
+	}
 
-        let switchPageRegisterToLogin = document.getElementById("switchPageRegisterToLogin");
-//        if (switchPageRegisterToLogin) {
-            switchPageRegisterToLogin.addEventListener("click", (event) => {
-                event.preventDefault();
-                loadAuthentificationPage();
-            });
-//        }
-
-        // Ajouter l'écouteur d'événement pour le formulaire une fois que le DOM est chargé
-        let form = document.getElementById('registerForm');
-        console.log("DD");
-        if (form) {
-            console.log("QQQQQ");
-            form.addEventListener('click', async (event) => {
-                console.log("QQQQQ");
-                event.preventDefault();
-
-                const formData = new FormData(form);
-                const data = {
-                    usernameRegister: formData.get('usernameRegister'),
-                    emailRegister: formData.get('emailRegister'),
-                    passwordRegister: formData.get('passwordRegister'),
-                };
-
-                try {
-                    const response = await fetch('https://localhost:8443/api/auth/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    console.log('Success:', result);
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            });
-        }
-    });
+	let formRegister = document.getElementById("registerForm");
+	if (formRegister)
+	{
+		formRegister.addEventListener("submit", (event) =>
+		{
+			event.preventDefault();
+			const username = document.getElementById("usernameRegister");
+			const email = document.getElementById("emailRegister");
+			const password = document.getElementById("passwordRegister");
+			console.log(username.value);
+			console.log(email.value);
+			console.log(password.value);
+			const data = {
+				username: username.value,
+                email: email.value,
+				password: password.value,
+			}
+			sendDataToDatabase(data);
+		});
+	}
 }
-*/
-export function generateRegisterHTML(appElement) {
+
+async function sendDataToDatabase(data)
+{
+	try {
+		const response = await fetch('https://localhost:8443/api/register/', {
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
+		}
+
+		const result = await response.json();
+		console.log('Success:', result);
+		loadAuthentificationPage();
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+
+function generateRegisterHTML() {
     let usernameStr = "Username";
     let principalStr = "Register to play";
     let emailStr = "E-mail address";  // Correction: "adress" -> "address"
@@ -86,7 +86,7 @@ export function generateRegisterHTML(appElement) {
     let buttonStr = "Send";
     let accountStr = "Don't you have an account?";
     let loginStr = "Login to Pong";
-    appElement.innerHTML = `
+    return `
         <div id="register">
             <h1>${principalStr}</h1>
             <form id="registerForm">

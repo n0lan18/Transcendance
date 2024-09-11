@@ -1,36 +1,92 @@
-
-/*
-const apiUrl = 'https://localhost:8443/api/auth/';
+import { loadRegisterPage } from "./register.js";
 
 export function loadAuthentificationPage()
 {
     document.getElementById("app").innerHTML = generateAuthentificationHTML();
     let champsEmail = document.getElementById("usernameEmailLogin");
-    champsEmail.addEventListener("input",
-    (event) =>
-    {
-        let usernameValue = champsEmail.value;
-        console.log(usernameValue);
-    });   
+	if (champsEmail)
+	{
+    	champsEmail.addEventListener("input",
+    	(event) =>
+    	{
+    	    let usernameValue = champsEmail.value;
+    	    console.log(usernameValue);
+    	});
+	}
 
     let champsPassword = document.getElementById("passwordLogin");
-    champsPassword.addEventListener("input",
-    (event) =>
-    {
-        let passwordValue = champsPassword.value;
-        console.log(passwordValue);
-    });
+	if (champsPassword)
+	{
+    	champsPassword.addEventListener("input",
+    	(event) =>
+    	{
+    	    let passwordValue = champsPassword.value;
+    	    console.log(passwordValue);
+    	});
+	}
 
     let switchPageLoginToRegister = document.getElementById("switchPageLoginToRegister");
-    switchPageLoginToRegister.addEventListener("click",
-    (event) =>
-    {
-        event.preventDefault();
-        loadRegisterPage();
-    });
+	if (switchPageLoginToRegister)
+	{
+		switchPageLoginToRegister.addEventListener("click",
+	    (event) =>
+	    {
+	        event.preventDefault();
+	        loadRegisterPage();
+	    });
+	}
+	checkConnexion();
 }
-*/
-export function generateAuthentificationHTML(appElement)
+
+async function checkConnexion()
+{
+	let authForm = document.getElementById("authForm");
+	if (authForm)
+	{
+		authForm.addEventListener("submit", async (event) =>
+		{
+			event.preventDefault();
+			const emailUsername = document.getElementById("usernameEmailLogin").value;
+			const password = document.getElementById("passwordLogin").value;
+			if (!emailUsername || !password) {
+				console.log('Please fill in both fields');
+				return ;
+			}
+			const credentials = {
+				username: emailUsername,
+				password: password,
+			};
+			try
+			{
+				const response = await fetch('https://localhost:8443/api/login/', {
+					method: 'POST',
+					headers: {
+						'Content-Type' : 'application/json',
+					},
+					body: JSON.stringify(credentials),
+				});
+				if (response.ok)
+				{
+					const data = await response.json();
+					const token = data.access;
+
+					localStorage.setItem('jwt_token', token);
+					console.log('Login successful!');
+				}
+				else
+				{
+					const errorData = await response.json();
+					console.log(errorData.detail || 'login failed.');
+				}
+			} catch (error) {
+				console.error('Error:', error);
+				console.log('An error occured.');
+			}
+		});
+	}
+}
+
+function generateAuthentificationHTML()
 {
     let principalStr = "I've an account";
     let emailUsernameStr = "Username or e-mail adress";
@@ -38,7 +94,7 @@ export function generateAuthentificationHTML(appElement)
 	let buttonStr = "Send";
 	let accountStr = "Don't you have account ?";
 	let registerStr = "Registrer to Pong";
-    appElement.innerHTML = `
+    return `
         <div id="authentification">
             <h1>${principalStr}</h1>
             <form id=authForm>
@@ -56,9 +112,4 @@ export function generateAuthentificationHTML(appElement)
             </div>
         </div>
     `;
-}
-
-function checkConnexion()
-{
-
 }
