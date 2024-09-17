@@ -36,6 +36,6 @@ python manage.py collectstatic --noinput
 #EOF
 #fi
 
-# Démarrer le serveur Gunicorn
-echo "Starting Gunicorn..."
-exec gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
+# Démarrer le serveur Django avec runserver
+echo "Starting Django development server..."
+exec python -u manage.py runserver 0.0.0.0:8000

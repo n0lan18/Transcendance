@@ -1,4 +1,5 @@
 import { loadRegisterPage } from "./register.js";
+import { loadHomePage } from "./home.js";
 
 export function loadAuthentificationPage()
 {
@@ -53,9 +54,10 @@ async function checkConnexion()
 				return ;
 			}
 			const credentials = {
-				username: emailUsername,
+				emailUsername: emailUsername,
 				password: password,
 			};
+			console.log("SENDING DATA:", credentials);
 			try
 			{
 				const response = await fetch('https://localhost:8443/api/login/', {
@@ -72,6 +74,7 @@ async function checkConnexion()
 
 					localStorage.setItem('jwt_token', token);
 					console.log('Login successful!');
+					loadHomePage();
 				}
 				else
 				{

@@ -28,7 +28,8 @@ export function loadRegisterPage() {
 
     let switchPageRegisterToLogin = document.getElementById("switchPageRegisterToLogin");
     if (switchPageRegisterToLogin) {
-        switchPageRegisterToLogin.addEventListener("click", (event) => {                event.preventDefault();
+        switchPageRegisterToLogin.addEventListener("click", (event) => {
+            event.preventDefault();
         	loadAuthentificationPage();
     	});
 	}
@@ -42,14 +43,17 @@ export function loadRegisterPage() {
 			const username = document.getElementById("usernameRegister");
 			const email = document.getElementById("emailRegister");
 			const password = document.getElementById("passwordRegister");
-			console.log(username.value);
-			console.log(email.value);
-			console.log(password.value);
 			const data = {
 				username: username.value,
                 email: email.value,
 				password: password.value,
 			}
+            if (!username.value || !email.value || !password.value )
+            {
+                console.error('All fields are required.');
+                return;
+            }
+            console.log("SENDING DATA: ", data);
 			sendDataToDatabase(data);
 		});
 	}
