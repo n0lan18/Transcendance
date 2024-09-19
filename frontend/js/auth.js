@@ -1,8 +1,13 @@
 import { loadRegisterPage } from "./register.js";
 import { loadHomePage } from "./home.js";
+import { loadContent } from "./utils.js";
 
 export function loadAuthentificationPage()
 {
+	let authHTML = generateAuthentificationHTML();
+
+	loadContent(authHTML, "login", true);
+
     document.getElementById("app").innerHTML = generateAuthentificationHTML();
     let champsEmail = document.getElementById("usernameEmailLogin");
 	if (champsEmail)
@@ -26,17 +31,24 @@ export function loadAuthentificationPage()
     	});
 	}
 
-    let switchPageLoginToRegister = document.getElementById("switchPageLoginToRegister");
+    let switchPageLoginToRegister = document.getElementById("sub-link-page");
 	if (switchPageLoginToRegister)
 	{
 		switchPageLoginToRegister.addEventListener("click",
 	    (event) =>
 	    {
 	        event.preventDefault();
-	        loadRegisterPage();
+			loadRegisterPage();
 	    });
 	}
 	checkConnexion();
+
+	window.addEventListener('popstate', function(event) {
+		if (event.state && event.state.page) {
+			// Charger le contenu associé à la page
+			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
+		}
+	});
 }
 
 async function checkConnexion()
@@ -89,7 +101,7 @@ async function checkConnexion()
 	}
 }
 
-function generateAuthentificationHTML()
+export function generateAuthentificationHTML()
 {
     let principalStr = "I've an account";
     let emailUsernameStr = "Username or e-mail adress";
@@ -97,7 +109,7 @@ function generateAuthentificationHTML()
 	let buttonStr = "Send";
 	let accountStr = "Don't you have account ?";
 	let registerStr = "Registrer to Pong";
-    return `
+/*    return `
         <div id="authentification">
             <h1>${principalStr}</h1>
             <form id=authForm>
@@ -115,4 +127,33 @@ function generateAuthentificationHTML()
             </div>
         </div>
     `;
+*/
+	return `
+		<div id="authentification" class="d-flex align-items-center justify-content-center" style="height: 1200px;">
+			<form id=authForm>
+				<h1 style="color: white;">${principalStr}</h1>
+				<div id="loginPlace" data-mdb-input-init class="form-outline mb-4">
+					<label for="usernameEmailLogin" class="form-label" style="color: white;">${emailUsernameStr}</label>
+					<input type="text" id="usernameEmailLogin" name="usernameEmailLogin" autocomplete="userEmailLogin" placeholder="${emailUsernameStr}" required class="form-control" />
+					<label for="passwordLogin" class="form-label" style="color: white;">${passwordStr}</label>
+					<input type="password" id="passwordLogin" name="passwordLogin" autocomplete="new-password" placeholder="${passwordStr}" required class="form-control" />
+				</div>
+				<div class="row mb-4">
+					<div class="col d-flex justify-content-center">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+							<label class="form-check-label" for="form2Example31" style="color: white;"> Remember me </label>
+						</div>
+					</div>
+					<div class="col">
+						<a href="#!" style="color: white; text-decoration: underline">Forgot password?</a>
+					</div>
+				</div>				
+				<input type="submit" value="${buttonStr}" class="btn btn-primary btn-block mb-4">
+				<div class="text-center">
+					<p style="color: white;">${accountStr} <a href="#register" id="sub-link-page" style="color: white; text-decoration: underline;">${registerStr}</a></p>
+				</div>
+			</form>
+		</div>
+	`;
 }

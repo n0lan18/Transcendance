@@ -1,6 +1,12 @@
 import { loadAuthentificationPage } from "./auth.js";
+import { loadContent } from "./utils.js";
 
 export function loadRegisterPage() {
+
+    let registerHTML = generateRegisterHTML();
+
+    loadContent(registerHTML, "register", true);
+
     document.getElementById("app").innerHTML = generateRegisterHTML();
     let champsUsername = document.getElementById("usernameRegister");
     if (champsUsername) {
@@ -57,6 +63,13 @@ export function loadRegisterPage() {
 			sendDataToDatabase(data);
 		});
 	}
+
+    window.addEventListener('popstate', function(event) {
+		if (event.state && event.state.page) {
+			// Charger le contenu associé à la page
+			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
+		}
+	});
 }
 
 async function sendDataToDatabase(data)
@@ -90,7 +103,7 @@ function generateRegisterHTML() {
     let buttonStr = "Send";
     let accountStr = "Don't you have an account?";
     let loginStr = "Login to Pong";
-    return `
+/*    return `
         <div id="register">
             <h1>${principalStr}</h1>
             <form id="registerForm">
@@ -115,4 +128,32 @@ function generateRegisterHTML() {
             </div>
         </div> 
     `;
+*/
+	return `
+		<div id="auth-form" class="d-flex align-items-center justify-content-center" style="height: 1200px;">
+			<h2 style="color: white;">inscription</h2>
+			<form>
+				<div data-mdb-input-init class="form-outline mb-4">
+					<input type="email" id="form2Example1" class="form-control" />
+					<label class="form-label" for="form2Example1" style="color: white;">Email address</label>
+					<input type="password" id="form2Example2" class="form-control" />
+					<label class="form-label" for="form2Example2" style="color: white;">Password</label>
+				</div>
+				<div class="row mb-4">
+					<div class="col d-flex justify-content-center">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
+							<label class="form-check-label" for="form2Example31" style="color: white;"> Remember me </label>
+						</div>
+					</div>
+				<div class="col">
+					<a href="#!" style="color: white; text-decoration: underline">Forgot password?</a>
+				</div>
+				<button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
+				<div class="text-center">
+					<p style="color: white;">Not a member? <a href="#!" style="color: white; text-decoration: underline;">Register</a></p>
+				</div>
+			</form>
+		</div>
+	`;
 }

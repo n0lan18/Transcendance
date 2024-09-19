@@ -1,8 +1,13 @@
 import { loadAuthentificationPage } from "./auth.js";
+import { generateAuthentificationHTML } from "./auth.js";
+import { loadContent } from "./utils.js";
 
 document.addEventListener('DOMContentLoaded', () => 
     {
-    loadAuthentificationPage();
+        let authHTML = generateAuthentificationHTML();
+
+        loadContent(authHTML, "login", true);
+        loadAuthentificationPage();
 });
 
 /*

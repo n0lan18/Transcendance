@@ -1,6 +1,13 @@
+import { generateNavigator } from "./nav.js";
+import { loadContent } from "./utils.js";
+
 export async function loadHomePage()
 {
 	let userInfo = await fetchUserInfo();
+
+	let homeHTML = generateHomePageHTML(userInfo);
+
+	loadContent(homeHTML, "home", true);
 	document.getElementById("app").innerHTML = generateHomePageHTML(userInfo);
 }
 
@@ -30,7 +37,7 @@ async function fetchUserInfo()
 	}
 }
 
-function generateHomePageHTML(userInfo)
+function generateBodyHomePageHTML(userInfo)
 {
 	let welcome = "Welcome";
 	if (!userInfo) {
@@ -47,5 +54,12 @@ function generateHomePageHTML(userInfo)
 			<p>${userInfo.email}</p>
 		</div>
 	`;
+}
+
+function generateHomePageHTML(userInfo)
+{
+	let nav = generateNavigator();
+	let body = generateBodyHomePageHTML(userInfo);
+	return (nav + body);
 }
 

@@ -1,27 +1,19 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fbfbfb;
+    background-color: #333333;
+    color: #333333;
 }
 
-#principale {
-    background-color: red;
+#app {
+    background-image: url('../images/Background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
 }
 
-#modelContainer {
-    margin: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.model-item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-.model-item:last-child {
-    border-bottom: none;
+#game {
+    width: 100%;
+    height: auto;
 }
