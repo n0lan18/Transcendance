@@ -1,4 +1,3 @@
-import { generateNavigator } from "./nav.js";
 import { loadContent } from "./utils.js";
 
 export async function loadHomePage()
@@ -39,27 +38,23 @@ async function fetchUserInfo()
 
 function generateBodyHomePageHTML(userInfo)
 {
-	let welcome = "Welcome";
-	if (!userInfo) {
-		return `
-			<div id="homepage">
-				<h1>${welcome} Guest</h1>
-			</div>	
-		`;
-	}
-
 	return `
-		<div id="homepage">
-			<h1>${welcome} ${userInfo.username}</h1>
-			<p>${userInfo.email}</p>
+		<div class="flex-container">
+			<button class="flex-item box1">
+				<h1>HELLO</h1>
+				<h3>coucou</h3>
+			</button>
+			<button class="flex-item box2">2</button>
+			<button class="flex-item box3">3</button>
+			<button class="flex-item box4">4</button>
 		</div>
 	`;
 }
 
 function generateHomePageHTML(userInfo)
 {
-	let nav = generateNavigator();
+//	let nav = generateNavigator();
 	let body = generateBodyHomePageHTML(userInfo);
-	return (nav + body);
+	return (body);
 }
 

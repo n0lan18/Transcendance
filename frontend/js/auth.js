@@ -92,6 +92,8 @@ async function checkConnexion()
 				{
 					const errorData = await response.json();
 					console.log(errorData.detail || 'login failed.');
+					const button = document.getElementById('buttonLogin');
+					
 				}
 			} catch (error) {
 				console.error('Error:', error);
@@ -103,55 +105,40 @@ async function checkConnexion()
 
 export function generateAuthentificationHTML()
 {
-    let principalStr = "I've an account";
-    let emailUsernameStr = "Username or e-mail adress";
+	let principalStr = "I've an account";
+	let emailUsernameStr = "Username or e-mail adress";
 	let passwordStr = "Password";
 	let buttonStr = "Send";
 	let accountStr = "Don't you have account ?";
 	let registerStr = "Registrer to Pong";
-/*    return `
-        <div id="authentification">
-            <h1>${principalStr}</h1>
-            <form id=authForm>
-                <div id="loginPlace">                  
-                    <label for="usernameEmailLogin">${emailUsernameStr}</label><br>
-                    <input type="text" id="usernameEmailLogin" name="usernameEmailLogin" autocomplete="userEmailLogin" placeholder="${emailUsernameStr}" required><br>
-                    <label for="passwordLogin">${passwordStr}</label><br>
-                    <input type="password" id="passwordLogin" name="passwordLogin" autocomplete="new-password" placeholder="${passwordStr}" required><br>
-                </div>
-                <input type="submit" value="${buttonStr}">
-            </form>
-            <div id="redirectToRegisterPage">
-                <p>${accountStr}</p>
-                <a id=switchPageLoginToRegister href="#register">${registerStr}</a>
-            </div>
-        </div>
-    `;
-*/
+	let rememeberMeStr = "Remember me";
+	let forgotPassword = "Forgot password?";
 	return `
-		<div id="authentification" class="d-flex align-items-center justify-content-center" style="height: 1200px;">
+		<div id="authentification" class="d-flex align-items-center justify-content-center" style="height: 100vh;">
 			<form id=authForm>
-				<h1 style="color: white;">${principalStr}</h1>
+				<div class="text-center">
+					<h1 style="color: white;">${principalStr}</h1>
+				</div>
 				<div id="loginPlace" data-mdb-input-init class="form-outline mb-4">
-					<label for="usernameEmailLogin" class="form-label" style="color: white;">${emailUsernameStr}</label>
+					<label for="usernameEmailLogin" class="form-label">${emailUsernameStr}</label>
 					<input type="text" id="usernameEmailLogin" name="usernameEmailLogin" autocomplete="userEmailLogin" placeholder="${emailUsernameStr}" required class="form-control" />
-					<label for="passwordLogin" class="form-label" style="color: white;">${passwordStr}</label>
+					<label for="passwordLogin" class="form-label">${passwordStr}</label>
 					<input type="password" id="passwordLogin" name="passwordLogin" autocomplete="new-password" placeholder="${passwordStr}" required class="form-control" />
 				</div>
 				<div class="row mb-4">
 					<div class="col d-flex justify-content-center">
 						<div class="form-check">
 							<input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
-							<label class="form-check-label" for="form2Example31" style="color: white;"> Remember me </label>
+							<label class="form-check-label" for="form2Example31">${rememeberMeStr}</label>
 						</div>
 					</div>
 					<div class="col">
-						<a href="#!" style="color: white; text-decoration: underline">Forgot password?</a>
+						<a href="#!" style="color: white; text-decoration: underline">${forgotPassword}</a>
 					</div>
 				</div>				
-				<input type="submit" value="${buttonStr}" class="btn btn-primary btn-block mb-4">
+				<input id="buttonLogin" type="submit" value="${buttonStr}" class="btn btn-success btn-block mb-4">
 				<div class="text-center">
-					<p style="color: white;">${accountStr} <a href="#register" id="sub-link-page" style="color: white; text-decoration: underline;">${registerStr}</a></p>
+					<p">${accountStr} <a href="#register" id="sub-link-page" style="color: white; text-decoration: underline;">${registerStr}</a></p>
 				</div>
 			</form>
 		</div>

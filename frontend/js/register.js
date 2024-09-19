@@ -96,62 +96,52 @@ async function sendDataToDatabase(data)
 }
 
 function generateRegisterHTML() {
-    let usernameStr = "Username";
-    let principalStr = "Register to play";
-    let emailStr = "E-mail address";  // Correction: "adress" -> "address"
-    let passwordStr = "Password";
-    let buttonStr = "Send";
-    let accountStr = "Don't you have an account?";
-    let loginStr = "Login to Pong";
-/*    return `
-        <div id="register">
-            <h1>${principalStr}</h1>
-            <form id="registerForm">
-                <div id="RegisterPlace">
-                    <label for="usernameRegister">${usernameStr}</label><br>
-                    <input type="text" id="usernameRegister" name="usernameRegister" autocomplete="username" placeholder="${usernameStr}" required><br> 
-                    <label for="emailRegister">${emailStr}</label><br>
-                    <input type="text" id="emailRegister" name="emailRegister" autocomplete="email" placeholder="${emailStr}" required><br>
-                    <label for="passwordRegister">${passwordStr}</label><br>
-                    <input type="password" id="passwordRegister" name="passwordRegister" autocomplete="new-password" placeholder="${passwordStr}" required><br>  <!-- Correction: "password" -> "new-password" -->
-                    <ul>
-                        <li>1 letter</li>
-                        <li>1 numeric or special character (e.g., #?!&)</li>
-                        <li>10 characters</li>
-                    </ul>
-                </div>
-                <button type="submit">${buttonStr}</button>
-            </form>
-            <div id="redirectToLoginPage">
-                <p>${accountStr}</p>
-                <a id="switchPageRegisterToLogin" href="#authentification">${loginStr}</a>
-            </div>
-        </div> 
-    `;
-*/
+	let usernameStr = "Username";
+	let principalStr = "Register to play";
+	let emailStr = "E-mail address";
+	let passwordStr = "Password";
+	let buttonStr = "Send";
+	let accountStr = "Don't you have an account?";
+	let loginStr = "Login to Pong";
+	let rememeberMeStr = "Remember me";
+	let forgotPassword = "Forgot password?";
+	let password1 = "1 letter";
+	let password2 = "1 numeric or special character (e.g., #?!&)";
+	let password3 = "10 characters";
+
 	return `
-		<div id="auth-form" class="d-flex align-items-center justify-content-center" style="height: 1200px;">
-			<h2 style="color: white;">inscription</h2>
-			<form>
-				<div data-mdb-input-init class="form-outline mb-4">
-					<input type="email" id="form2Example1" class="form-control" />
-					<label class="form-label" for="form2Example1" style="color: white;">Email address</label>
-					<input type="password" id="form2Example2" class="form-control" />
-					<label class="form-label" for="form2Example2" style="color: white;">Password</label>
+		<div id="register" class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+			<form id="registerForm">
+				<div class="text-center">
+					<h1 style="color: white;">${principalStr}</h1>
+				</div>
+				<div id="RegisterPlace" data-mdb-input-init class="form-outline mb-4">
+					<label for="usernameRegister" class="form-label" style="color: white;">${usernameStr}</label>
+					<input type="text" id="usernameRegister" name="usernameRegister" autocomplete="username" placeholder="${usernameStr}" required class="form-control" />
+					<label class="form-label" for="emailRegister" style="color: white;">${emailStr}</label>
+					<input type="email" id="emailRegister" name="emailRegister" autocomplete="email" placeholder="${emailStr}" required class="form-control" />
+					<label class="form-label" for="passwordRegister" style="color: white;">${passwordStr}</label>
+					<input type="password" id="passwordRegister" name="passwordRegister" autocomplete="new-password" placeholder="${passwordStr}" required class="form-control" />
+					<ul style="color: white;">
+						<li>${password1}</li>
+						<li>${password2}</li>
+						<li>${password3}</li>
+					</ul>
 				</div>
 				<div class="row mb-4">
 					<div class="col d-flex justify-content-center">
 						<div class="form-check">
 							<input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
-							<label class="form-check-label" for="form2Example31" style="color: white;"> Remember me </label>
+							<label class="form-check-label" for="form2Example31" style="color: white;">${rememeberMeStr}</label>
 						</div>
 					</div>
-				<div class="col">
-					<a href="#!" style="color: white; text-decoration: underline">Forgot password?</a>
+					<div class="col"
+						<a href="#!" style="color: white; text-decoration: underline">${forgotPassword}</a>
+					</div>
 				</div>
-				<button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Sign in</button>
+				<input type="submit" value="${buttonStr}" class="btn btn-primary btn-block mb-4">
 				<div class="text-center">
-					<p style="color: white;">Not a member? <a href="#!" style="color: white; text-decoration: underline;">Register</a></p>
+					<p style="color: white;">${accountStr} <a id="switchPageRegisterToLogin" href="#authentification" style="color: white; text-decoration: underline;">${loginStr}</a></p>
 				</div>
 			</form>
 		</div>
