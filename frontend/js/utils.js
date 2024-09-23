@@ -1,3 +1,4 @@
+import { loadAuthentificationPage } from "./auth.js";
 
 export function loadContent(page, url, addToHistory) {
 	$('#app').html(page);
@@ -22,7 +23,16 @@ export async function fetchUserInfo()
 			let data = await response.json();
 			console.log('Username:', data.username);
 			return data;
-		} else {
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
 			console.error('Failed to fetch user info:', response.statusText);
 			return null;
 		}

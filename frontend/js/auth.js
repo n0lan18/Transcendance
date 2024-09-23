@@ -4,10 +4,15 @@ import { loadContent } from "./utils.js";
 
 export function loadAuthentificationPage()
 {
+	history.replaceState({}, '', window.location.href);
+	let jwt_token = localStorage.getItem('jwt_token');
+	if (jwt_token)
+		console.log("AAAA");
+	else
+		console.log("BBBB");	
 	let authHTML = generateAuthentificationHTML();
 
 	loadContent(authHTML, "login", true);
-
     document.getElementById("app").innerHTML = generateAuthentificationHTML();
     let champsEmail = document.getElementById("usernameEmailLogin");
 	if (champsEmail)
@@ -125,6 +130,7 @@ async function checkConnexion()
 
 export function generateAuthentificationHTML()
 {
+	
 	let principalStr = "I've an account";
 	let emailUsernameStr = "Username or e-mail adress";
 	let passwordStr = "Password";

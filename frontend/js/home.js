@@ -1,6 +1,7 @@
 import { loadContent } from "./utils.js";
 import { generateNavigator } from "./nav.js";
 import { fetchUserInfo } from "./utils.js";
+import { loadAuthentificationPage } from "./auth.js";
 
 export async function loadHomePage()
 {
@@ -11,6 +12,20 @@ export async function loadHomePage()
 
 	loadContent(homeHTML, "home", true);
 	document.getElementById("app").innerHTML = generateHomePageHTML(userInfo);
+
+	let switchPageToLogin = document.getElementById("logoutLink");
+	if (switchPageToLogin)
+	{
+		
+		switchPageToLogin.addEventListener('click', function (event) {
+			if (event.target && event.target.id === 'logoutLink')
+			{
+				localStorage.removeItem('jwt_token');
+				event.preventDefault();
+				loadAuthentificationPage();
+			}
+		});
+	}
 }
 
 function generateBodyHomePageHTML()
@@ -56,7 +71,7 @@ function generateBodyHomePageHTML()
 	`;
 }
 
-function generateHomePageHTML(userInfo)
+export function generateHomePageHTML(userInfo)
 {
 	let nav = generateNavigator(userInfo.username);
 	let body = generateBodyHomePageHTML();

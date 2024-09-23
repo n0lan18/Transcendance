@@ -1,5 +1,6 @@
 import { loadAuthentificationPage } from "./auth.js";
 import { generateAuthentificationHTML } from "./auth.js";
+import { generateHomePageHTML, loadHomePage } from "./home.js";
 import { loadContent } from "./utils.js";
 import { fetchUserInfo } from "./utils.js";
 
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () =>
         
             let homeHTML = generateHomePageHTML(userInfo);
             loadContent(homeHTML, "home", true);
+            loadHomePage();
         }
         else
         {

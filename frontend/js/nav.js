@@ -1,3 +1,4 @@
+
 export function generateNavigator(userInfo)
 {
 	let username;
@@ -16,7 +17,7 @@ export function generateNavigator(userInfo)
 							<p class="nav-link nav-username">${username}</p>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="#" id="sub-link-nav" >${logout}</a>
+							<a class="nav-link" href="#authentification" id="logoutLink" >${logout}</a>
 						</li>
 					</ul>
 				</div>
