@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -39,12 +40,10 @@ class LoginView(APIView):
 			return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserInfoView(APIView):
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        if user.is_authenticated:
-            data = {
-                'username': user.username,
-                'email': user.email
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        return Response({'detail': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+	permssion_classes = [IsAuthenticated]
+
+	def get(self, request):
+		user = request.user
+		return Response({
+			'username': user.username,
+		})

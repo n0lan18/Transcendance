@@ -1,13 +1,28 @@
 import { loadAuthentificationPage } from "./auth.js";
 import { generateAuthentificationHTML } from "./auth.js";
 import { loadContent } from "./utils.js";
+import { fetchUserInfo } from "./utils.js";
 
-document.addEventListener('DOMContentLoaded', () => 
+document.addEventListener('DOMContentLoaded', async () => 
     {
-        let authHTML = generateAuthentificationHTML();
+        const jwtToken = localStorage.getItem('jwt_token');
+        console.log("JWT Token:", jwtToken);
 
-        loadContent(authHTML, "login", true);
-        loadAuthentificationPage();
+        if (jwtToken)
+        {
+            let userInfo = await fetchUserInfo();
+            console.log(userInfo);
+        
+            let homeHTML = generateHomePageHTML(userInfo);
+            loadContent(homeHTML, "home", true);
+        }
+        else
+        {
+            let authHTML = generateAuthentificationHTML();
+
+            loadContent(authHTML, "login", true);
+            loadAuthentificationPage();
+        }
 });
 
 /*

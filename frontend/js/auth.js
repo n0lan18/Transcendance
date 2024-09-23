@@ -41,6 +41,26 @@ export function loadAuthentificationPage()
 			loadRegisterPage();
 	    });
 	}
+
+	const switchHidePasswordToSee = document.getElementById("input-password");
+	if (switchHidePasswordToSee)
+	{
+		const buttonChange = document.getElementById("togglePassword");
+		const toggleIcon = buttonChange.querySelector('i');
+		const passwordInput = document.getElementById("passwordLogin");
+		buttonChange.addEventListener('click', function () {
+			if (passwordInput.type === 'password') {
+				passwordInput.type = 'text';
+				toggleIcon.classList.remove('fa-eye-slash');
+				toggleIcon.classList.add('fa-eye'); // Change l'icône en œil barré
+			} else {
+				passwordInput.type = 'password';
+				toggleIcon.classList.remove('fa-eye');
+				toggleIcon.classList.add('fa-eye-slash'); // Change l'icône en œil ouvert
+			}
+		})
+	}
+
 	checkConnexion();
 
 	window.addEventListener('popstate', function(event) {
@@ -120,25 +140,24 @@ export function generateAuthentificationHTML()
 					<h1 style="color: white;">${principalStr}</h1>
 				</div>
 				<div id="loginPlace" data-mdb-input-init class="form-outline mb-4">
-					<label for="usernameEmailLogin" class="form-label">${emailUsernameStr}</label>
-					<input type="text" id="usernameEmailLogin" name="usernameEmailLogin" autocomplete="userEmailLogin" placeholder="${emailUsernameStr}" required class="form-control" />
-					<label for="passwordLogin" class="form-label">${passwordStr}</label>
-					<input type="password" id="passwordLogin" name="passwordLogin" autocomplete="new-password" placeholder="${passwordStr}" required class="form-control" />
-				</div>
-				<div class="row mb-4">
-					<div class="col d-flex justify-content-center">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" value="" id="form2Example31" checked />
-							<label class="form-check-label" for="form2Example31">${rememeberMeStr}</label>
-						</div>
+					<div class="form-item">
+						<label for="usernameEmailLogin" class="form-label">${emailUsernameStr}</label>
+						<input type="text" id="usernameEmailLogin" name="usernameEmailLogin" autocomplete="userEmailLogin" placeholder="${emailUsernameStr}" required class="form-control" />
 					</div>
-					<div class="col">
-						<a href="#!" style="color: white; text-decoration: underline">${forgotPassword}</a>
+					<label for="passwordLogin" class="form-label">${passwordStr}</label>
+					<div id="input-password" style="position: relative;">
+						<input type="password" id="passwordLogin" name="passwordLogin" autocomplete="new-password" placeholder="${passwordStr}" required class="form-control" style="padding-right: 40px;" />
+						<button type="button" class="toggle-password" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #918e8e; padding: 0;">
+							<i class="fa-solid fa-eye-slash"></i>
+						</button>
 					</div>
 				</div>				
 				<input id="buttonLogin" type="submit" value="${buttonStr}" class="btn btn-success btn-block mb-4">
 				<div class="text-center">
-					<p">${accountStr} <a href="#register" id="sub-link-page" style="color: white; text-decoration: underline;">${registerStr}</a></p>
+					<div class="form-item">
+						<a href="#!" style="color: white; text-decoration: underline">${forgotPassword}</a>
+					</div>
+					<p style="color: #b3b3b3;">${accountStr} <a href="#register" id="sub-link-page" style="color: white; text-decoration: underline;">${registerStr}</a></p>
 				</div>
 			</form>
 		</div>
