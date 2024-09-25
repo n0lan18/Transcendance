@@ -15,12 +15,13 @@ class RegisterView(APIView):
 		serializer = UserSerializer(data=request.data)
 		if serializer.is_valid():
 			print(request.data)
-			serializer.save()
+			serializer.save() 
 			return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
 		else:
+			print(serializer.errors)
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class LoginView(APIView):
+class LoginView(APIView): 
 	permission_classes = [AllowAny]
 
 	def post(self, request, *args, **kwargs):
@@ -40,10 +41,38 @@ class LoginView(APIView):
 			return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserInfoView(APIView):
-	permssion_classes = [IsAuthenticated]
+	permission_classes = [IsAuthenticated]
 
 	def get(self, request):
 		user = request.user
 		return Response({
 			'username': user.username,
 		})
+
+class CheckEmailView(APIView):
+	permission_classes = [AllowAny]
+    
+	def post(self, request, *args, **kwargs):
+		data = request.data.get('data', {})
+		email = data.get('email', None)
+		print('Email: ', email)
+		if email:
+			if User.objects.filter(email=email).exists():
+				return Response({"exists": True, "message": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+			else:
+				return Response({"exists": False, "message": "Email does not exist."}, status=status.HTTP_200_OK)
+		return Response({"error": "No email provided"}, status=status.HTTP_400_BAD_REQUEST)
+			
+class CheckUsernameView(APIView):
+	permission_classes = [AllowAny]
+    
+	def post(self, request, *args, **kwargs):
+		data = request.data.get('data', {})
+		username = data.get('username', None)
+		print('Username: ', username)
+		if username:
+			if User.objects.filter(username=username).exists():
+				return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+			else:
+				return Response({"exists": False, "message": "Username does not exist."}, status=status.HTTP_200_OK)
+		return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)

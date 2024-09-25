@@ -1,17 +1,12 @@
-import { loadRegisterPage } from "./register.js";
 import { loadHomePage } from "./home.js";
-import { loadContent } from "./utils.js";
+import { getCookie, loadContent } from "./utils.js";
+import { loadRegisterEmailPage } from "./register/email-register.js"
 
 export function loadAuthentificationPage()
 {
 	history.replaceState({}, '', window.location.href);
-	let jwt_token = localStorage.getItem('jwt_token');
-	if (jwt_token)
-		console.log("AAAA");
-	else
-		console.log("BBBB");	
+		
 	let authHTML = generateAuthentificationHTML();
-
 	loadContent(authHTML, "login", true);
     document.getElementById("app").innerHTML = generateAuthentificationHTML();
     let champsEmail = document.getElementById("usernameEmailLogin");
@@ -43,7 +38,7 @@ export function loadAuthentificationPage()
 	    (event) =>
 	    {
 	        event.preventDefault();
-			loadRegisterPage();
+			loadRegisterEmailPage();
 	    });
 	}
 
@@ -97,10 +92,12 @@ async function checkConnexion()
 			console.log("SENDING DATA:", credentials);
 			try
 			{
+				const csrftoken = getCookie('csrftoken')
 				const response = await fetch('https://localhost:8443/api/login/', {
 					method: 'POST',
 					headers: {
 						'Content-Type' : 'application/json',
+						'X-CSRFToken': csrftoken,
 					},
 					body: JSON.stringify(credentials),
 				});
@@ -111,14 +108,24 @@ async function checkConnexion()
 
 					localStorage.setItem('jwt_token', token);
 					console.log('Login successful!');
+					history.replaceState({}, '', window.location.href);
 					loadHomePage();
 				}
 				else
 				{
 					const errorData = await response.json();
-					console.log(errorData.detail || 'login failed.');
-					const button = document.getElementById('buttonLogin');
-					
+					let authForm = document.getElementById("loginPlace");
+					if (!document.getElementById("badLogin"))
+					{
+						let badLogin = document.createElement("p");
+						badLogin.id = "badLogin";
+						badLogin.classList.add('invalid-register', 'badLogin');
+						badLogin.textContent = 'Access denied: Bad informations enter';
+						authForm.appendChild(badLogin);
+						const button = document.getElementById('buttonLogin');
+						button.classList.remove('btn-success');
+						button.classList.add('btn-danger');
+					}	
 				}
 			} catch (error) {
 				console.error('Error:', error);
@@ -130,14 +137,12 @@ async function checkConnexion()
 
 export function generateAuthentificationHTML()
 {
-	
 	let principalStr = "I've an account";
 	let emailUsernameStr = "Username or e-mail adress";
 	let passwordStr = "Password";
 	let buttonStr = "Send";
 	let accountStr = "Don't you have account ?";
 	let registerStr = "Registrer to Pong";
-	let rememeberMeStr = "Remember me";
 	let forgotPassword = "Forgot password?";
 	return `
 		<div id="authentification" class="d-flex align-items-center justify-content-center" style="height: 100vh;">
@@ -152,8 +157,8 @@ export function generateAuthentificationHTML()
 					</div>
 					<label for="passwordLogin" class="form-label">${passwordStr}</label>
 					<div id="input-password" style="position: relative;">
-						<input type="password" id="passwordLogin" name="passwordLogin" autocomplete="new-password" placeholder="${passwordStr}" required class="form-control" style="padding-right: 40px;" />
-						<button type="button" class="toggle-password" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #918e8e; padding: 0;">
+						<input type="password" id="passwordLogin" name="passwordLogin" autocomplete="new-password" placeholder="${passwordStr}" required class="form-control"  style="padding-right: 40px;" />
+						<button type="button" class="toggle-password" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #b3b3b3; padding: 0;">
 							<i class="fa-solid fa-eye-slash"></i>
 						</button>
 					</div>
@@ -163,7 +168,7 @@ export function generateAuthentificationHTML()
 					<div class="form-item">
 						<a href="#!" style="color: white; text-decoration: underline">${forgotPassword}</a>
 					</div>
-					<p style="color: #b3b3b3;">${accountStr} <a href="#register" id="sub-link-page" style="color: white; text-decoration: underline;">${registerStr}</a></p>
+					<p style="color: #b3b3b3">${accountStr} <a href="#register-email" id="sub-link-page" style="color: white; text-decoration: underline;">${registerStr}</a></p>
 				</div>
 			</form>
 		</div>

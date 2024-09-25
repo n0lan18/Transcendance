@@ -1,35 +1,25 @@
-import { loadAuthentificationPage } from "./auth.js";
-import { loadContent } from "./utils.js";
+import { loadContent, getCookie } from "../utils.js";
+import { loadAuthentificationPage } from "../auth.js";
 
-export function loadRegisterPage() {
+let usernameForm;
+let emailForm;
 
-    let registerHTML = generateRegisterHTML();
+export function loadRegisterPasswordPage(email, username) {
+	usernameForm = username;
+	emailForm = email;
 
-    loadContent(registerHTML, "register", true);
+	let passwordRegisterHTML = generatePasswordPartHTML();
 
-    document.getElementById("app").innerHTML = generateRegisterHTML();
-    let champsUsername = document.getElementById("usernameRegister");
-    if (champsUsername) {
-        champsUsername.addEventListener("input", (event) => {
-            let usernameValue = champsUsername.value;
-            console.log(usernameValue);
-        });
-    }
+	loadContent(passwordRegisterHTML, "register-password", true);
+	
+	document.getElementById("app").innerHTML = generatePasswordPartHTML();
 
-	let champsEmail = document.getElementById("emailRegister");
-	if (champsEmail) {
-		champsEmail.addEventListener("input", (event) => {
-			let userValue = champsEmail.value;
-			console.log(userValue);
+	let switchPageRegisterToLogin = document.getElementById("switchPagePasswordRegisterToLogin");
+	if (switchPageRegisterToLogin) {
+		switchPageRegisterToLogin.addEventListener("click", (event) => {
+			event.preventDefault();
+			loadAuthentificationPage();
 		});
-	}
-
-    let switchPageRegisterToLogin = document.getElementById("switchPageRegisterToLogin");
-    if (switchPageRegisterToLogin) {
-        switchPageRegisterToLogin.addEventListener("click", (event) => {
-            event.preventDefault();
-        	loadAuthentificationPage();
-    	});
 	}
 
 	let formRegister = document.getElementById("registerForm");
@@ -38,21 +28,33 @@ export function loadRegisterPage() {
 		formRegister.addEventListener("submit", (event) =>
 		{
 			event.preventDefault();
-			const username = document.getElementById("usernameRegister");
-			const email = document.getElementById("emailRegister");
 			const password = document.getElementById("passwordRegister");
 			const data = {
-				username: username.value,
-                email: email.value,
+				username: usernameForm.value,
+                email: emailForm.value,
 				password: password.value,
 			}
-            if (!username.value || !email.value || !password.value )
+			console.log(data);
+			const letterRegex = new RegExp("[a-zA-Z]");
+			const numberOrSpecialCharRegex = new RegExp("[0-9.#?!&]");
+			const minCharacterRegex = new RegExp("^.{10,}$");
+			if (letterRegex.test(password.value) && numberOrSpecialCharRegex.test(password.value) && minCharacterRegex.test(password.value))
             {
-                console.error('All fields are required.');
-                return;
-            }
-            console.log("SENDING DATA: ", data);
-			sendDataToDatabase(data);
+				console.log("SENDING DATA: ", data);
+				sendDataToDatabase(data);
+			}
+			else
+			{
+				if (!letterRegex.test(password.value))
+					errorPasswordForm(document.getElementById("check-letter-password"));
+				else if (!numberOrSpecialCharRegex.test(password.value))
+					errorPasswordForm(document.getElementById("check-num-or-special-character-password"));
+				else if (!minCharacterRegex.test(password.value))
+					errorPasswordForm(document.getElementById("check-number-characters-password"))
+				let buttonSend = document.getElementById("buttonSend");
+				buttonSend.classList.remove("btn-success");
+				buttonSend.classList.add("btn-danger");
+			}
 		});
 	}
 
@@ -100,18 +102,32 @@ export function loadRegisterPage() {
 		if (regex.test(value))
 		{
 			item.classList.remove('fa-circle');
+			item.classList.remove('fa-circle-xmark', 'invalid-register');
 			item.classList.add('fa-circle-check', 'valid-password');
+			partForm.classList.remove('invalid-register')
 			partForm.classList.add('valid-password');
 		}
 		else
 		{
 			item.classList.remove('fa-circle-check', 'valid-password');
-			item.classList.add('fa-circle');
+			item.classList.add('fa-circle-xmark', 'invalid-register');
 			partForm.classList.remove('valid-password');
+			partForm.classList.add('invalid-register');
 		}
 	}
 
-    window.addEventListener('popstate', function(event) {
+	function errorPasswordForm(partForm)
+	{
+		if (!partForm)
+			return;
+		console.log("RRRRR");
+		const item = partForm.querySelector('i');
+		item.classList.remove('fa-circle');
+		item.classList.add('fa-circle-xmark', 'invalid-register');
+		partForm.classList.add('invalid-register');
+	}
+
+	window.addEventListener('popstate', function(event) {
 		if (event.state && event.state.page) {
 			// Charger le contenu associé à la page
 			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
@@ -122,12 +138,14 @@ export function loadRegisterPage() {
 async function sendDataToDatabase(data)
 {
 	try {
+		const csrftoken = getCookie('csrftoken');
 		const response = await fetch('https://localhost:8443/api/register/', {
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json',
+				'X-CSRFToken': csrftoken,
 			},
-			body: JSON.stringify(data),
+			body: JSON.stringify( data ),
 		});
 
 		if (!response.ok) {
@@ -142,17 +160,15 @@ async function sendDataToDatabase(data)
 	}
 }
 
-function generateRegisterHTML() {
-	let usernameStr = "Username";
+function generatePasswordPartHTML() {
 	let principalStr = "Register to play";
-	let emailStr = "E-mail address";
 	let passwordStr = "Password";
-	let buttonStr = "Send";
-	let accountStr = "Don't you have an account?";
-	let loginStr = "Login to Pong";
 	let password1 = "1 letter";
 	let password2 = "1 numeric or special character (e.g., #?!&)";
 	let password3 = "10 characters";
+	let buttonStr = "Send";
+	let accountStr = "Do you have already an account?";
+	let loginStr = "Login to Pong";
 
 	return `
 		<div id="register" class="d-flex align-items-center justify-content-center" style="height: 100vh;">
@@ -161,15 +177,6 @@ function generateRegisterHTML() {
 					<h1>${principalStr}</h1>
 				</div>
 				<div id="RegisterPlace" data-mdb-input-init class="form-outline mb-4">
-					<div class="form-item">
-						<label for="usernameRegister" class="form-label">${usernameStr}</label>
-						<input type="text" id="usernameRegister" name="usernameRegister" autocomplete="username" placeholder="${usernameStr}" required class="form-control" />
-					</div>
-					<div class="form-item">
-						<label class="form-label" for="emailRegister"">${emailStr}</label>
-						<input type="email" id="emailRegister" name="emailRegister" autocomplete="email" placeholder="${emailStr}" required class="form-control" />
-					</div>
-
 					<label class="form-label" for="passwordRegister">${passwordStr}</label>
 					<div id=password-form>
 						<div id="input-password" style="position: relative;">
@@ -191,9 +198,9 @@ function generateRegisterHTML() {
 						</ul>
 					</div>
 				</div>
-				<input type="submit" value="${buttonStr}" class="btn btn-success btn-block mb-4">
+				<input type="submit" value="${buttonStr}" class="btn btn-success btn-block mb-4" id="buttonSend">
 				<div class="text-center">
-					<p style="color: #b3b3b3";>${accountStr} <a id="switchPageRegisterToLogin" href="#authentification"; text-decoration: underline; style="color: white;">${loginStr}</a></p>
+					<p style="color: #b3b3b3";>${accountStr} <a id="switchPagePasswordRegisterToLogin" href="#authentification"; text-decoration: underline; style="color: white;">${loginStr}</a></p>
 				</div>
 			</form>
 		</div>

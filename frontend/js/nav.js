@@ -7,21 +7,30 @@ export function generateNavigator(userInfo)
 		username = "Gest";
 	else
 		username = userInfo;
-	let logout = "Logout";
+	let logoutStr = "Logout";
+	let settingStr = "Settings";
+
 	return `
-		<div class="container-fluid">
-			<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-				<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-					<ul class="navbar-nav ml-auto">
-						<li class="nav-item">
-							<p class="nav-link nav-username">${username}</p>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#authentification" id="logoutLink" >${logout}</a>
-						</li>
-					</ul>
-				</div>
-        	</nav>
+		<div class="container-nav container-nav-smartphone">
+			<nav class="navbar">
+				<ul class="nav-item nav-item-smartphone">
+					<li class="box-nav box-nav-smartphone1">
+						<p style="font-size: 40px;">${username}</p>
+					</li>
+					<li class="box-nav box-nav-smartphone2">
+						<button class="button-center-items" style="color: #b3b3b3">
+							<i class="fa-solid fa-gears" style="font-size: 40px; margin-top: 5px; color: #b3b3b3"></i>
+							<p style="font-size: 15px">${settingStr}</p>
+						</button>
+					</li>
+					<li class="box-nav box-nav-smartphone3">
+						<button class="button-center-items" style="color: #b3b3b3" id="logoutLink">
+							<i class="fa-solid fa-right-from-bracket" style="font-size: 40px; margin-top: 5px; color: #b3b3b3"></i>
+							<p style="font-size: 15px">${logoutStr}</p>
+						</button>
+					</li>
+				</ul>
+			</nav>
 		</div>
 	`;
 }

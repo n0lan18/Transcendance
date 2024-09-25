@@ -41,3 +41,40 @@ export async function fetchUserInfo()
 		return null;
 	}
 }
+
+export async function checkEmailExist()
+{
+	const response = await fetch('https://localhost:8443/api/check-email/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': csrftoken
+		},
+		body: JSON.stringify({ email: email })
+	})
+	.then(response => response.json())
+	then(data => {
+		if (data.exists) {
+			alert("This email already exists.");
+		} else {
+			alert("This email is available.");
+		}
+	})
+	.catch(error => console.error('Error:', error));
+}
+
+export function getCookie(name) {
+	let cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			// Si ce cookie commence par le nom recherché
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
+}

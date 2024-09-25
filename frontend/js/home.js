@@ -16,14 +16,10 @@ export async function loadHomePage()
 	let switchPageToLogin = document.getElementById("logoutLink");
 	if (switchPageToLogin)
 	{
-		
 		switchPageToLogin.addEventListener('click', function (event) {
-			if (event.target && event.target.id === 'logoutLink')
-			{
-				localStorage.removeItem('jwt_token');
-				event.preventDefault();
-				loadAuthentificationPage();
-			}
+			localStorage.removeItem('jwt_token');
+			event.preventDefault();
+			loadAuthentificationPage();
 		});
 	}
 }
@@ -75,6 +71,7 @@ export function generateHomePageHTML(userInfo)
 {
 	let nav = generateNavigator(userInfo.username);
 	let body = generateBodyHomePageHTML();
+
 	return (nav + body);
 }
 

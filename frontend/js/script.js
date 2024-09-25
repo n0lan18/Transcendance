@@ -21,7 +21,11 @@ document.addEventListener('DOMContentLoaded', async () =>
         else
         {
             let authHTML = generateAuthentificationHTML();
-
+            let jwt_token = localStorage.getItem('jwt_token');
+	        if (jwt_token)
+		        console.log("AAAA");
+	        else
+		        console.log("BBBBssss");
             loadContent(authHTML, "login", true);
             loadAuthentificationPage();
         }
