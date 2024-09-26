@@ -93,7 +93,7 @@ async function checkConnexion()
 			try
 			{
 				const csrftoken = getCookie('csrftoken')
-				const response = await fetch('https://localhost:8443/api/login/', {
+				const response = await fetch('api/login/', {
 					method: 'POST',
 					headers: {
 						'Content-Type' : 'application/json',

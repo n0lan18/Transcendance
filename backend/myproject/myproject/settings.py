@@ -23,11 +23,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8443']
+CSRF_TRUSTED_ORIGINS = [
+	'https://localhost:8443',
+	'https://192.168.242.127:8443'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://localhost:8443',
+    'https://192.168.242.127:8443'
+]
 
 # Application definition
 
@@ -82,11 +90,11 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',
-        'USER': 'user',
-        'PASSWORD': 'password',
-        'HOST': 'postgres',  # ou l'adresse IP du serveur PostgreSQL
-        'PORT': '5432',  # ou un autre port si PostgreSQL est configuré différemment
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 

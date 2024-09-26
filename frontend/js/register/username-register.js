@@ -30,7 +30,7 @@ export function loadRegisterUsernamePage(email) {
 			}
 			console.log(data);
 			const csrftoken = getCookie('csrftoken');
-			fetch('https://localhost:8443/api/check-username/', {
+			fetch('api/check-username/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

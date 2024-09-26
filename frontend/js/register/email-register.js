@@ -56,7 +56,7 @@ export function loadRegisterEmailPage() {
 	function sendDataToDatabase(data, email)
 	{
 		const csrftoken = getCookie('csrftoken');
-		fetch('https://localhost:8443/api/check-email/', {
+		fetch('api/check-email/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

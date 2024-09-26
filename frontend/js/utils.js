@@ -11,7 +11,7 @@ export async function fetchUserInfo()
 {
 	try
 	{
-		const response = await fetch('https://localhost:8443/api/userinfo/', {
+		const response = await fetch('api/userinfo/', {
 				method: 'GET',
 				headers: {
 					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
@@ -44,7 +44,7 @@ export async function fetchUserInfo()
 
 export async function checkEmailExist()
 {
-	const response = await fetch('https://localhost:8443/api/check-email/', {
+	const response = await fetch('check-email/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
