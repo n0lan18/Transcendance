@@ -8,24 +8,24 @@ export function generateNavigator(userInfo)
 	else
 		username = userInfo;
 	let logoutStr = "Logout";
-	let settingStr = "Settings";
+	let settingsStr = "Settings";
 
 	return `
 		<div class="container-nav container-nav-smartphone">
 			<nav class="navbar">
 				<ul class="nav-item nav-item-smartphone">
 					<li class="box-nav box-nav-smartphone1">
-						<p style="font-size: 40px;">${username}</p>
+						<h1 class="username-nav">${username}</h1>
 					</li>
 					<li class="box-nav box-nav-smartphone2">
-						<button class="button-center-items" style="color: #b3b3b3">
-							<i class="fa-solid fa-gears" style="font-size: 40px; margin-top: 5px; color: #b3b3b3"></i>
-							<p style="font-size: 15px">${settingStr}</p>
+						<button id="settings-button" class="button-center-items" style="color: #b3b3b3">
+							<i class="fa-solid fa-gears image-nav" style="margin-top: 5px; color: #b3b3b3"></i>
+							<p style="font-size: 15px">${settingsStr}</p>
 						</button>
 					</li>
 					<li class="box-nav box-nav-smartphone3">
 						<button class="button-center-items" style="color: #b3b3b3" id="logoutLink">
-							<i class="fa-solid fa-right-from-bracket" style="font-size: 40px; margin-top: 5px; color: #b3b3b3"></i>
+							<i class="fa-solid fa-right-from-bracket image-nav" style="margin-top: 5px; color: #b3b3b3"></i>
 							<p style="font-size: 15px">${logoutStr}</p>
 						</button>
 					</li>
