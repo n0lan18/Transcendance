@@ -4,14 +4,15 @@ services:
   postgres:
     image: postgres:14
     env_file: .env
-#      POSTGRES_DB: mydatabase
-#      POSTGRES_USER: user
-#      POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
 
   django:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./backend:/app
@@ -20,11 +21,10 @@ services:
     depends_on:
       - postgres
     env_file: .env
+    networks:
+      - frontend
+      - backend
 
-#  frontend:
-#    build: ./frontend
-#    volumes:
-#      - ./frontend:/usr/share/nginx/html
 
   nginx:
     build: ./nginx
@@ -35,8 +35,13 @@ services:
       - "8443:8443"
     depends_on:
       - django
-#      - frontend
+    networks:
+      - frontend
 
 volumes:
   postgres_data:
   static_volume:
+
+networks:
+  backend:
+  frontend:
