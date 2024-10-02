@@ -25,7 +25,16 @@ body {
     align-items: center;
 }
 
-
+#app {
+    display: flex; /* Optionnel, pour centrer le contenu */
+    justify-content: center; /* Optionnel, pour centrer horizontalement */
+    align-items: center; /* Optionnel, pour centrer verticalement */
+    width: 100%; /* Largeur de la fenêtre */
+    height: 100%; /* Hauteur de la fenêtre */
+    overflow: hidden; /* Empêcher le débordement */
+    background-color: blue;
+    box-sizing: border-box;
+}
 
 #game {
     width: 100%;

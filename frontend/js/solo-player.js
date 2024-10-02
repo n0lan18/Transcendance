@@ -1,16 +1,23 @@
 import { generateNavigator } from "./nav.js";
 import { fetchUserInfo } from "./utils.js";
 import { loadContent } from "./utils.js";
+import { Game } from "./game.js";
 
 export async function loadSoloPlayerPage()
 {
 	let userInfo = await fetchUserInfo();
 	console.log(userInfo);
 
-	let settingsHTML = generateSoloPlayerPageHTML(userInfo);
+	let soloGameHTML = generateSoloPlayerPageHTML(userInfo);
 
-	loadContent(settingsHTML, "profile", true);
-	document.getElementById("app").innerHTML = generateSoloPlayerPageHTML(userInfo);
+	loadContent(soloGameHTML, "profile", true);
+
+	document.getElementById("app").innerHTML = soloGameHTML;
+	console.log(document.getElementById('app').clientWidth);
+	console.log(document.getElementById('game-container').clientWidth);
+
+	const game = new Game("game-container");
+	game.start();
 
 	let switchPageToLogout = document.getElementById("logoutLink");
 	if (switchPageToLogout)
@@ -32,11 +39,8 @@ export async function loadSoloPlayerPage()
 
 function generateBodySoloPlayerPageHTML()
 {
-	let principalStr = "Solo player";
 	return `
-		<div>
-			<h1>${principalStr}</h1>
-		</div>
+		<div id="game-container" class="game-container"></div>
 	`;
 }
 

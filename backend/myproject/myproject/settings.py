@@ -29,12 +29,12 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
 	'https://localhost:8443',
-	'https://192.168.242.127:8443'
+	'https://192.168.73.127:8443'
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'https://localhost:8443',
-    'https://192.168.242.127:8443'
+    'https://192.168.73.127:8443'
 ]
 
 # Application definition
