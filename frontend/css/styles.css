@@ -32,7 +32,6 @@ body {
     width: 100%; /* Largeur de la fenêtre */
     height: 100%; /* Hauteur de la fenêtre */
     overflow: hidden; /* Empêcher le débordement */
-    background-color: blue;
     box-sizing: border-box;
 }
 

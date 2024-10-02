@@ -10,7 +10,7 @@ export async function loadSoloPlayerPage()
 
 	let soloGameHTML = generateSoloPlayerPageHTML(userInfo);
 
-	loadContent(soloGameHTML, "profile", true);
+	loadContent(soloGameHTML, "solo-game", true);
 
 	document.getElementById("app").innerHTML = soloGameHTML;
 	console.log(document.getElementById('app').clientWidth);

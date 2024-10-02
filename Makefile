@@ -1,16 +1,16 @@
-NAME = Transcendance
+NAME = transcendance
 PATH_DOCKER_COMPOSE = docker-compose.yml
 
 all: down build run
 
 run:
-	docker-compose -f ${PATH_DOCKER_COMPOSE} -p ${NAME} up
+	docker compose -f ${PATH_DOCKER_COMPOSE} -p ${NAME} up
 
 down:
-	docker-compose -f ${PATH_DOCKER_COMPOSE} -p ${NAME} down
+	docker compose -f ${PATH_DOCKER_COMPOSE} -p ${NAME} down
 
 build:
-	docker-compose -f ${PATH_DOCKER_COMPOSE} -p ${NAME} build
+	docker compose -f ${PATH_DOCKER_COMPOSE} -p ${NAME} build
 
 clean: down
 	docker system prune -a
