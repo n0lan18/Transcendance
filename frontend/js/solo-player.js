@@ -16,7 +16,7 @@ export async function loadSoloPlayerPage()
 	console.log(document.getElementById('app').clientWidth);
 	console.log(document.getElementById('game-container').clientWidth);
 
-	const game = new Game("game-container");
+	const game = new Game("game-container", "soloPlayer");
 	game.start();
 
 	let switchPageToLogout = document.getElementById("logoutLink");

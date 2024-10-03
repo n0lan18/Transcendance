@@ -1,16 +1,20 @@
 import { generateNavigator } from "./nav.js";
 import { fetchUserInfo } from "./utils.js";
 import { loadContent } from "./utils.js";
+import { Game } from "./game.js";
 
 export async function loadMultiplayerPage()
 {
 	let userInfo = await fetchUserInfo();
 	console.log(userInfo);
 
-	let settingsHTML = generateMultiplayerPageHTML(userInfo);
+	let multiplayerHTML = generateMultiplayerPageHTML(userInfo);
 
-	loadContent(settingsHTML, "settings", true);
-	document.getElementById("app").innerHTML = generateMutliplayerPageHTML(userInfo);
+	loadContent(multiplayerHTML, "multiplayer", true);
+	document.getElementById("app").innerHTML = multiplayerHTML;
+
+	const game = new Game("game-container", "multiplayerGame");
+	game.start();
 
 	let switchPageToLogout = document.getElementById("logoutLink");
 	if (switchPageToLogout)
@@ -35,8 +39,9 @@ function generateBodyMultiplayerPageHTML()
 	let principalStr = "Multiplayer";
 	return `
 		<div>
-			<h1>${principalStr}</h1>
+			<h1>0 - 0</h1>
 		</div>
+		<div id="game-container" class="game-container"></div>
 	`;
 }
 

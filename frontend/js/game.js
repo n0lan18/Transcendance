@@ -1,30 +1,25 @@
 
 
 export class Game {
-    constructor(containerId) {
+    constructor(containerId, modeGame) {
         this.container = document.getElementById(containerId);
         this.scene = new THREE.Scene();
         this.renderer = new THREE.WebGLRenderer();
 		this.dimensions = this.getGameContainerDimensions();
-        this.camera = new THREE.OrthographicCamera(
-            -50 / 2,
-            50 / 2,
-            30 / 2,
-            -30 / 2,
-            1,
-            1000
-        );
+        this.width = 50;
+        this.height = 30;
+        this.camera = new THREE.OrthographicCamera(-this.width / 2, this.width / 2, this.height / 2, -this.height / 2, 1, 1000);
+        this.camera2;
 		this.camera.position.z = 20;
-
 		this.ballVelocity = { x: 0.1, y: 0.1 };
         this.paddleSpeed = 0.2;
         this.keys = {};
         this.changeCamera = 0;
 
-        this.init();
+        this.init(modeGame);
     }
 
-    init() {
+    init(modeGame) {
         this.renderer.setSize(this.dimensions.width, this.dimensions.height);
         this.container.appendChild(this.renderer.domElement);
 
@@ -45,34 +40,43 @@ export class Game {
         window.addEventListener('keypress', (event) => {
             if (event.key === 'v')
             {
-                console.log(this.changeCamera)
                 if (this.changeCamera === 0)
                 {
-                    this.changeCamera++;
-                    this.camera = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000);
-                    this.camera.position.set(this.leftWall.position.x - 5, this.leftWall.position.y , 11.8);
-                    this.camera.lookAt(this.leftWall.position.x + 15, this.leftWall.position.y, -2);
-                    this.camera.rotation.z = Math.PI / 0.66666;
+                    if (modeGame === "soloPlayer")
+                    {
+                        this.changeCamera++;
+                        this.camera = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000);
+                        this.camera.position.set(this.leftWall.position.x - 5, this.leftWall.position.y , 11.8);
+                        this.camera.lookAt(this.leftWall.position.x + 15, this.leftWall.position.y, -2);
+                        this.camera.rotation.z = Math.PI / 0.66666;
+                    }
+                    else if (modeGame === "multiplayerGame")
+                    {
+                        console.log("qqq");
+                        this.changeCamera = 5;
+                        this.camera = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000)
+                        this.camera.position.set(this.leftWall.position.x - 5, this.leftWall.position.y , 11.8);
+                        this.camera.lookAt(this.leftWall.position.x + 15, this.leftWall.position.y, -2);
+                        this.camera.rotation.z = Math.PI / 0.66666;
+
+                        this.camera2 = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000)
+                        this.camera2.position.set(this.rightWall.position.x + 5, this.rightWall.position.y , 11.8);
+                        this.camera2.lookAt(this.rightWall.position.x - 15, this.rightWall.position.y, -2);
+                        this.camera2.rotation.z = Math.PI / -0.66666;
+                    }
                 }
                 else if (this.changeCamera === 1)
-                {
+                {                
                     this.changeCamera++;
                     this.camera = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000);
                     this.camera.position.set(-35, -17, 15);
                     this.camera.lookAt(0, 0, 0);
-                    this.camera.rotation.z = Math.PI / 0.55;          
+                    this.camera.rotation.z = Math.PI / 0.55;
                 }
                 else
                 {
                     this.changeCamera = 0;
-                    this.camera = new THREE.OrthographicCamera(
-                        -50 / 2,
-                        50 / 2,
-                        30 / 2,
-                        -30 / 2,
-                        1,
-                        1000
-                    );
+                    this.camera = new THREE.OrthographicCamera(-this.width / 2, this.width / 2, this.height / 2, -this.height / 2, 1, 1000);
                     this.camera.position.z = 20;
                 }
             }
@@ -87,17 +91,8 @@ export class Game {
         return { width, height };
     }
 
-	getGameObjectDimensions() {
-		const scaleFactor = 18;
-        const width = this.container.clientWidth / scaleFactor;
-        const height = this.container.clientHeight / scaleFactor;
-        return { width, height };
-    }
-
     addGround() {
-        const width = 50;
-        const height = 30;
-        const geometry = new THREE.PlaneGeometry(width, height);
+        const geometry = new THREE.PlaneGeometry(this.width, this.height);
         const material = new THREE.MeshBasicMaterial({ color: 0xff6600 });
         const ground = new THREE.Mesh(geometry, material);
         ground.position.y = 0;
@@ -178,12 +173,16 @@ export class Game {
         this.scene.add(this.ball);
     }
 
-    update() {
+    update(modeGame) {
         // Déplacement des raquettes
-        if (this.keys['w']) this.leftPaddle.position.y += this.paddleSpeed; // Up
-        if (this.keys['s']) this.leftPaddle.position.y -= this.paddleSpeed; // Down
-        if (this.keys['ArrowUp']) this.rightPaddle.position.y += this.paddleSpeed; // Up
-        if (this.keys['ArrowDown']) this.rightPaddle.position.y -= this.paddleSpeed; // Down
+        if (this.keys['w'] && this.changeCamera == 0) this.leftPaddle.position.y += this.paddleSpeed; // Up
+        if (this.keys['a'] && this.changeCamera > 0) this.leftPaddle.position.y += this.paddleSpeed; //left
+        if (this.keys['s'] && this.changeCamera == 0) this.leftPaddle.position.y -= this.paddleSpeed; // Down
+        if (this.keys['d'] && this.changeCamera > 0) this.leftPaddle.position.y -= this.paddleSpeed; // right
+        if (this.keys['ArrowUp'] && this.changeCamera == 0) this.rightPaddle.position.y += this.paddleSpeed; // Up
+        if (this.keys['ArrowLeft'] && this.changeCamera > 0) this.rightPaddle.position.y -= this.paddleSpeed; // Left
+        if (this.keys['ArrowRight'] && this.changeCamera > 0) this.rightPaddle.position.y += this.paddleSpeed; // Right
+        if (this.keys['ArrowDown'] && this.changeCamera == 0) this.rightPaddle.position.y -= this.paddleSpeed; // Down
 
     	// Limiter le mouvement des raquettes dans les limites visibles
     	if (this.leftPaddle.position.y > (15 - (6 / 2))) {
@@ -205,7 +204,24 @@ export class Game {
 
         // Gestion des collisions
         this.handleCollisions();
-        this.renderer.render(this.scene, this.camera);
+        if (this.changeCamera == 5)
+        {
+            this.renderer.setViewport(0, 0, this.dimensions.width / 2, this.dimensions.height);
+            this.renderer.setScissor(0, 0, this.dimensions.width / 2, this.dimensions.height);
+            this.renderer.setScissorTest(true);
+            this.renderer.render(this.scene, this.camera);
+
+            this.renderer.setViewport(this.dimensions.width / 2, 0, this.dimensions.width / 2, this.dimensions.height);
+            this.renderer.setScissor(this.dimensions.width / 2, 0, this.dimensions.width / 2, this.dimensions.height);
+            this.renderer.setScissorTest(true);
+            this.renderer.render(this.scene, this.camera2);
+        }
+        else
+        {
+            this.renderer.setScissorTest(false);
+            this.renderer.setViewport(0, 0, this.dimensions.width, this.dimensions.height);
+            this.renderer.render(this.scene, this.camera);
+        }
     }
 
     handleCollisions() {
