@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path, os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,12 +30,12 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
 	'https://localhost:8443',
-	'https://192.168.73.127:8443'
+	'https://192.168.129.223:8443'
 ]
 
 CORS_ALLOWED_ORIGINS = [
     'https://localhost:8443',
-    'https://192.168.73.127:8443'
+    'https://192.168.223.127:8443'
 ]
 
 # Application definition
@@ -107,6 +108,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
 		'rest_framework.permissions.IsAuthenticated',
     ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Durée de validité du token d'accès
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Durée de validité du token de rafraîchissement
+    'ROTATE_REFRESH_TOKENS': False,  # Si vrai, génère un nouveau refresh token lors du rafraîchissement
+    'BLACKLIST_AFTER_ROTATION': True, # Blackliste l'ancien refresh token après rotation
+    'UPDATE_LAST_LOGIN': False,       # Met à jour l'heure du dernier login lors de l'authentification
 }
 
 # Password validation

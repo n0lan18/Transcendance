@@ -1,13 +1,12 @@
 import { loadContent } from "./utils.js";
 import { generateNavigator } from "./nav.js";
 import { fetchUserInfo } from "./utils.js";
-import { loadAuthentificationPage } from "./auth.js";
 import { loadProfilePage } from "./profile.js";
-import { loadSettingsPage } from "./settings.js";
-import { loadSoloPlayerPage } from "./solo-player.js";
+import { loadPreparationGamePage } from "./preparation-game.js";
 import { loadStatsPage } from "./stats.js";
 import { loadMultiplayerPage } from "./multiplayer.js";
 import { loadOnlinePage } from "./online.js";
+import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 
 export async function loadHomePage()
 {
@@ -19,24 +18,7 @@ export async function loadHomePage()
 	loadContent(homeHTML, "home", true);
 	document.getElementById("app").innerHTML = generateHomePageHTML(userInfo);
 
-	let switchPageToSettingsPage = document.getElementById("settings-button");
-	if (switchPageToSettingsPage)
-	{
-		switchPageToSettingsPage.addEventListener('click', function (event) {
-			event.preventDefault();
-			loadSettingsPage();
-		});
-	}
-
-	let switchPageToLogout = document.getElementById("logoutLink");
-	if (switchPageToLogout)
-	{
-		switchPageToLogout.addEventListener('click', function (event) {
-			localStorage.removeItem('jwt_token');
-			event.preventDefault();
-			loadAuthentificationPage();
-		});
-	}
+	addNavigatorEventListeners();
 
 	let switchPageToProfilPage = document.getElementById("profil-button");
 	if (switchPageToProfilPage)
@@ -57,11 +39,11 @@ export async function loadHomePage()
 	}	
 
 	let switchPageToSoloPlayerPage = document.getElementById("solo-player-button");
-	if (switchPageToSettingsPage)
+	if (switchPageToSoloPlayerPage)
 	{
 		switchPageToSoloPlayerPage.addEventListener('click', function (event) {
 			event.preventDefault();
-			loadSoloPlayerPage();
+			loadPreparationGamePage();
 		});
 	}
 
@@ -91,9 +73,11 @@ export async function loadHomePage()
 	});
 }
 
-function generateBodyHomePageHTML()
+function generateBodyHomePageHTML(username)
 {
 	let profilStr = "Profile";
+	if (username !== "")
+		profilStr = username;
 	let statsStr = "Statistics";
 	let soloStr = "Solo";
 	let multiplayerStr = "Multiplayer";
@@ -136,8 +120,8 @@ function generateBodyHomePageHTML()
 
 export function generateHomePageHTML(userInfo)
 {
-	let nav = generateNavigator(userInfo.username);
-	let body = generateBodyHomePageHTML();
+	let nav = generateNavigator();
+	let body = generateBodyHomePageHTML(userInfo.username);
 
 	return (nav + body);
 }

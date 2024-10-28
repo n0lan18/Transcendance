@@ -1,5 +1,221 @@
+.message-change-orientation {
+	display: none;
+}
+
+.flex-game-container {
+	width: 100%;
+	height: 90%;	
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.display-score-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: nowrap;
+}
+
+.player1-container, .player2-container {
+	flex: 1;
+}
+
+.score-container {
+	display: flex;
+	justify-content: center;
+	flex: 2;
+}
+
+.player1-container {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.player2-container {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.progress-bar-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 30px;
+	margin-bottom: 5px;
+	margin-right: 2px;
+	margin-left: 2px;
+}
+
+.progress-bar-left-container, .progress-bar-right-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 45%;
+	height: 100%;
+	background: white;
+	border-radius: 10px;
+}
+
+.progress-bar-left-container {
+	margin-right: auto;
+}
+
+.progress-bar-right-container {
+	margin-left: auto;
+}
+
+.progress-bar-left {
+	width: 5%;
+	height: 80%;
+	background: green;
+	border-radius: 10px;
+	margin-right: auto;
+}
+
+.progress-bar-right {
+	width: 5%;
+	height: 80%;
+	background: green;
+	border-radius: 10px;
+	margin-left: auto;
+}
+
+.power-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 20px;
+	margin-bottom: 5px;
+	margin-right: 2px;
+	margin-left: 2px;
+}
+
+.power-container-left, .power-container-right {
+	height: 100%;
+	color: grey;
+}
+
 .game-container {
-	width: 900px;
-	height: 540px;
-	color: #c4bb66;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16/9;
+}
+
+.button-controller {
+	display: none;
+}
+
+@media screen and (orientation: portrait) and (max-width: 768px) {
+	.message-change-orientation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.flex-game-container {
+		display: none;
+	}
+
+	.button-controller {
+		display: none;
+		flex-direction: row;
+		justify-content: stretch;
+		align-items: flex-end;
+	}
+}
+
+@media screen and (orientation: landscape) and (max-width: 768px) {
+	.message-change-orientation {
+		display: none;
+	}
+
+	.flex-game-container {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.display-score-container {
+		width: 90%;
+		height: 15%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: nowrap;
+	}
+
+	.player1-container, .player2-container {
+		flex: 1;
+	}
+	
+	.score-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		flex: 2;
+	}
+	
+	.player1-container {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+	
+	.player2-container {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.game-container {
+		width: 100%;
+		height: 55%;
+	}
+
+	.button-controller {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		align-items: center;
+	}
+
+	.up-button {
+		display: flex;
+		justify-content: flex-start;
+	}
+
+	.down-button {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.button-controller-settings {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.pause-button {
+		margin-right: 2px;
+		padding-top: 6px;
+		padding-bottom: 6px;
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+
+	.camera-button {
+		margin-left: 2px;
+	}
+
+	.pause-button, .camera-button, .up-button, .down-button {
+		border: 1px solid white;
+		color: white;
+	}
 }

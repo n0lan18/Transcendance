@@ -1,0 +1,8 @@
+Model Information:
+* title:	Pokemon Stadium
+* source:	https://sketchfab.com/3d-models/pokemon-stadium-c7ae71285d404b9fb390dbe7cd14e57d
+* author:	Tigerar1 (https://sketchfab.com/allanromanreyes)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

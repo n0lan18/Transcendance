@@ -34,21 +34,29 @@ export async function loadMultiplayerPage()
 	});
 }
 
-function generateBodyMultiplayerPageHTML()
+function generateBodyMultiplayerPageHTML(username)
 {
-	let principalStr = "Multiplayer";
+	let player1Str;
+	if (username)
+		player1Str = username;
+	else
+		player1Str = "Player 1";
 	return `
-		<div>
-			<h1>0 - 0</h1>
+		<div class="flex-game-container">
+			<div class="display-score-container">
+				<div class="player1-container"><h2>${player1Str}</h2></div>
+				<div class="score-container"><h1 id="board-score">0 - 0</h1></div>
+				<div class="player2-container"><h2>Player 2</h2></div>
+			</div>
+			<div id="game-container" class="game-container"></div>
 		</div>
-		<div id="game-container" class="game-container"></div>
 	`;
 }
 
 export function generateMultiplayerPageHTML(userInfo)
 {
 	let nav = generateNavigator(userInfo.username);
-	let body = generateBodyMultiplayerPageHTML();
+	let body = generateBodyMultiplayerPageHTML(userInfo.username);
 
 	return (nav + body);
 }

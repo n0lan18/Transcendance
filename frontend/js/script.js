@@ -1,8 +1,10 @@
+
 import { loadAuthentificationPage } from "./auth.js";
 import { generateAuthentificationHTML } from "./auth.js";
 import { generateHomePageHTML, loadHomePage } from "./home.js";
 import { loadContent } from "./utils.js";
 import { fetchUserInfo } from "./utils.js";
+
 
 document.addEventListener('DOMContentLoaded', async () => 
     {

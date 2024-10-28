@@ -16,7 +16,6 @@ export function loadAuthentificationPage()
     	(event) =>
     	{
     	    let usernameValue = champsEmail.value;
-    	    console.log(usernameValue);
     	});
 	}
 
@@ -27,7 +26,6 @@ export function loadAuthentificationPage()
     	(event) =>
     	{
     	    let passwordValue = champsPassword.value;
-    	    console.log(passwordValue);
     	});
 	}
 

@@ -78,3 +78,61 @@ export function getCookie(name) {
 	}
 	return cookieValue;
 }
+
+export function escapeHTML(input) {
+    return input
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;")
+		.replace(/[\s\u200B\u200C\u200D\u200E\u200F]/g, '');
+}
+
+export function isValidUsername(username) {
+	return username.length >= 1 && username.length <= 9;
+}
+
+export function isMobileDevice() {
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+export function rgbToHex(rgbString) {
+	const regex = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
+    const result = regex.exec(rgbString);
+	if (result)
+	{
+		const r = parseInt(result[1], 10);
+		const g = parseInt(result[2], 10);
+		const b = parseInt(result[3], 10);
+		return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();	
+	}
+	else
+		return null;
+}
+
+export function fullSizePowerBar()
+{
+	const containerProgressBar = document.getElementById("progress-bar-left-container");
+	let sizeContainerProgressBar = window.getComputedStyle(containerProgressBar).width;
+	return parseInt(sizeContainerProgressBar);
+}
+
+export function emptySizePowerBar()
+{
+	const containerProgressBar = document.getElementById("progress-bar-left-container");
+	let emptySizeBar = parseInt(window.getComputedStyle(containerProgressBar).width);
+	let emptySizeValue = emptySizeBar * 0.60;
+	return parseInt(emptySizeValue);
+}
+
+export function sizeOfStep(fullSizePowerBar, emptySizePowerBar)
+{
+	let sizeOfStep = (fullSizePowerBar - emptySizePowerBar) / 10;
+	return sizeOfStep;
+}
+
+export function sizeOfAdvance(fullSizePowerBar, emptySizePowerBar)
+{
+	return fullSizePowerBar - emptySizePowerBar;
+}
