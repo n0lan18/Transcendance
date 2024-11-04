@@ -23,19 +23,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
+IP_ADDRESS = os.getenv('IP_ADDRESS')
+LOCAL_ADDRESS = os.getenv('LOCAL_ADDRESS')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
-	'https://localhost:8443',
-	'https://192.168.129.223:8443'
+	LOCAL_ADDRESS,
+	IP_ADDRESS
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://localhost:8443',
-    'https://192.168.223.127:8443'
+    LOCAL_ADDRESS,
+    IP_ADDRESS
 ]
 
 # Application definition
@@ -154,6 +157,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

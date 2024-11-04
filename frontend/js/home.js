@@ -2,7 +2,7 @@ import { loadContent } from "./utils.js";
 import { generateNavigator } from "./nav.js";
 import { fetchUserInfo } from "./utils.js";
 import { loadProfilePage } from "./profile.js";
-import { loadPreparationGamePage } from "./preparation-game.js";
+import { loadSoloPlayerPageChoiceGame } from "./solo-player-page.js";
 import { loadStatsPage } from "./stats.js";
 import { loadMultiplayerPage } from "./multiplayer.js";
 import { loadOnlinePage } from "./online.js";
@@ -43,7 +43,7 @@ export async function loadHomePage()
 	{
 		switchPageToSoloPlayerPage.addEventListener('click', function (event) {
 			event.preventDefault();
-			loadPreparationGamePage();
+			loadSoloPlayerPageChoiceGame();
 		});
 	}
 

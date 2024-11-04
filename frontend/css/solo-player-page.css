@@ -1,0 +1,37 @@
+.solo-player-choice-game-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 50vh;
+	width: 80vw;
+}
+
+.solo-player-choice-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+}
+
+.solo-player-simple-match-button, .solo-player-tournament-button {
+	height: 40vh;
+	width: 40vw;
+	margin: 5px;
+	border-radius: 3px;
+	border: none;
+	color: white;
+}
+
+.solo-player-simple-match-button:hover, .solo-player-tournament-button:hover {
+	transform: scale(1.03);
+}
+
+.solo-player-simple-match-button {
+	background-color: #8ac926;
+}
+
+.solo-player-tournament-button {
+	background-color: #6a4c93;
+}
+

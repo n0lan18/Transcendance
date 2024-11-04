@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { isMobileDevice } from '../../utils.js';
 
 export function addBall(Game) {
 	const ballRadius = 1;
@@ -13,23 +14,23 @@ export function addBall(Game) {
 
 export function updateBallTrail(Game) {
 	createBallTrail(Game);
-	// Parcourir chaque particule et diminuer son opacité et sa taille
-	for (let i = 0; i < Game.trailParticles.length; i++) {
-		const particle = Game.trailParticles[i];
+		// Parcourir chaque particule et diminuer son opacité et sa taille
+		for (let i = 0; i < Game.trailParticles.length; i++) {
+			const particle = Game.trailParticles[i];
 
-		// Réduire l'opacité progressivement
-		particle.material.opacity -= 0.02;
+			// Réduire l'opacité progressivement
+			particle.material.opacity -= 0.02;
 
-		// Réduire la taille de la particule
-		particle.scale.set(particle.scale.x * 0.9, particle.scale.y * 0.9, particle.scale.z * 0.9);
+			// Réduire la taille de la particule
+				particle.scale.set(particle.scale.x * 0.9, particle.scale.y * 0.9, particle.scale.z * 0.9);
 
-		// Si la particule est presque transparente, la supprimer
-		if (particle.material.opacity <= 0) {
-			Game.scene.remove(particle);
-			Game.trailParticles.splice(i, 1);
-			i--; // Ajuster l'indice après suppression
+			// Si la particule est presque transparente, la supprimer
+			if (particle.material.opacity <= 0) {
+				Game.scene.remove(particle);
+				Game.trailParticles.splice(i, 1);
+				i--; // Ajuster l'indice après suppression
+			}
 		}
-	}
 }
 
 export function createBallTrail(Game) {
@@ -41,4 +42,12 @@ export function createBallTrail(Game) {
 	Game.trail.position.copy(Game.ball.position);
 	Game.scene.add(Game.trail);
 	Game.trailParticles.push(Game.trail);
+
+	if (Game.ballReplica)
+	{
+		Game.trailReplica = Game.trail.clone();
+		Game.trailReplica.position.copy(Game.ballReplica.position);
+		Game.scene.add(Game.trailReplica);
+		Game.trailParticles.push(Game.trailReplica);
+	}
 }

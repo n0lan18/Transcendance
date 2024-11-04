@@ -5,7 +5,7 @@ import { eventListener } from "./game/eventListener.js";
 import { movePaddlesComputer } from "./game/computer/paddel-moves.js";
 import { handleCollisions } from "./game/collisions.js";
 import { updateBallTrail } from "./game/items/ball.js";
-import { addBall, createBallTrail } from "./game/items/ball.js";
+import { addBall } from "./game/items/ball.js";
 import { addPaddles } from "./game/items/paddel.js";
 import { createWall } from "./game/items/wall.js";
 import { addLines } from "./game/items/line.js";
@@ -14,21 +14,24 @@ import { addLights } from "./game/items/lights.js";
 import { addGround } from "./game/items/ground.js";
 import { paddleMovesMobile } from "./game/mobile/paddel-moves.js";
 import { fullSizePowerBar, emptySizePowerBar, sizeOfStep } from './utils.js';
+import { invisible } from './game/characters/invisible.js';
+import { timeLaps } from './game/characters/time-laps.js';
+import { superStrength } from './game/characters/superStrenght.js';
+import { duplication } from './game/characters/duplication.js';
+import { startCountdown } from './game/countdown.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
 
 export class Game {
-    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2) {
+    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers) {
         this.container = document.getElementById(containerId);
         this.containerProgressBarLeft = document.getElementById("progress-bar-left");
         this.containerProgressBarRight = document.getElementById("progress-bar-right");
         this.fullSizePowerBar = fullSizePowerBar();
-        console.log(this.fullSizePowerBar);
         this.emptySizePowerBar = emptySizePowerBar();
-        console.log(this.emptySizePowerBar);
         this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
         this.modeGame = modeGame;
         this.scoreContainer = document.getElementById("board-score");
-        this.gamePaused = false;
+        this.gamePaused = true;
         this.animationFrameId;
         this.scene = new THREE.Scene();
         this.renderer = new THREE.WebGLRenderer( {antialias: true });
@@ -41,21 +44,33 @@ export class Game {
         this.camera.lookAt(0, 0, 0);
         this.camera2;
 		this.camera.position.z = 20;
-		this.ballVelocity = { x: 0.1, y: 0.1 };
+		this.ballVelocity = { x: 0.1, y: 0.02 };
         this.paddleSpeed = 0.2;
         this.wallThickness = 1;
         this.wallHeight = 4;
         this.moveInterval = null;
         this.keys = {};
+        this.ballInvisible;
         this.changeCamera = 0;
         this.numberPaddelCollision = 0;
         this.trailParticles = [];
         this.test = 0;
         this.heroPowerPlayer1 = heroPowerPlayer1;
         this.heroPowerPlayer2 = heroPowerPlayer2;
-        this.powerPlayer1 = "invactive";
+        this.powerPlayer1 = "inactive";
         this.powerPlayer2 = "inactive";
         this.trail;
+        this.trailReplica;
+        this.directionPower;
+        this.originalBallVelocityX = 0;
+        this.ballReplica;
+        this.ballVelocityReplica = { x: 0.1, y: 0.1 };
+        this.username1 = username1;
+        this.username2 = username2;
+        this.styleMatch = styleMatch;
+        this.numberPlayers = numberPlayers;
+        this.colorCourt = colorCourt;
+        this.colorPlayer1 = colorPlayer1;
         this.init(colorPlayer1, colorPlayer2, colorCourt);
     }
 
@@ -93,9 +108,11 @@ export class Game {
 
         if (isMobileDevice())
             cameraMobile(this);
+        else
+            document.getElementById("button-controller").style.display = "none";
         eventListener(this);
 
-		this.start();
+		startCountdown(this);
     }
 
 	getGameContainerDimensions() {
@@ -110,6 +127,7 @@ export class Game {
             this.fullSizePowerBar = fullSizePowerBar();
             this.emptySizePowerBar = emptySizePowerBar();
             this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
+
             movePaddlesComputer(this);
 
             paddleMovesMobile(this);
@@ -131,10 +149,25 @@ export class Game {
             // Déplacement de la balle
             this.ball.position.x += this.ballVelocity.x;
             this.ball.position.y += this.ballVelocity.y;
+
+            if (this.ballReplica)
+            {
+                this.ballReplica.position.x += this.ballVelocityReplica.x;
+                this.ballReplica.position.y += this.ballVelocityReplica.y;
+            }
         }
         // Gestion des collisions
         handleCollisions(this);
         updateBallTrail(this);
+
+        if ((this.heroPowerPlayer1 === "Time laps" && this.powerPlayer1 === "active") || (this.heroPowerPlayer2 === "Time laps" && this.powerPlayer2 === "active"))
+            timeLaps(this);
+        else if ((this.heroPowerPlayer1 === "Invisible" && this.powerPlayer1 === "active") || (this.heroPowerPlayer2 === "Invisible" && this.powerPlayer2 === "active"))
+            invisible(this, this.directionPower);
+        else if (((this.heroPowerPlayer1 === "Super strength" && this.powerPlayer1 === "active") || (this.heroPowerPlayer2 === "Super strength" && this.powerPlayer2 === "active")))
+            superStrength(this, this.directionPower);
+        else if (((this.heroPowerPlayer1 === "Duplication" && this.powerPlayer1 === "active") || (this.heroPowerPlayer2 === "Duplication" && this.powerPlayer2 === "active")))
+            duplication(this, this.directionPower);
         if (this.changeCamera == 5)
         {
             this.renderer.setViewport(0, 0, this.dimensions.width / 2, this.dimensions.height);
@@ -155,7 +188,8 @@ export class Game {
         }
     }
 
-    start() {
+    start()
+    {
         const animate = () => {
             this.animationFrameId = requestAnimationFrame(animate);
             this.update();

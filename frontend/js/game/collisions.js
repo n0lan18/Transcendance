@@ -1,11 +1,20 @@
 import { getScores, incrementLeftScore, incrementRightScore } from "./score.js";
 import { sizeOfAdvance } from "../utils.js";
-import { invisible } from "./characters/invisible.js";
-import { timeLaps } from "./characters/time-laps.js";
+import { startCountdown } from "./countdown.js";
+import { loadFinishPage } from "./finishPage.js";
+import { loadFinishPageTournament } from "./finishPage-tournament.js";
+import { loadFinishPageTournamentWin } from "./finishPage-tournament-win.js";
 
 export function handleCollisions(Game) {
 	if (Game.ball.position.y > 13.5 || Game.ball.position.y < -13.5) {
 		Game.ballVelocity.y = -Game.ballVelocity.y;
+	}
+
+	if (Game.ballReplica)
+	{
+		if (Game.ballReplica.position.y > 13.5 || Game.ballReplica.position.y < -13.5) {
+			Game.ballVelocityReplica.y = -Game.ballVelocityReplica.y;
+		}
 	}
 	// Vérification de la collision avec la raquette gauche
 	if (Game.ball.position.x - 1 < Game.leftPaddle.position.x + 0.25 &&
@@ -27,10 +36,21 @@ export function handleCollisions(Game) {
 		paddleCollision(Game.rightPaddle, "right", Game);
 	}
 
+	if (Game.ballReplica && (Game.ballReplica.position.x > 25 || Game.ballReplica.position.x < -25))
+	{
+		Game.scene.remove(Game.ballReplica);
+		Game.scene.remove(Game.trailReplica);
+	}
+
 	// Réinitialisation si la balle sort des limites latérales
 	if (Game.ball.position.x > 25 || Game.ball.position.x < -25) {
+		Game.gamePaused = true;
+		Game.scene.remove(Game.ballReplica);
+		Game.scene.remove(Game.trailReplica);
+		let xBall = 0;
 		if (Game.ball.position.x > 25)
 		{
+			xBall = 0.1;
 			incrementLeftScore(Game);
 			let widthLeft = parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width);
 			let newWidth = widthLeft + Game.sizeOfStep * 5;
@@ -38,6 +58,7 @@ export function handleCollisions(Game) {
 		}
 		else if (Game.ball.position.x < -25)
 		{
+			xBall = -0.1;
 			incrementRightScore(Game);
 			let widthRight = parseInt(window.getComputedStyle(Game.containerProgressBarRight).width);
 			let newWidth = widthRight + Game.sizeOfStep * 5;
@@ -45,46 +66,50 @@ export function handleCollisions(Game) {
 		}
 		changeColorIfBarIsFull(Game);
 		let scores = getScores(Game);
-		if (scores.leftPlayerScore === 5 || scores.rightPlayerScore === 5)
+		if (scores.leftPlayerScore >= 5 || scores.rightPlayerScore >= 5)
 		{
 			Game.ballVelocity.x = 0;
 			Game.ballVelocity.y = 0;
-			Game.gamePaused = true;
+			let winOrLostStr;
+			if (scores.leftPlayerScore >= 5)
+				winOrLostStr = "Congratulations! You've won!";
+			else
+				winOrLostStr = "So sad! You've lost!";
+			if (Game.styleMatch == "tournament")
+			{
+				console.log("NUMBER PLAYER " + Game.numberPlayers);
+				if (Game.numberPlayers == 1 && scores.leftPlayerScore >= 5)
+					loadFinishPageTournament("win");
+				else if (scores.leftPlayerScore >= 5)
+					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.colorPlayer1, Game.heroPowerPlayer1, Game.numberPlayers);
+				else
+					loadFinishPageTournament("lose");
+			}
+			else
+				loadFinishPage(winOrLostStr);
 		}
+		else
+			startCountdown(Game);
 		Game.ball.position.set(0, 1, 1);
+		Game.leftPaddle.position.set(-23.5, 1, 0.5);
+		Game.rightPaddle.position.set(23.5, 1, 0.5);
 		Game.numberPaddelCollision = 0;
-		if (!Game.gamePaused)
-			Game.ballVelocity = {x: 0.1, y: 0.1};
+		Game.ballVelocity = {x: xBall, y: 0.02};
 	}
 }
 
 function paddleCollision(paddle, direction, Game)
 {
+	if (Game.originalBallVelocityX != 0)
+	{
+		Game.ballVelocity.x = Game.originalBallVelocityX;
+		Game.originalBallVelocityX = 0;
+	}
+	Game.directionPower = direction;
 	Game.numberPaddelCollision++;
 	if (Game.numberPaddelCollision > 10)
 		Game.ballVelocity.x += 0.1;
 	let impactPoint = Game.ball.position.y - paddle.position.y;
-	if (direction === "left" && Game.powerPlayer1 === "active")
-	{
-		Game.powerPlayer1 = "inactive";
-		console.log("PROUT");
-		console.log(Game.heroPowerPlayer1);
-		if (Game.heroPowerPlayer1 == "Invisible")
-			invisible(Game, "left");
-/*		else if (this.heroPowerPlayer1 == "Super strength")
-		
-		else if (this.heroPowerPlayer1 == "Duplication")
-*/	}
-	if (direction === "right" && Game.powerPlayer1 === "active" && Game.heroPowerPlayer1 === "Time laps")
-		timeLaps(Game, "left");
-	if (direction === "left" && Game.powerPlayer2 === "active" && Game.heroPowerPlayer2 === "Time laps")
-		timeLaps(Game, "right");
-	if (direction === "right" && Game.powerPlayer2 === "active")
-	{
-		Game.powerPlayer2 = "inactive";
-		if (Game.heroPowerPlayer2 == "Invisible")
-			invisible(Game, "right");
-	}
 
 	let realImpactPoint = impactPoint;
 	if (impactPoint < 0)

@@ -1,7 +1,7 @@
-import { loadContent } from "./utils.js";
+import { isMobileDevice, loadContent } from "./utils.js";
 import { Game } from "./game.js";
 
-export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2)
+export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, styleMatch, numberPlayers)
 {
 
 	let soloPlayerHTML = generateGamePageHTML(username1, username2);
@@ -14,7 +14,7 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 	{
 		console.log(colorPlayer1);
 		console.log(colorPlayer2);
-		const game = new Game("game-container", "soloPlayer", colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2);
+		const game = new Game("game-container", "soloPlayer", colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers);
 		game.start();
 	}
 
@@ -46,11 +46,11 @@ function generateBodyGamePageHTML(username, username2)
 				<h1 style="font-size: 25px; text-align: center;">${messageChangeOrientation}</h1>
 				<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
 			</div>
-			<div class="flex-game-container">
+			<div class="flex-game-container" id="flex-game-container">
 				<div class="display-score-container">
-					<div class="player1-container"><h2>${username}</h2></div>
-					<div class="score-container"><h1 id="board-score">0 - 0</h1></div>
-					<div class="player2-container"><h2>${username2}</h2></div>
+					<div class="player1-container"><h2 class="player1-username">${username}</h2></div>
+					<div class="score-container"><h1 class="board-score" id="board-score">0 - 0</h1></div>
+					<div class="player2-container"><h2 class="player2-username">${username2}</h2></div>
 				</div>
 				<div class="progress-bar-container">
 					<div class="progress-bar-left-container" id="progress-bar-left-container">

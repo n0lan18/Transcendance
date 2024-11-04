@@ -7,10 +7,9 @@ import { escapeHTML } from "./utils.js";
 import { isValidUsername } from "./utils.js";
 import { rgbToHex } from "./utils.js";
 
-export async function loadPreparationGamePage()
+export async function loadPreparationSimpleMatchGamePage()
 {
 	let userInfo = await fetchUserInfo();
-	console.log(userInfo);
 
 	let username1 = userInfo.username;
 	let username2 = "Player 2";
@@ -141,6 +140,12 @@ export async function loadPreparationGamePage()
 	const buttons = document.querySelectorAll('.btn-court');
 	buttons.forEach(button => {
 		button.addEventListener('click', function (event) {
+			event.stopPropagation();
+			document.querySelectorAll('.btn-court').forEach(button => {
+				button.style.border = "none";
+			});
+			event.currentTarget.style.border = "3px solid #ffffff";
+			event.currentTarget.style.borderRadius = "10px";
 			let buttonId = event.currentTarget.id;
 
 			switch (buttonId) {
@@ -307,7 +312,7 @@ export async function loadPreparationGamePage()
 function generateBodyPreparationGamePageHTML(username, username2)
 {
 	let buttonStr = "Play";
-	let titleStr = "Preparation Game";
+	let titleStr = "Preparation simple match";
 	let environnementStr = "Choose the surface :";
 	let messageChangeOrientation = "Please rotate your device<br>to portrait mode";
 	let textUnderColorButton1 = "Red";
@@ -402,7 +407,7 @@ function generateBodyPreparationGamePageHTML(username, username2)
 			<div class="environnement-preparation-container" id="environnement-preparation-container">
 				<h3>${environnementStr}</h3>
 				<div class="environnement-preparation-container-button">
-					<button id="environnement-preparation-container-button-orange" class="environnement-preparation-container-button-orange btn-court">
+					<button id="environnement-preparation-container-button-orange" class="environnement-preparation-container-button-orange btn-court" style="border: 3px solid #ffffff; border-radius: 10px">
 						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/orange-court.png" alt="Orange court">
 					</button>
 					<button id="environnement-preparation-container-button-dark-blue" class="environnement-preparation-container-button-dark-blue btn-court">

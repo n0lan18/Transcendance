@@ -1,0 +1,42 @@
+.finish-page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 100vh;
+	width: 100vw;
+}
+
+.button-finish-page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	height: 20vh;
+	width: 40vw;
+}
+
+.home-button-end-party, .retry-button-end-party {
+	margin: 5px;
+	padding: 5px;
+	font-size: 70px;
+	margin-left: 20px;
+	margin-right: 20px;
+	margin: 10px;
+	height: 100%;
+	width: 100%;
+	border-radius: 3px;
+	border: none;
+}
+
+.home-button-end-party:hover, .retry-button-end-party:hover {
+	transform: scale(1.03);
+}
+
+.retry-button-end-party {
+	background-color: #1982c4;
+}
+
+.home-button-end-party {
+	background-color: #ffca3a;
+}

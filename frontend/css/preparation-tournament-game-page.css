@@ -1,0 +1,52 @@
+.number-players-tournament {
+	margin-top: 10px;
+}
+
+.number-players-tournament-buttons {
+	display: flex;
+	justify-content: space-between; /* Espace entre les boutons */
+	align-items: center;
+	width: 100%; /* Les boutons prennent tout l'espace disponible */
+}
+
+.players-button {
+	width: 100%; /* Largeur des boutons sur 100% de l'espace */
+	height: 40px; /* Ajustez la hauteur si nécessaire */
+	display: flex;
+	justify-content: center; /* Centrage horizontal */
+	align-items: center; /* Centrage vertical */
+	border: none;
+	border-radius: 3px;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.string-plyers-button {
+	display: flex;
+	justify-content: center; /* Centrage horizontal du texte */
+	align-items: center; /* Centrage vertical du texte */
+	width: 100%;
+	height: 100%; /* Texte prend tout l'espace disponible */
+	margin: 0; /* Enlève les marges du texte */
+	color: white; /* Couleur du texte */
+	font-size: 18px; /* Taille de police ajustée */
+}
+
+@media (max-width: 900px) {
+	
+}
+
+@media screen and (orientation: portrait) and (max-width: 768px) {
+	h2 {
+		font-size: 20px;
+	}
+
+	h3 {
+		font-size: 15px;
+	}
+
+	.superhero-image {
+		height: 45%;
+		width: 45%;
+	}
+}

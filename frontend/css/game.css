@@ -30,11 +30,13 @@
 .player1-container {
 	display: flex;
 	justify-content: flex-start;
+	font-size: 5px;
 }
 
 .player2-container {
 	display: flex;
 	justify-content: flex-end;
+	font-size: 5px;
 }
 
 .progress-bar-container {
@@ -110,27 +112,6 @@
 
 @media screen and (orientation: portrait) and (max-width: 768px) {
 	.message-change-orientation {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 20px;
-	}
-
-	.flex-game-container {
-		display: none;
-	}
-
-	.button-controller {
-		display: none;
-		flex-direction: row;
-		justify-content: stretch;
-		align-items: flex-end;
-	}
-}
-
-@media screen and (orientation: landscape) and (max-width: 768px) {
-	.message-change-orientation {
 		display: none;
 	}
 
@@ -142,8 +123,8 @@
 	}
 
 	.display-score-container {
-		width: 90%;
-		height: 15%;
+		width: 100%;
+		height: 5%;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -173,9 +154,25 @@
 		justify-content: flex-end;
 	}
 
+	.player1-username, .player2-username
+	{
+		font-size: 20px;
+	}
+
+	.progress-bar-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		height: 20px;
+		margin-bottom: 5px;
+		margin-right: 2px;
+		margin-left: 2px;
+	}
+
 	.game-container {
 		width: 100%;
-		height: 55%;
+		height: 70%;
 	}
 
 	.button-controller {
@@ -183,6 +180,11 @@
 		flex-direction: row;
 		justify-content: space-around;
 		align-items: center;
+		position: fixed;
+		bottom: 10px;
+		width: 100%;
+		height: 7%;
+		margin-top: 30px;
 	}
 
 	.up-button {
@@ -210,12 +212,29 @@
 		padding-right: 15px;
 	}
 
-	.camera-button {
-		margin-left: 2px;
-	}
-
 	.pause-button, .camera-button, .up-button, .down-button {
 		border: 1px solid white;
 		color: white;
+	}
+}
+
+@media screen and (orientation: landscape) and (max-width: 768px) {
+	.message-change-orientation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.flex-game-container {
+		display: none;
+	}
+
+	.button-controller {
+		display: none;
+		flex-direction: row;
+		justify-content: stretch;
+		align-items: flex-end;
 	}
 }
