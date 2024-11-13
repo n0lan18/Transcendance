@@ -27,6 +27,13 @@ from myapp.views import RegisterView
 from myapp.views import UserInfoView
 from myapp.views import CheckEmailView
 from myapp.views import CheckUsernameView
+from myapp.views import GameStatsLocalListCreateView
+from myapp.views import GameStatsLocalDetailView
+from myapp.views import UpdateUsernameView
+from myapp.views import UpdateImageView
+from myapp.views import UpdatePasswordView
+from myapp.views import UpdateEmailView
+from myapp.views import UpdateIsConnectView
 
 urlpatterns = [ 
     path('api/admin/', admin.site.urls),
@@ -38,8 +45,16 @@ urlpatterns = [
 	path('api/userinfo/', UserInfoView.as_view(), name='userinfo'),
 	path('api/check-email/', CheckEmailView.as_view(), name="check-email"),
 	path('api/check-username/', CheckUsernameView.as_view(), name="check-username"),
+    path('api/update-username/', UpdateUsernameView.as_view(), name='update-username'),
+    path('api/update-password/', UpdatePasswordView.as_view(), name='update-password'),
+    path('api/update-image/', UpdateImageView.as_view(), name='update-image'),
+    path('api/update-email/', UpdateEmailView.as_view(), name='update-email'),
+    path('api/gamestats/', GameStatsLocalListCreateView.as_view(), name='gamestats-list-create'),
+    path('api/gamestats/<int:pk>/', GameStatsLocalDetailView.as_view(), name='gamestats-detail'),
+    path('api/update-isconnect/', UpdateIsConnectView.as_view(), name='update-isconnect'),
+    
 ]
 
-#if settings.DEBUG:
-#    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

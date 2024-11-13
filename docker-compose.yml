@@ -18,6 +18,7 @@ services:
       - ./backend:/app
       - static_volume:/app/myproject/staticfiles
       - ./frontend:/app/myproject/myapp/static/myapp
+      - media_volume:/app/myproject/media
     depends_on:
       - postgres
     env_file: .env
@@ -29,6 +30,7 @@ services:
   nginx:
     build: ./nginx
     volumes:
+      - media_volume:/usr/share/nginx/html/media
       - static_volume:/usr/share/nginx/html/static
       - ./frontend:/usr/share/nginx/html/frontend
     ports:
@@ -37,10 +39,22 @@ services:
       - django
     networks:
       - frontend
+      - backend
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    depends_on:
+      - postgres
 
 volumes:
   postgres_data:
   static_volume:
+  media_volume:
 
 networks:
   backend:

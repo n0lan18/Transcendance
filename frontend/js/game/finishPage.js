@@ -1,10 +1,22 @@
 import { loadHomePage } from "../home.js";
 import { loadPreparationSimpleMatchGamePage } from "../preparation-simple-match-game-page.js";
+import { translation } from "../translate.js";
+import { putStatsInfo } from "../utils.js";
 
-
-export function loadFinishPage(winOrLostStr)
+export async function loadFinishPage(winOrLostStr, scoreLeftPlayer, scoreRightPlayer, isWin)
 {
+	if (isWin == true)
+	{
+		await putStatsInfo(2, {resultats: "V"})
+		await putStatsInfo(4, {numberVictorySimpleMatch: 1})
+	}
+	else
+		await putStatsInfo(2, {resultats: "D"})
+	await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+	await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer})
 	document.getElementById("app").innerHTML = finishPageHTML(winOrLostStr);
+	translation();
 
 	const homeButtonFinishPage = document.getElementById("home-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {
@@ -21,13 +33,11 @@ export function loadFinishPage(winOrLostStr)
 
 function finishPageHTML(winOrLostStr)
 {
-	let finishStr = "Finish";
 	let homeStr = "Home";
-	let retryStr = "Retry";
 
 	return `
 		<div class="finish-page" id="finish-page">
-			<h1>${finishStr}</h1>
+			<h1 data-translate-key="finish"></h1>
 			<h2>${winOrLostStr}</h2>
 			<div class="button-finish-page">
 				<button id="home-button-end-party" class="button-center-items home-button-end-party" style="color: white">
@@ -36,7 +46,7 @@ function finishPageHTML(winOrLostStr)
 				</button>
 				<button id="retry-button-end-party" class="button-center-items retry-button-end-party" style="color: white">
 					<i class="fa-solid fa-rotate-right retry-button-finish-page" style="color: white"></i>
-					<p style="font-size: 20px">${retryStr}</p>
+					<p style="font-size: 20px" data-translate-key="retry"></p>
 				</button>
 			</div>
 		<div>

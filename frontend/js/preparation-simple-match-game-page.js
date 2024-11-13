@@ -1,4 +1,4 @@
-import { fetchUserInfo } from "./utils.js";
+import { getUserInfo } from "./utils.js";
 import { loadContent } from "./utils.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
@@ -6,25 +6,30 @@ import { generateNavigator } from "./nav.js";
 import { escapeHTML } from "./utils.js";
 import { isValidUsername } from "./utils.js";
 import { rgbToHex } from "./utils.js";
+import { putStatsInfo } from "./utils.js";
+import { translation } from "./translate.js";
 
 export async function loadPreparationSimpleMatchGamePage()
 {
-	let userInfo = await fetchUserInfo();
+	let userInfo = await getUserInfo();
 
 	let username1 = userInfo.username;
-	let username2 = "Player 2";
-	let courtColor;
+	let courtColor = 0xCF5A30;
 	let colorPlayer1 = "#E23F22";
 	let colorPlayer2 = "#3BB323";
 	let heroPowerPlayer1 = "Invisible";
 	let heroPowerPlayer2 = "Super strength";
-	let preparationGameHTML = generateSoloPlayerPageHTML(userInfo, username1, username2);
+	let preparationGameHTML = generateSoloPlayerPageHTML(username1);
 
 	loadContent(preparationGameHTML, "preparation-game", true);
 
 	document.getElementById("app").innerHTML = preparationGameHTML;
+	await translation();
 
 	addNavigatorEventListeners();
+
+	const username2 = document.querySelector("[data-translate-key='simpleMatchUsername2']").textContent;
+
 
 	document.querySelectorAll('.color-button-player1').forEach(button => {
 		button.addEventListener('click', (event) => {
@@ -86,7 +91,7 @@ export async function loadPreparationSimpleMatchGamePage()
 	let sendPreparationGameButton = document.getElementById("send-preparation-game-button");
 	if (sendPreparationGameButton)
 	{
-		sendPreparationGameButton.addEventListener('click', function (event) {
+		sendPreparationGameButton.addEventListener('click', async function (event) {
 			if (courtColor === undefined)
 			{
 				const environnementPreparationContainer = document.getElementById("environnement-preparation-container");
@@ -103,7 +108,17 @@ export async function loadPreparationSimpleMatchGamePage()
 				}
 			}
 			else
-				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2);
+			{
+				if (heroPowerPlayer1 == "Invisible")
+					await putStatsInfo(9, {heroInvisible: 1})
+				else if (heroPowerPlayer1 == "Duplication")
+					await putStatsInfo(10, {heroDuplication: 1})
+				else if (heroPowerPlayer1 == "Super strength")
+					await putStatsInfo(11, {heroSuperstrength: 1})
+				else if (heroPowerPlayer1 == "Time laps")
+					await putStatsInfo(12, {heroTimelaps: 1})
+				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, "simple-match");
+			}
 		});
 	}
 
@@ -309,24 +324,17 @@ export async function loadPreparationSimpleMatchGamePage()
 		console.log("nextBtn2 not found");
 }
 
-function generateBodyPreparationGamePageHTML(username, username2)
+function generateBodyPreparationGamePageHTML(username)
 {
-	let buttonStr = "Play";
-	let titleStr = "Preparation simple match";
-	let environnementStr = "Choose the surface :";
-	let messageChangeOrientation = "Please rotate your device<br>to portrait mode";
-	let textUnderColorButton1 = "Red";
-	let textUnderColorButton2 = "Green";
-	let textUnderColorButton3 = "Blue";
-	let textUnderColorButton4 = "Custom";
 	return `
 		<div class="message-change-orientation">
-			<h1 style="font-size: 25px; text-align: center;">${messageChangeOrientation}</h1>
+			<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
 			<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
 		</div>
 		<div class="preparation-game-container" id="preparation-game-container">
-			<h2>${titleStr}</h2>
+			<h1 data-translate-key="simpleMatch"></h1>
 			<div class="player-preparation-container">
+				<h3 id="usernameGamePlayer1-text" data-translate-key="choseHero"></h3>
 				<div class="player-preparation-container-content">
 					<div class="player-left-preparation">
 						<h2 id="usernameGamePlayer1-text">${username}</h2>
@@ -346,26 +354,26 @@ function generateBodyPreparationGamePageHTML(username, username2)
 						<div class="color-button-container color-button-container-player1">
 							<div class="color-button-text">
 								<button id="color-button-red-player1" class="color-button color-button-player1" style="background-color: #E23F22; border: 3px solid #ffffff;"></button>
-								<p class="text-under-color-button">${textUnderColorButton1}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton1"></p>
 							</div>
 							<div class="color-button-text">
 								<button id="color-button-green-player1" class="color-button color-button-player1" style="background-color: #3BB323;"></button>
-								<p class="text-under-color-button">${textUnderColorButton2}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton2"></p>
 							</div>
 							<div class="color-button-text">
 								<button id="color-button-blue-player1" class="color-button color-button-player1" style="background-color: #32689A;"></button>
-								<p class="text-under-color-button">${textUnderColorButton3}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton3"></p>
 							</div>
 							<div class="color-button-text">
 								<div class="color-picker-container1" id="color-picker-container1">
 									<input type="color" class="color-picker" id="color-picker-player1" value="#EEDC1B">
 								</div>
-								<p class="text-under-color-button">${textUnderColorButton4}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton4"></p>
 							</div>
 						</div>
 					</div>
 					<div class="player-right-preparation">
-						<h2 id="usernameGamePlayer2-text">${username2}</h2>
+						<h2 id="usernameGamePlayer2-text" data-translate-key="simpleMatchUsername2"></h2>
 						<div class="superhero-container">
 							<div class="chose-superhero-container" id="chose-superhero-container2">
 								<button class="left-arrow" id="left-arrow2">
@@ -384,28 +392,28 @@ function generateBodyPreparationGamePageHTML(username, username2)
 						<div class="color-button-container color-button-container-player2">
 							<div class="color-button-text">
 								<button id="color-button-red-player2" class="color-button color-button-player2" style="background-color: #E23F22;"></button>
-								<p class="text-under-color-button">${textUnderColorButton1}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton1"></p>
 							</div>
 							<div class="color-button-text">
 								<button id="color-button-green-player2" class="color-button color-button-player2" style="background-color: #3BB323; border: 3px solid #ffffff;"></button>
-								<p class="text-under-color-button">${textUnderColorButton2}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton2"></p>
 							</div>
 							<div class="color-button-text">
 								<button id="color-button-blue-player2" class="color-button color-button-player2" style="background-color: #32689A;"></button>
-								<p class="text-under-color-button">${textUnderColorButton3}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton3"></p>
 							</div>
 							<div class="color-button-text">
 								<div class="color-picker-container2" id="color-picker-container2">
 									<input type="color" class="color-picker" id="color-picker-player2" value="#EEDC1B">
 								</div>
-								<p class="text-under-color-button">${textUnderColorButton4}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton4"></p>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="environnement-preparation-container" id="environnement-preparation-container">
-				<h3>${environnementStr}</h3>
+				<h3 data-translate-key="environnement"></h3>
 				<div class="environnement-preparation-container-button">
 					<button id="environnement-preparation-container-button-orange" class="environnement-preparation-container-button-orange btn-court" style="border: 3px solid #ffffff; border-radius: 10px">
 						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/orange-court.png" alt="Orange court">
@@ -429,15 +437,15 @@ function generateBodyPreparationGamePageHTML(username, username2)
 					</button>
 				</div>
 			</div>
-			<input id="send-preparation-game-button" value="${buttonStr}" class="btn btn-success btn-block mb-4 send-preparation-game-button" style="width: 30%;">
+			<input id="send-preparation-game-button" data-translate-key="play" value="" class="btn btn-success btn-block mb-4 send-preparation-game-button" style="width: 30%;">
 		</div>
 	`;
 }
 
-export function generateSoloPlayerPageHTML(userInfo, username, username2)
+export function generateSoloPlayerPageHTML(username)
 {
-	let nav = generateNavigator(userInfo.username);
-	let body = generateBodyPreparationGamePageHTML(username, username2);
+	let nav = generateNavigator();
+	let body = generateBodyPreparationGamePageHTML(username);
 
 	return (nav + body);
 }

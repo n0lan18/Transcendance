@@ -1,5 +1,6 @@
 import { loadContent } from "./utils.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
+import { translation } from "./translate.js";
 
 export async function loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers)
 {
@@ -55,6 +56,7 @@ export async function loadPresentationSoloPlayerPage(username1, courtColor, colo
 	loadContent(bodyPresentation, "presentation-solo-tournament", true);
 
 	document.getElementById("app").innerHTML = bodyPresentation;
+	translation();
 
 	const imagePlayer1 = document.getElementById("superhero-image");
 	imagePlayer1.src = imageHeroPlayer1;
@@ -72,9 +74,8 @@ export async function loadPresentationSoloPlayerPage(username1, courtColor, colo
 
 function generateBodyPresentationPageHTML(username, username2, numberPlayers, heroPowerPlayer1, heroPowerPlayer2)
 {
-
-	let buttonStr = "Start";	
 	let partTournamentStr;
+
 	switch (numberPlayers)
 	{
 		case 64 :
@@ -120,7 +121,7 @@ function generateBodyPresentationPageHTML(username, username2, numberPlayers, he
 				</div>
 			</div>
 		</div>
-	<input id="send-preparation-game-button" value="${buttonStr}" class="btn btn-success btn-block mb-4 send-preparation-game-button" style="width: 30%;">	
+	<input id="send-preparation-game-button" data-translate-key="play" value="" class="btn btn-success btn-block mb-4 send-preparation-game-button" style="width: 30%;">	
 	</div>
 	`
 }

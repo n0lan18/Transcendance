@@ -1,19 +1,22 @@
-import { isMobileDevice, loadContent } from "./utils.js";
+import { isMobileDevice, loadContent, putStatsInfo } from "./utils.js";
 import { Game } from "./game.js";
+import { translation } from "./translate.js";
 
 export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, styleMatch, numberPlayers)
 {
-
 	let soloPlayerHTML = generateGamePageHTML(username1, username2);
 
 	loadContent(soloPlayerHTML, "solo-player", true);
 	document.getElementById("app").innerHTML = soloPlayerHTML;
+	translation();
 	let pageGameContainer = document.getElementById("page-game-container");
 	toggleFullScreen();
 	if (pageGameContainer)
 	{
-		console.log(colorPlayer1);
-		console.log(colorPlayer2);
+		if (styleMatch == "simple-match")
+			await putStatsInfo(3, {numberSimpleMatch: 1});
+		else if (styleMatch == "tournament")
+			await putStatsInfo(6, {numberMatchTournament: 1});
 		const game = new Game("game-container", "soloPlayer", colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers);
 		game.start();
 	}
@@ -39,11 +42,10 @@ function toggleFullScreen() {
 
 function generateBodyGamePageHTML(username, username2)
 {
-	let messageChangeOrientation = "Please rotate your device<br>to landscape mode";
 	return `
 		<div class="page-game-container" id="page-game-container">
 			<div class="message-change-orientation">
-				<h1 style="font-size: 25px; text-align: center;">${messageChangeOrientation}</h1>
+				<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
 				<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
 			</div>
 			<div class="flex-game-container" id="flex-game-container">

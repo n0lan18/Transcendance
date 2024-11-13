@@ -116,7 +116,7 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Durée de validité du token d'accès
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Durée de validité du token de rafraîchissement
-    'ROTATE_REFRESH_TOKENS': False,  # Si vrai, génère un nouveau refresh token lors du rafraîchissement
+    'ROTATE_REFRESH_TOKENS': True,  # Si vrai, génère un nouveau refresh token lors du rafraîchissement
     'BLACKLIST_AFTER_ROTATION': True, # Blackliste l'ancien refresh token après rotation
     'UPDATE_LAST_LOGIN': False,       # Met à jour l'heure du dernier login lors de l'authentification
 }

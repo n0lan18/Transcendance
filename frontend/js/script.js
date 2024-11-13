@@ -3,7 +3,7 @@ import { loadAuthentificationPage } from "./auth.js";
 import { generateAuthentificationHTML } from "./auth.js";
 import { generateHomePageHTML, loadHomePage } from "./home.js";
 import { loadContent } from "./utils.js";
-import { fetchUserInfo } from "./utils.js";
+import { getUserInfo } from "./utils.js";
 
 
 document.addEventListener('DOMContentLoaded', async () => 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () =>
 
         if (jwtToken)
         {
-            let userInfo = await fetchUserInfo();
+            let userInfo = await getUserInfo();
             console.log(userInfo);
         
             let homeHTML = generateHomePageHTML(userInfo);

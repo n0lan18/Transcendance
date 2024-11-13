@@ -1,11 +1,11 @@
 import { generateNavigator } from "./nav.js";
-import { fetchUserInfo } from "./utils.js";
+import { getUserInfo } from "./utils.js";
 import { loadContent } from "./utils.js";
 import { Game } from "./game.js";
 
 export async function loadMultiplayerPage()
 {
-	let userInfo = await fetchUserInfo();
+	let userInfo = await getUserInfo();
 	console.log(userInfo);
 
 	let multiplayerHTML = generateMultiplayerPageHTML(userInfo);

@@ -1,24 +1,18 @@
 import { loadAuthentificationPage } from "../auth.js";
 import { loadHomePage } from "../home.js";
-import { loadSettingsPage } from "../settings.js";
+import { reorderLanguages, translation, changeLanguage } from "../translate.js";
 
 export function addNavigatorEventListeners()
 {
-	switchPageToSettings();
+	const lang = localStorage.getItem('language') || 'en';
 	switchPageToHome();
 	switchPageToLogout();
-}
+	reorderLanguages(lang);
 
-function switchPageToSettings()
-{
-	let switchPageToSettings = document.getElementById("settings-button");
-	if (switchPageToSettings)
-	{
-		switchPageToSettings.addEventListener('click', function (event) {
-			event.preventDefault();
-			loadSettingsPage();
-		});
-	}
+	document.getElementById('language-select').addEventListener('change', (event) => {
+		changeLanguage(event.target.value);
+		translation(event.target.value)
+	});
 }
 
 function switchPageToHome()
@@ -45,3 +39,5 @@ function switchPageToLogout()
 		});
 	}
 }
+
+

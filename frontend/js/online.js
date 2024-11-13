@@ -1,10 +1,10 @@
 import { generateNavigator } from "./nav.js";
-import { fetchUserInfo } from "./utils.js";
+import { getUserInfo } from "./utils.js";
 import { loadContent } from "./utils.js";
 
 export async function loadOnlinePage()
 {
-	let userInfo = await fetchUserInfo();
+	let userInfo = await getUserInfo();
 	console.log(userInfo);
 
 	let settingsHTML = generateOnlinePageHTML(userInfo);

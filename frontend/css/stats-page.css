@@ -1,0 +1,111 @@
+h1
+{
+	margin-bottom: 20px;
+}
+
+.statsContainer
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+	max-width: 900px;
+}
+
+.lastMatches
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.resultsLastMatches
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	width: 100%;	
+}
+
+.scoresAndResultats
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;	
+}
+
+.bestHeroAndTotalMatches
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.bestHero
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 40%;	
+}
+
+.totalMatches, .bestScoreTournament
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;		
+}
+
+.resultatsStatsMatches
+{
+	width: 30px;
+	height: 30px;
+	padding: 2px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.graphics
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	width: 100%;
+}
+
+.victoryDefeat
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 200px;
+	margin: 5px;
+}
+
+.graphicDonut {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+canvas {
+    width: 100% !important;
+    height: auto !important;
+}

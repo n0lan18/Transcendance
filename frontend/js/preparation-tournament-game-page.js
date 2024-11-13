@@ -1,17 +1,20 @@
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { generateNavigator } from "./nav.js";
 import { loadPresentationSoloPlayerPage } from "./presentation-match-solo-tournament.js";
-import { fetchUserInfo } from "./utils.js";
-import { loadContent } from "./utils.js";
+import { translation } from "./translate.js";
+import { getUserInfo } from "./utils.js";
+import { loadContent,  } from "./utils.js";
+import { putStatsInfo } from "./utils.js";
 import { rgbToHex } from "./utils.js";
 
 export async function loadPreparationTournamentGamePage()
 {
-	let userInfo = await fetchUserInfo();
+	let userInfo = await getUserInfo();
 
 	let username1 = userInfo.username;
 	const preparationGameHTML = generatePreparationSoloTournamentPageHTML();
 
+	
 	addNavigatorEventListeners();
 
 	let courtColor = 0xCF5A30;
@@ -22,7 +25,7 @@ export async function loadPreparationTournamentGamePage()
 	loadContent(preparationGameHTML, "preparation-solo-tournament", true);
 
 	document.getElementById("app").innerHTML = preparationGameHTML;
-
+	translation();
 	addNavigatorEventListeners();
 
 	document.querySelectorAll('.color-button-player1').forEach(button => {
@@ -84,7 +87,7 @@ export async function loadPreparationTournamentGamePage()
 	let sendPreparationGameButton = document.getElementById("send-preparation-game-button");
 	if (sendPreparationGameButton)
 	{
-		sendPreparationGameButton.addEventListener('click', function (event) {
+		sendPreparationGameButton.addEventListener('click', async function (event) {
 			if (courtColor === undefined)
 			{
 				const environnementPreparationContainer = document.getElementById("environnement-preparation-container");
@@ -101,7 +104,18 @@ export async function loadPreparationTournamentGamePage()
 				}
 			}
 			else
+			{
+				await putStatsInfo(5, {numberTournament: 1});
+				if (heroPowerPlayer1 == "Invisible")
+					await putStatsInfo(9, {heroInvisible: 1})
+				else if (heroPowerPlayer1 == "Duplication")
+					await putStatsInfo(10, {heroDuplication: 1})
+				else if (heroPowerPlayer1 == "Super strength")
+					await putStatsInfo(11, {heroSuperstrength: 1})
+				else if (heroPowerPlayer1 == "Time laps")
+					await putStatsInfo(12, {heroTimelaps: 1})
 				loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, sizeTournament);
+			}
 		});
 	}
 
@@ -228,28 +242,18 @@ export async function loadPreparationTournamentGamePage()
 
 function generatePreparationTournamentGamePageHTML()
 {
-	let buttonStr = "Start";
-	let titleStr = "Preparation tournament";
-	let numberPlayersStr = "Choose the number of players";
-	let choseHeroStr = "Chose your hero";
 	let numberPlayer = 64;
-	let environnementStr = "Choose the surface :";
-	let messageChangeOrientation = "Please rotate your device<br>to portrait mode";
-	let textUnderColorButton1 = "Red";
-	let textUnderColorButton2 = "Green";
-	let textUnderColorButton3 = "Blue";
-	let textUnderColorButton4 = "Custom";
 	return `
 		<div class="message-change-orientation">
-			<h1 style="font-size: 25px; text-align: center;">${messageChangeOrientation}</h1>
+			<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
 			<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
 		</div>
 		<div class="preparation-game-container" id="preparation-game-container">
-			<h2>${titleStr}</h2>
+			<h1 data-translate-key="tournament"></h1>
 			<div class="player-preparation-container">
 				<div class="player-preparation-container-content">
 					<div class="player-left-preparation">
-						<h3 id="usernameGamePlayer1-text">${choseHeroStr}</h3>
+						<h3 id="usernameGamePlayer1-text" data-translate-key="choseHero"></h3>
 						<div class="chose-superhero-container" id="chose-superhero-container1">
 							<button class="left-arrow" id="left-arrow1">
 								<i class="fa-solid fa-arrow-left"></i>
@@ -266,28 +270,28 @@ function generatePreparationTournamentGamePageHTML()
 						<div class="color-button-container color-button-container-player1">
 							<div class="color-button-text">
 								<button id="color-button-red-player1" class="color-button color-button-player1" style="background-color: #E23F22; border: 3px solid #ffffff;"></button>
-								<p class="text-under-color-button">${textUnderColorButton1}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton1"></p>
 							</div>
 							<div class="color-button-text">
 								<button id="color-button-green-player1" class="color-button color-button-player1" style="background-color: #3BB323;"></button>
-								<p class="text-under-color-button">${textUnderColorButton2}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton2"></p>
 							</div>
 							<div class="color-button-text">
 								<button id="color-button-blue-player1" class="color-button color-button-player1" style="background-color: #32689A;"></button>
-								<p class="text-under-color-button">${textUnderColorButton3}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton3"></p>
 							</div>
 							<div class="color-button-text">
 								<div class="color-picker-container1" id="color-picker-container1">
 									<input type="color" class="color-picker" id="color-picker-player1" value="#EEDC1B">
 								</div>
-								<p class="text-under-color-button">${textUnderColorButton4}</p>
+								<p class="text-under-color-button" data-translate-key="textUnderColorButton4"></p>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="number-players-tournament">
-				<h3>${numberPlayersStr}</h3>
+				<h3 data-translate-key="numberPlayers"></h3>
 				<div class="number-players-tournament-buttons">
 					<button id="players-button-64" class="players-button players-button-64" style="background-color: #6a4c93; border: 3px solid #ffffff;">
 						<p class="string-plyers-button">${numberPlayer}</p>
@@ -307,7 +311,7 @@ function generatePreparationTournamentGamePageHTML()
 				</div>
 			</div>
 			<div class="environnement-preparation-container" id="environnement-preparation-container">
-				<h3>${environnementStr}</h3>
+				<h3 data-translate-key="environnement"></h3>
 				<div class="environnement-preparation-container-button">
 					<button id="environnement-preparation-container-button-orange" class="environnement-preparation-container-button-orange btn-court" style="border: 3px solid #ffffff; border-radius: 10px">
 						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/orange-court.png" alt="Orange court">
@@ -331,14 +335,14 @@ function generatePreparationTournamentGamePageHTML()
 					</button>
 				</div>
 			</div>
-			<input id="send-preparation-game-button" value="${buttonStr}" class="btn btn-success btn-block mb-4 send-preparation-game-button" style="width: 30%;">
+			<input id="send-preparation-game-button" data-translate-key="start" value="" class="btn btn-success btn-block mb-4 send-preparation-game-button" style="width: 30%;">
 		</div>
 	`;
 }
 
 export function generatePreparationSoloTournamentPageHTML()
 {
-	let nav = generateNavigator("");
+	let nav = generateNavigator();
 	let body = generatePreparationTournamentGamePageHTML();
 
 	return (nav + body);

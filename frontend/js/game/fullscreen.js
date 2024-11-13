@@ -26,9 +26,12 @@ export function fullScreen(Game) {
 	messageFullscreen.style.zIndex = "1000";
 
 	const container = document.getElementById("game-container");
-	if (backgrondCountdownContainer)
-		container.appendChild(backgrondCountdownContainer);
-    container.appendChild(messageFullscreen);
+	if (container)
+	{
+		if (backgrondCountdownContainer)
+			container.appendChild(backgrondCountdownContainer);
+		container.appendChild(messageFullscreen);
+	}
 
 	backgrondCountdownContainer.addEventListener("click", () => {
 		const gameContainer = document.querySelector('.flex-game-container');

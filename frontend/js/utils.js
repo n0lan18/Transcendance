@@ -7,7 +7,7 @@ export function loadContent(page, url, addToHistory) {
 	}
 }
 
-export async function fetchUserInfo()
+export async function getUserInfo()
 {
 	try
 	{
@@ -40,6 +40,135 @@ export async function fetchUserInfo()
 		console.error('Error:', error);
 		return null;
 	}
+}
+
+export async function getStatsInfoAll()
+{
+	try
+	{
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (!jwtToken) {
+			console.error('No token found in localStorage');
+			loadAuthentificationPage();
+			return null;
+		}
+
+		const response = await fetch('api/gamestats/', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				}
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			console.log(data);
+
+			const firstStat = data.length > 0 ? data[0] : null;
+			if (!firstStat)
+				console.log('No game stats available.');
+			return firstStat;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}
+}
+
+export async function getStatsInfo(pk)
+{
+	try
+	{
+		const response = await fetch(`api/gamestats/${pk}/`, {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				}
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			JSON.stringify(data, null, 2);
+			console.log(data[0]);
+			if (data.length > 0)
+				return data[0];
+			return data;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}	
+}
+
+export async function putStatsInfo(pk, data)
+{
+	console.log(data);
+	try
+	{
+		const response = await fetch(`api/gamestats/${pk}/`, {
+				method: 'PUT',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			});
+		
+		if (response.ok) {
+			let updatedData = await response.json();
+			console.log("Updated Data:", JSON.stringify(updatedData, null, 2));
+			return updatedData;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await response.json();
+                console.error('Erreur détaillée:', errorData);
+            } else {
+                const errorText = await response.text();
+                console.error('Erreur non-JSON:', errorText);
+            }
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}	
 }
 
 export async function checkEmailExist()

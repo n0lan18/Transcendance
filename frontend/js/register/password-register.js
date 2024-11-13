@@ -94,45 +94,45 @@ export function loadRegisterPasswordPage(email, username) {
 		}
 	}
 
-	function checkPasswordForm(regex, value, partForm)
-	{
-		if (!partForm)
-			return ;
-		const item = partForm.querySelector('i');
-		if (regex.test(value))
-		{
-			item.classList.remove('fa-circle');
-			item.classList.remove('fa-circle-xmark', 'invalid-register');
-			item.classList.add('fa-circle-check', 'valid-password');
-			partForm.classList.remove('invalid-register')
-			partForm.classList.add('valid-password');
-		}
-		else
-		{
-			item.classList.remove('fa-circle-check', 'valid-password');
-			item.classList.add('fa-circle-xmark', 'invalid-register');
-			partForm.classList.remove('valid-password');
-			partForm.classList.add('invalid-register');
-		}
-	}
-
-	function errorPasswordForm(partForm)
-	{
-		if (!partForm)
-			return;
-		console.log("RRRRR");
-		const item = partForm.querySelector('i');
-		item.classList.remove('fa-circle');
-		item.classList.add('fa-circle-xmark', 'invalid-register');
-		partForm.classList.add('invalid-register');
-	}
-
 	window.addEventListener('popstate', function(event) {
 		if (event.state && event.state.page) {
 			// Charger le contenu associé à la page
 			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
 		}
 	});
+}
+
+export function checkPasswordForm(regex, value, partForm)
+{
+	if (!partForm)
+		return ;
+	const item = partForm.querySelector('i');
+	if (regex.test(value))
+	{
+		item.classList.remove('fa-circle');
+		item.classList.remove('fa-circle-xmark', 'invalid-register');
+		item.classList.add('fa-circle-check', 'valid-password');
+		partForm.classList.remove('invalid-register')
+		partForm.classList.add('valid-password');
+	}
+	else
+	{
+		item.classList.remove('fa-circle-check', 'valid-password');
+		item.classList.add('fa-circle-xmark', 'invalid-register');
+		partForm.classList.remove('valid-password');
+		partForm.classList.add('invalid-register');
+	}
+}
+
+export function errorPasswordForm(partForm)
+{
+	if (!partForm)
+		return;
+	console.log("RRRRR");
+	const item = partForm.querySelector('i');
+	item.classList.remove('fa-circle');
+	item.classList.add('fa-circle-xmark', 'invalid-register');
+	partForm.classList.add('invalid-register');
 }
 
 async function sendDataToDatabase(data)
