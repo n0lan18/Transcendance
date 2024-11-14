@@ -13,7 +13,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    #command: gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./backend:/app
       - static_volume:/app/myproject/staticfiles
@@ -21,11 +23,16 @@ services:
       - media_volume:/app/myproject/media
     depends_on:
       - postgres
+      - redis
     env_file: .env
     networks:
       - frontend
       - backend
 
+  redis:
+    image: redis:6
+    networks:
+      - backend
 
   nginx:
     build: ./nginx

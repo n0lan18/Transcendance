@@ -34,6 +34,7 @@ from myapp.views import UpdateImageView
 from myapp.views import UpdatePasswordView
 from myapp.views import UpdateEmailView
 from myapp.views import UpdateIsConnectView
+from myapp.views import Friends
 
 urlpatterns = [ 
     path('api/admin/', admin.site.urls),
@@ -52,7 +53,7 @@ urlpatterns = [
     path('api/gamestats/', GameStatsLocalListCreateView.as_view(), name='gamestats-list-create'),
     path('api/gamestats/<int:pk>/', GameStatsLocalDetailView.as_view(), name='gamestats-detail'),
     path('api/update-isconnect/', UpdateIsConnectView.as_view(), name='update-isconnect'),
-    
+    path('api/friends/<str:action>/<int:friend_id>/', Friends.as_view(), name='friends_action'),
 ]
 
 if settings.DEBUG:

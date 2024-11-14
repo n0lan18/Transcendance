@@ -14,6 +14,7 @@ from .models import User
 from .serializers import UserSerializer
 from .models import GameStatsLocal
 from .serializers import GameStatsLocalSerializer
+from .serializers import FriendSerializer
 
 class RegisterView(APIView):
 	permission_classes = [AllowAny]
@@ -57,10 +58,38 @@ class UserInfoView(APIView):
 			profile_photo_url = request.build_absolute_uri(profile_photo_url)
 			profile_photo_url = profile_photo_url.replace('http://localhost', settings.IP_ADDRESS)
 		print(profile_photo_url)
+
+		friends_data = [
+			{
+				'username': friend.username,
+				'profile_photo': request.build_absolute_uri(friend.profile_photo.url) if friend.profile_photo else None,
+				'isConnect': friend.isConnect,
+			}
+			for friend in user.friends.all()
+		]
 		return Response({
 			'username': user.username,
 			'profile_photo': profile_photo_url,
+			'friends': friends_data,
 		})
+
+class Friends(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def post(self, request, action, friend_id):
+		user = request.user
+		try:
+			friend = User.objects.get(pk=friend_id)
+			if action == "add":
+				user.add_friend(friend)
+				return Response({"message": "Friend added successfully"}, status=status.HTTP_200_OK)
+			elif action == "remove":
+				user.remove_friend(friend)
+				return Response({"message": "Friend removed successfully"}, status=status.HTTP_200_OK)
+			else:
+				return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
+		except User.DoesNotExist:
+			return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 class CheckEmailView(APIView):
 	permission_classes = [AllowAny]
@@ -90,6 +119,7 @@ class CheckUsernameView(APIView):
 				return Response({"exists": False, "message": "Username does not exist."}, status=status.HTTP_200_OK)
 		return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
 
+
 class UpdateUsernameView(APIView):
 	permission_classes = [IsAuthenticated]
 
@@ -105,6 +135,20 @@ class UpdateUsernameView(APIView):
 				return Response({"message": "Username updated successfully."}, status=status.HTTP_200_OK)
 		else:
 			return Response({"message": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+class UpdateIsConnectView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+		isConnect = request.data.get("isConnect")
+		print("isConnect: ", isConnect)
+		if isConnect:
+			request.user.isConnect = isConnect
+			request.user.save()
+			return Response({"message": "isConnect updated successfully."}, status=status.HTTP_200_OK)
+		else:
+			return Response({"message": "isConnect is required."}, status=status.HTTP_400_BAD_REQUEST)
+			
 
 class UpdateEmailView(APIView):
 	permission_classes = [AllowAny]

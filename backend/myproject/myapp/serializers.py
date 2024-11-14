@@ -4,10 +4,26 @@ from pathlib import os
 from django.conf import settings
 import random
 
-class UserSerializer(serializers.ModelSerializer):
+class GameStatsLocalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GameStatsLocal
+        fields = ['user', 'scores', 'resultats', 'numberSimpleMatch', 'numberVictorySimpleMatch', 'numberTournament', 'numberMatchTournament', 'numberVictoryMatchTournament', 'numberVictoryTournament', 'heroInvisible', 'heroDuplication', 'heroSuperstrength', 'heroTimelaps', 'numberGoalsWin', 'numberGoalLose', 'bestResultTournament']
+        read_only_fields = ['user']
+
+class FriendSerializer(serializers.ModelSerializer):
+    isConnect: serializers.BooleanField(source='isConnect')
+    game_stats = GameStatsLocalSerializer(source='game_stats.first', read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'profile_photo', 'isConnect']
+        fields = ['username', 'isConnect', 'game_stats']
+
+class UserSerializer(serializers.ModelSerializer):
+    friends = FriendSerializer(many=True, required=False)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'password', 'profile_photo', 'isConnect', 'friends']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -26,7 +42,8 @@ class UserSerializer(serializers.ModelSerializer):
         if os.path.exists(default_photo_path):
             with open(default_photo_path, 'rb') as file:
                 user.profile_photo.save(imageSrc, file)
-        
+        else:
+            set_default_profile_photo(user)
         user.save()
 
         game_stats = GameStatsLocal(user=user)
@@ -50,8 +67,3 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class GameStatsLocalSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GameStatsLocal
-        fields = ['user', 'scores', 'resultats', 'numberSimpleMatch', 'numberVictorySimpleMatch', 'numberTournament', 'numberMatchTournament', 'numberVictoryMatchTournament', 'numberVictoryTournament', 'heroInvisible', 'heroDuplication', 'heroSuperstrength', 'heroTimelaps', 'numberGoalsWin', 'numberGoalLose', 'bestResultTournament']
-        read_only_fields = ['user']

@@ -11,6 +11,12 @@ export function generateNavigator()
 							<p style="font-size: 15px" data-translate-key="home"></p>
 						</button>
 					</li>
+					<li class="box-nav-smartphone4">
+						<button id="friends-button" class="button-center-items" style="color: #b3b3b3">
+							<i class="fa-solid fa-user-group image-nav" style="margin-top: 5px; color: #b3b3b3"></i>
+							<p style="font-size: 15px" data-translate-key="friends"></p>
+						</button>
+					</li>
 					<li class="box-nav-smartphone2">
 						<div class="language-selector">
     						<select id="language-select" class="language-select">

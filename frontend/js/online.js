@@ -1,26 +1,22 @@
+import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { generateNavigator } from "./nav.js";
 import { getUserInfo } from "./utils.js";
 import { loadContent } from "./utils.js";
+import { newWebSocket } from "./websocket.js"
 
 export async function loadOnlinePage()
 {
 	let userInfo = await getUserInfo();
 	console.log(userInfo);
 
-	let settingsHTML = generateOnlinePageHTML(userInfo);
+	let onlineHTML = generateOnlinePageHTML(userInfo);
 
-	loadContent(settingsHTML, "settings", true);
-	document.getElementById("app").innerHTML = generateOnlinePageHTML(userInfo);
+	loadContent(onlineHTML, "online", true);
+	document.getElementById("app").innerHTML = generateOnlinePageHTML();
 
-	let switchPageToLogout = document.getElementById("logoutLink");
-	if (switchPageToLogout)
-	{
-		switchPageToLogout.addEventListener('click', function (event) {
-			localStorage.removeItem('jwt_token');
-			event.preventDefault();
-			loadAuthentificationPage();
-		});
-	}
+	addNavigatorEventListeners()
+
+	newWebSocket();
 
 	window.addEventListener('popstate', function(event) {
 		if (event.state && event.state.page) {
@@ -40,9 +36,9 @@ function generateBodyOnlinePageHTML()
 	`;
 }
 
-export function generateOnlinePageHTML(userInfo)
+export function generateOnlinePageHTML()
 {
-	let nav = generateNavigator(userInfo.username);
+	let nav = generateNavigator();
 	let body = generateBodyOnlinePageHTML();
 
 	return (nav + body);

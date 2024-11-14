@@ -7,7 +7,21 @@ from django.contrib.postgres.fields import ArrayField
 class User(AbstractUser):
     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
     isConnect = models.BooleanField(default=False)
-    pass
+    friends = models.ManyToManyField("self", related_name='user_friends', blank=True, symmetrical=False)
+
+    def add_friend(self, friend):
+        if friend != self and not self.is_friend(friend):
+            self.friends.add(friend)
+            friend.friends.add(self)
+    
+    def remove_friend(self, friend):
+        if self.is_friend(friend):
+            self.friends.remove(friend)
+            friend.friends.remove(self)
+
+
+    def is_friend(self, user):
+        return self.friends.filter(id=user.id).exists()
 
 User = get_user_model()
 

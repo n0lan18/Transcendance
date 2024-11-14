@@ -38,4 +38,4 @@ python manage.py collectstatic --noinput
 
 # Démarrer le serveur Django avec runserver
 echo "Starting Django development server..."
-exec python -u manage.py runserver 0.0.0.0:8000
+exec daphne -b 0.0.0.0 -p 8000 myproject.asgi:application
