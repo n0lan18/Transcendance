@@ -5,4 +5,5 @@ psycopg2-binary>=2.9.3
 dj_database_url>=0.5.0
 django-cors-headers
 djangorestframework-simplejwt
+watchfiles
 Pillow

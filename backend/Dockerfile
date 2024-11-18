@@ -11,7 +11,8 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt \
 && pip install channels \
 && pip install channels-redis \
-&& pip install daphne
+&& pip install daphne \
+&& pip install --upgrade watchfiles
 
 # Copier le script d'entrée
 COPY entrypoint.sh /app/

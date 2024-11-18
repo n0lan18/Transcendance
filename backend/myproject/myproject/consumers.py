@@ -59,13 +59,13 @@ class UserStatusConsumer(AsyncWebsocketConsumer):
         print("WebSocket connection attempt COOOOOONNNNECCCT")
         await self.accept()
         await self.send_json({"event": "connected", "message": "Connection successfully established."})
-        print("WebSocket connection established ETTTTTTAAABLIIIIIISSHHED")
+        print("WebSocket connection established ETABLIShED")
          # Vérifiez que l'utilisateur est bien connecté et qu'il existe dans self.scope
         user = self.scope.get('user')
         if user and user.is_authenticated:
             print(f"Utilisateur {user.username} connecté")
         else:
-            print("L'utilisateur n'est pas authentifié")
+            print("L'utilisateur n'est pas authentifié.")
             await self.close()
         self.ping_interval = 30  # Intervalle de temps entre les pings (en secondes)
         self.pong_timeout = 10
