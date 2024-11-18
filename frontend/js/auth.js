@@ -106,7 +106,7 @@ async function checkConnexion()
 
 					localStorage.setItem('jwt_token', token);
 					console.log('Login successful!');
-					history.replaceState({}, '', window.location.href);
+					history.replaceState({}, '', window.location.href);		
 					loadHomePage();
 				}
 				else

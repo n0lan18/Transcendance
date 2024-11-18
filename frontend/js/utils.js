@@ -21,7 +21,7 @@ export async function getUserInfo()
 		
 		if (response.ok) {
 			let data = await response.json();
-			console.log('Username:', data.username);
+			console.log('User: ', data);
 			return data;
 		}
 		else if (response.status === 401)

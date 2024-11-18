@@ -13,6 +13,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path, os
 from datetime import timedelta
 import logging
+import builtins
+
+original_print = builtins.print
+
+def print(*args, **kwargs):
+    kwargs.setdefault('flush', True)  # Ajoute flush=True si non défini
+    original_print(*args, **kwargs)
 
 # Configuration de niveau de log
 logging.basicConfig(level=logging.DEBUG)
@@ -57,8 +64,8 @@ INSTALLED_APPS = [
 	'rest_framework',
 	'rest_framework_simplejwt',
 	'corsheaders',
-	'myapp',
-    'channels'
+	'channels',
+    'myapp',
 ]
 
 MIDDLEWARE = [
@@ -94,10 +101,10 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 ASGI_APPLICATION = 'myproject.asgi.application'
 
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("redis", 6379)],
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],  # Assure-toi que Redis tourne localement
         },
     },
 }
@@ -184,5 +191,24 @@ AUTHENTICATION_BACKENDS = [
     'myapp.backends.UsernameOrEmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+    'django': {
+        'handlers': ['console'],
+        'level': 'INFO',
+        'propagate': True,
+    },
+}
 
 AUTH_USER_MODEL = 'myapp.User'

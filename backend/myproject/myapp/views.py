@@ -53,11 +53,13 @@ class UserInfoView(APIView):
 	def get(self, request):
 		user = request.user
 		profile_photo_url = user.profile_photo.url if user.profile_photo else None
-		print(profile_photo_url)
 		if profile_photo_url:
 			profile_photo_url = request.build_absolute_uri(profile_photo_url)
-			profile_photo_url = profile_photo_url.replace('http://localhost', settings.IP_ADDRESS)
-		print(profile_photo_url)
+			profile_photo_url = profile_photo_url.replace('http://', 'https://')
+			profile_photo_url = profile_photo_url.replace('https://localhost', settings.IP_ADDRESS)
+		print(profile_photo_url, flush=True)
+
+		isConnect = user.isConnect
 
 		friends_data = [
 			{
@@ -71,6 +73,7 @@ class UserInfoView(APIView):
 			'username': user.username,
 			'profile_photo': profile_photo_url,
 			'friends': friends_data,
+			'isConnect': isConnect
 		})
 
 class Friends(APIView):

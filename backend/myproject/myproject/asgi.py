@@ -12,6 +12,7 @@ import logging
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
+from myproject.middleware import TokenAuthMiddleware
 import myproject.routing 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
@@ -21,7 +22,7 @@ logging.info("Chargement de websocket_urlpatterns: %s", myproject.routing.websoc
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
-    "websocket": AuthMiddlewareStack(
+    "websocket": TokenAuthMiddleware(
         URLRouter(myproject.routing.websocket_urlpatterns)
     ),
 })

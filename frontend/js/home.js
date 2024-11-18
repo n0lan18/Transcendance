@@ -9,12 +9,41 @@ import { loadOnlinePage } from "./online.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { translation } from "./translate.js";
 
+let globalSocket = null;
+
 export async function loadHomePage()
 {
 	let userInfo = await getUserInfo();
 
+	// Vérifiez si une connexion WebSocket existe déjà
+	if (!globalSocket || globalSocket.readyState === WebSocket.CLOSED) {
+		let jwtToken = localStorage.getItem('jwt_token');
+		globalSocket = new WebSocket(`wss://localhost:8443/ws/online/?token=${jwtToken}`);
+		console.log("Nouvelle connexion WebSocket créée.");
+		setupWebSocketListeners(globalSocket, userInfo);
+	} else {
+		console.log("Réutilisation de la connexion WebSocket existante.");
+	}
+	
+	// Si la connexion est ouverte, envoyez un message de connexion
+	if (globalSocket.readyState === WebSocket.OPEN) {
+			globalSocket.send(JSON.stringify({
+			event: "connect",
+			username: userInfo.username
+		}));
+	} else {
+		// Gérer le cas où la connexion est en train d’être ouverte
+		globalSocket.onopen = () => {
+			globalSocket.send(JSON.stringify({
+			event: "connect",
+			username: userInfo.username
+			}));
+		};
+	}
+
 	let homeHTML = generateHomePageHTML(userInfo);
 
+	console.log(userInfo);
 	loadContent(homeHTML, "home", true);
 
 	document.getElementById("app").innerHTML = generateHomePageHTML(userInfo);
@@ -72,6 +101,35 @@ export async function loadHomePage()
 			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
 		}
 	});
+}
+
+function setupWebSocketListeners(socket, userInfo) {
+    // WebSocket événement `onmessage`
+    socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log("Message reçu du serveur :", message);
+
+        // Gestion de l'événement `ping`
+        if (message.event === "ping") {
+            console.log("Ping reçu, envoi du Pong.");
+            socket.send(JSON.stringify({ event: "pong" }));
+        }
+
+        // Mise à jour de l'état de connexion
+        if (message.isConnect !== undefined) {
+            console.log(`L'utilisateur ${userInfo.username} est maintenant ${message.isConnect ? "en ligne" : "hors ligne"}.`);
+        }
+    };
+
+    // WebSocket événement `onclose`
+    socket.onclose = (event) => {
+        console.warn("WebSocket connection closed :", event);
+    };
+
+    // WebSocket événement `onerror`
+    socket.onerror = (error) => {
+        console.error("WebSocket error :", error);
+    };
 }
 
 
