@@ -24,6 +24,7 @@ export function thirdPersonCamera(Game)
 
 export function multiplayerCamera(Game)
 {
+	console.log("PEPEPEPEPEPEPEPEPEPEPEPEPEPEPE")
 	Game.changeCamera = 5;
 	Game.camera = new THREE.PerspectiveCamera(75, Game.dimensions.width / Game.dimensions.height, 0.1, 1000)
 	Game.camera.position.set(Game.leftWall.position.x - 5, Game.leftWall.position.y , 11.8);

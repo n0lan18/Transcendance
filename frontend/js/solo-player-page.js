@@ -13,7 +13,7 @@ export function loadSoloPlayerPageChoiceGame()
 	const simpleMatch = document.getElementById("solo-player-simple-match-button");
 	simpleMatch.addEventListener('click', function (event) {
 		event.preventDefault();
-		loadPreparationSimpleMatchGamePage();
+		loadPreparationSimpleMatchGamePage("simple-match", "soloPlayer");
 	});
 
 	const tournament = document.getElementById("solo-player-tournament-button");

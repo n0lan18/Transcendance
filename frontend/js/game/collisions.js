@@ -36,6 +36,66 @@ export async function handleCollisions(Game) {
 		paddleCollision(Game.rightPaddle, "right", Game);
 	}
 
+	if (Game.modeGame == "multiPlayerFour")
+	{
+			// Vérification de la collision avec la raquette gauche
+		if (Game.ball.position.x - 1 < Game.leftPaddleMini.position.x + 0.25 &&
+			Game.ball.position.x + 1 > Game.leftPaddleMini.position.x - 0.25 &&
+			Game.ball.position.y < Game.leftPaddleMini.position.y + 1.5 &&
+			Game.ball.position.y > Game.leftPaddleMini.position.y - 1.5)
+		{
+			Game.ball.position.x = Game.leftPaddleMini.position.x + 1.25;
+			paddleCollision(Game.leftPaddleMini, "left", Game);
+		}
+
+		// Vérification de la collision avec la raquette droite
+		if (Game.ball.position.x - 1 < Game.rightPaddleMini.position.x + 0.25 &&
+			Game.ball.position.x + 1 > Game.rightPaddleMini.position.x - 0.25 &&
+			Game.ball.position.y < Game.rightPaddleMini.position.y + 1.5 &&
+			Game.ball.position.y > Game.rightPaddleMini.position.y - 1.5)
+		{
+			Game.ball.position.x = Game.rightPaddleMini.position.x - 1.25;
+			paddleCollision(Game.rightPaddleMini, "right", Game);
+		}
+	}
+
+	if (Game.modeGame == "multiPlayerFour")
+		{
+			// Vérification de la collision avec la raquette gauche
+			if (Game.ball.position.x - 1 < Game.leftPaddleMini.position.x + 0.25 &&
+				Game.ball.position.x + 1 > Game.leftPaddleMini.position.x - 0.25 &&
+				Game.ball.position.y < Game.leftPaddleMini.position.y + 1.5 &&
+				Game.ball.position.y > Game.leftPaddleMini.position.y - 1.5)
+			{
+				// Détecter si la balle frappe le côté avant ou arrière
+				if (Game.ballVelocity.x < 0) { // La balle va vers la gauche
+					Game.ball.position.x = Game.leftPaddleMini.position.x + 0.25; // Côté avant
+				} else { // La balle revient de l'autre côté
+					Game.ball.position.x = Game.leftPaddleMini.position.x - 0.25; // Côté arrière
+				}
+		
+				// Appliquer la logique de collision
+				paddleCollision(Game.leftPaddleMini, "left", Game);
+			}
+		
+			// Vérification de la collision avec la raquette droite
+			if (Game.ball.position.x - 1 < Game.rightPaddleMini.position.x + 0.25 &&
+				Game.ball.position.x + 1 > Game.rightPaddleMini.position.x - 0.25 &&
+				Game.ball.position.y < Game.rightPaddleMini.position.y + 1.5 &&
+				Game.ball.position.y > Game.rightPaddleMini.position.y - 1.5)
+			{
+				// Détecter si la balle frappe le côté avant ou arrière
+				if (Game.ballVelocity.x < 0) { // La balle va vers la droite
+					Game.ball.position.x = Game.rightPaddleMini.position.x - 0.25; // Côté avant
+				} else { // La balle revient de l'autre côté
+					Game.ball.position.x = Game.rightPaddleMini.position.x + 0.25; // Côté arrière
+				}
+		
+				// Appliquer la logique de collision
+				paddleCollision(Game.rightPaddleMini, "right", Game);
+			}
+		}
+
 	if (Game.ballReplica && (Game.ballReplica.position.x > 25 || Game.ballReplica.position.x < -25))
 	{
 		Game.scene.remove(Game.ballReplica);
@@ -104,13 +164,15 @@ export async function handleCollisions(Game) {
 					loadFinishPageTournament("lose", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 			}
 			else
-				loadFinishPage(winOrLostStr, scores.leftPlayerScore, scores.rightPlayerScore, isWin);
+				loadFinishPage(winOrLostStr, scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.styleMatch, Game.modeGame);
 		}
 		else
 			startCountdown(Game);
 		Game.ball.position.set(0, 1, 1);
 		Game.leftPaddle.position.set(-23.5, 1, 0.5);
 		Game.rightPaddle.position.set(23.5, 1, 0.5);
+		Game.leftPaddleMini.position.set(-10.5 , 1, 0.5);
+		Game.rightPaddleMini.position.set(10.5 , 1, 0.5);
 		Game.numberPaddelCollision = 0;
 		Game.ballVelocity = {x: xBall, y: 0.02};
 	}

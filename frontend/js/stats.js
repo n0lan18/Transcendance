@@ -54,6 +54,9 @@ export async function loadStatsPage()
 
 	let numberVictory = userStatsInfoAll.numberVictoryMatchTournament + userStatsInfoAll.numberVictorySimpleMatch;
 	let numberDefeat = (userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch) - numberVictory;
+	console.log((userStatsInfoAll.numberMatchTournament))
+	console.log(userStatsInfoAll.numberSimpleMatch)
+	console.log(numberDefeat);
 
 	const ctx1 = document.getElementById('myDonutChart1').getContext('2d');
 	let myDonutChart1 = addGraphics(numberVictory, numberDefeat, 'Victory', 'Defeat', ctx1);

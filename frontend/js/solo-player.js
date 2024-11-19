@@ -2,7 +2,7 @@ import { isMobileDevice, loadContent, putStatsInfo } from "./utils.js";
 import { Game } from "./game.js";
 import { translation } from "./translate.js";
 
-export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, styleMatch, numberPlayers)
+export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, styleMatch, numberPlayers, playerSize)
 {
 	let soloPlayerHTML = generateGamePageHTML(username1, username2);
 
@@ -17,7 +17,7 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 			await putStatsInfo(3, {numberSimpleMatch: 1});
 		else if (styleMatch == "tournament")
 			await putStatsInfo(6, {numberMatchTournament: 1});
-		const game = new Game("game-container", "soloPlayer", colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers);
+		const game = new Game("game-container", playerSize, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers);
 		game.start();
 	}
 

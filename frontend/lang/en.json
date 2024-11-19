@@ -43,5 +43,7 @@
 	"winMatch": "Congratulations! You've won!",
 	"finish": "Finish",
 	"retry": "Retry",
-	"friends": "Friends"
+	"friends": "Friends",
+	"twoPlayers": "2 Players",
+	"fourPlayers": "4 Players"
 }

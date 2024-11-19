@@ -6,7 +6,7 @@ import { movePaddlesComputer } from "./game/computer/paddel-moves.js";
 import { handleCollisions } from "./game/collisions.js";
 import { updateBallTrail } from "./game/items/ball.js";
 import { addBall } from "./game/items/ball.js";
-import { addPaddles } from "./game/items/paddel.js";
+import { addPaddles, addPaddlesMini } from "./game/items/paddel.js";
 import { createWall } from "./game/items/wall.js";
 import { addLines } from "./game/items/line.js";
 import { addBackground } from "./game/items/background.js";
@@ -30,6 +30,7 @@ export class Game {
         this.emptySizePowerBar = emptySizePowerBar();
         this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
         this.modeGame = modeGame;
+        console.log(this.modeGame)
         this.scoreContainer = document.getElementById("board-score");
         this.gamePaused = true;
         this.animationFrameId;
@@ -68,6 +69,7 @@ export class Game {
         this.username1 = username1;
         this.username2 = username2;
         this.styleMatch = styleMatch;
+        console.log(styleMatch)
         this.numberPlayers = numberPlayers;
         this.colorCourt = colorCourt;
         this.colorPlayer1 = colorPlayer1;
@@ -86,6 +88,8 @@ export class Game {
         this.topWall = createWall(this, 50, this.wallThickness, { x: 0, y: 15, z: (this.wallHeight / 2) }, this.wallHeight);
         this.bottomWall = createWall(this, 50, this.wallThickness, { x: 0, y: -15, z: (1 / 2) }, 1);
         addPaddles(this, colorPlayer1, colorPlayer2);
+        if (this.modeGame == "multiPlayerFour")
+            addPaddlesMini(this, colorPlayer1, colorPlayer2);
 		addLines(this);
 		addBall(this);
         addBackground(this);
@@ -144,6 +148,22 @@ export class Game {
             }
             if (this.rightPaddle.position.y < (-15 + (this.wallThickness / 2) + (6 / 2))) {
                 this.rightPaddle.position.y = (-15 + (this.wallThickness / 2) + (6 / 2)); // Ajuster la position
+            }
+            if (this.styleMatch == "multiPlayerFour")
+            {
+                // Limiter le mouvement des raquettes mini dans les limites visibles
+                if (this.leftPaddleMini.position.y > ((15 - (this.wallThickness / 2)) - (1.5))) {
+                    this.leftPaddleMini.position.y = ((15 - (this.wallThickness / 2)) - (1.5)); // Ajuster la position
+                }
+                if (this.leftPaddleMini.position.y < (-15 + (this.wallThickness / 2) + (1.5))) {
+                    this.leftPaddleMini.position.y = (-15 + (this.wallThickness / 2) + (1.5)); // Ajuster la position
+                }
+                if (this.rightPaddleMini.position.y > ((15 - (this.wallThickness / 2)) - (1.5))) {
+                    this.rightPaddleMini.position.y = ((15 - (this.wallThickness / 2)) - (1.5)); // Ajuster la position
+                }
+                if (this.rightPaddleMini.position.y < (-15 + (this.wallThickness / 2) + (1.5))) {
+                    this.rightPaddleMini.position.y = (-15 + (this.wallThickness / 2) + (1.5)); // Ajuster la position
+                }
             }
 
             // Déplacement de la balle

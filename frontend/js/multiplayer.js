@@ -1,62 +1,54 @@
+import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
+import { translation } from "./translate.js";
 import { generateNavigator } from "./nav.js";
-import { getUserInfo } from "./utils.js";
-import { loadContent } from "./utils.js";
-import { Game } from "./game.js";
+import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 
-export async function loadMultiplayerPage()
+export function loadMultiPlayerPageChoiceGame()
 {
-	let userInfo = await getUserInfo();
-	console.log(userInfo);
+	document.getElementById("app").innerHTML = generateSoloPlayerChoicePageHTML();
+	translation();
+	addNavigatorEventListeners()
 
-	let multiplayerHTML = generateMultiplayerPageHTML(userInfo);
+	const simpleMatch = document.getElementById("multi-player-two-players-button");
+	simpleMatch.addEventListener('click', function (event) {
+		event.preventDefault();
+		loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerTwo");
+	});
 
-	loadContent(multiplayerHTML, "multiplayer", true);
-	document.getElementById("app").innerHTML = multiplayerHTML;
-
-	const game = new Game("game-container", "multiplayerGame");
-	game.start();
-
-	let switchPageToLogout = document.getElementById("logoutLink");
-	if (switchPageToLogout)
-	{
-		switchPageToLogout.addEventListener('click', function (event) {
-			localStorage.removeItem('jwt_token');
-			event.preventDefault();
-			loadAuthentificationPage();
-		});
-	}
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
+	const tournament = document.getElementById("multi-player-four-players-button");
+	tournament.addEventListener('click', function (event) {
+		event.preventDefault();
+		loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerFour");
 	});
 }
 
-function generateBodyMultiplayerPageHTML(username)
+function soloPlayerPageChoiceGameHTML()
 {
-	let player1Str;
-	if (username)
-		player1Str = username;
-	else
-		player1Str = "Player 1";
 	return `
-		<div class="flex-game-container">
-			<div class="display-score-container">
-				<div class="player1-container"><h2>${player1Str}</h2></div>
-				<div class="score-container"><h1 id="board-score">0 - 0</h1></div>
-				<div class="player2-container"><h2>Player 2</h2></div>
+		<div class="multi-player-choice-number-players">
+			<h1 class="text-center" data-translate-key="multiplayer"></h1>
+			<div class="multi-player-choice-player">
+				<button id="multi-player-two-players-button" class="solo-player-simple-match-button">
+					<img class="img-box4-5" src="../images/multiplayer-logo-2-players-white.png" alt="two player multiplayer" width="100" height="100">
+					<div class="item-name"
+						<h1 data-translate-key="twoPlayers"></h1>
+					</div>
+				</button>
+				<button id="multi-player-four-players-button" class="solo-player-tournament-button">
+					<img class="img-box4-5" src="../images/multiplayer-logo-4-players-white.png" alt="four player multiplayer" width="100" height="100">
+					<div class="item-name"
+						<h1 data-translate-key="fourPlayers"></h1>
+					</div>
+				</button>
 			</div>
-			<div id="game-container" class="game-container"></div>
 		</div>
 	`;
 }
 
-export function generateMultiplayerPageHTML(userInfo)
+export function generateSoloPlayerChoicePageHTML()
 {
-	let nav = generateNavigator(userInfo.username);
-	let body = generateBodyMultiplayerPageHTML(userInfo.username);
+	let nav = generateNavigator();
+	let body = soloPlayerPageChoiceGameHTML()
 
 	return (nav + body);
 }

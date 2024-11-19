@@ -134,7 +134,7 @@ function specialShotComputerPlayer1(Game)
 function specialShotComputerPlayer2(Game)
 {
 	window.addEventListener('keypress', (event) => {
-		if (event.key === "0")
+		if (event.key === "0" && Game.styleMatch == "multiplayer")
 		{
 			if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
 			{
@@ -171,8 +171,6 @@ function cameraChangement(Game)
 			{
 				if (Game.modeGame === "soloPlayer")
 					thirdPersonCamera(Game);
-				else if (Game.modeGame === "multiplayerGame")
-					multiplayerCamera(Game);
 			}
 			else
 				cameraClassicPong(Game);
