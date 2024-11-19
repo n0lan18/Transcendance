@@ -99,53 +99,62 @@ function pauseGame(Game)
 
 function specialShotSmartphone(Game)
 {
-	window.addEventListener('touchstart', (event) => {
-		if (event.target.id === "special-shot-button")
-		{
-			if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
+	if (Game.superPower == "isSuperPower")
+	{
+		window.addEventListener('touchstart', (event) => {
+			if (event.target.id === "special-shot-button")
 			{
-				Game.powerPlayer1 = "active";
-				const gameBreakerLeft = document.getElementById("power-container-left");
-				Game.containerProgressBarLeft.style.backgroundColor = "green";
-				gameBreakerLeft.style.color = "grey";
-				Game.containerProgressBarLeft.style.width = Game.sizeOfStep + 'px';
+				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
+				{
+					Game.powerPlayer1 = "active";
+					const gameBreakerLeft = document.getElementById("power-container-left");
+					Game.containerProgressBarLeft.style.backgroundColor = "green";
+					gameBreakerLeft.style.color = "grey";
+					Game.containerProgressBarLeft.style.width = Game.sizeOfStep + 'px';
+				}
 			}
-		}
-	});
+		});
+	}
 }
 
 function specialShotComputerPlayer1(Game)
 {
-	window.addEventListener('keypress', (event) => {
-		if (event.key === " ")
-		{
-			if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
+	if (Game.superPower == "isSuperPower")
+	{
+		window.addEventListener('keypress', (event) => {
+			if (event.key === " ")
 			{
-				Game.powerPlayer1 = "active";
-				const gameBreakerLeft = document.getElementById("power-container-left");
-				Game.containerProgressBarLeft.style.backgroundColor = "green";
-				gameBreakerLeft.style.color = "grey";
-				Game.containerProgressBarLeft.style.width = Game.sizeOfStep + 'px';
+				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
+				{
+					Game.powerPlayer1 = "active";
+					const gameBreakerLeft = document.getElementById("power-container-left");
+					Game.containerProgressBarLeft.style.backgroundColor = "green";
+					gameBreakerLeft.style.color = "grey";
+					Game.containerProgressBarLeft.style.width = Game.sizeOfStep + 'px';
+				}
 			}
-		}
-	});
+		});
+	}
 }
 
 function specialShotComputerPlayer2(Game)
 {
-	window.addEventListener('keypress', (event) => {
-		if (event.key === "0" && Game.styleMatch == "multiplayer")
-		{
-			if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
+	if (Game.superPower == "isSuperPower")
+	{
+		window.addEventListener('keypress', (event) => {
+			if (event.key === "0" && Game.styleMatch == "multiplayer")
 			{
-				Game.powerPlayer2 = "active";
-				const gameBreakerLeft = document.getElementById("power-container-right");
-				Game.containerProgressBarRight.style.backgroundColor = "green";
-				gameBreakerLeft.style.color = "grey";
-				Game.containerProgressBarRight.style.width = Game.sizeOfStep + 'px';
+					if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
+				{
+					Game.powerPlayer2 = "active";
+					const gameBreakerLeft = document.getElementById("power-container-right");
+					Game.containerProgressBarRight.style.backgroundColor = "green";
+					gameBreakerLeft.style.color = "grey";
+					Game.containerProgressBarRight.style.width = Game.sizeOfStep + 'px';
+				}
 			}
-		}
-	});
+		});
+	}
 }
 
 function pauseButtonSmartphone(Game)
@@ -169,7 +178,7 @@ function cameraChangement(Game)
 		{
 			if (Game.changeCamera === 0)
 			{
-				if (Game.modeGame === "soloPlayer")
+				if (Game.modeGame === "soloPlayer" || Game.modeGame === "tournament")
 					thirdPersonCamera(Game);
 			}
 			else

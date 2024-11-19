@@ -22,8 +22,9 @@ import { startCountdown } from './game/countdown.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
 
 export class Game {
-    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers) {
+    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers, superPower) {
         this.container = document.getElementById(containerId);
+        this.superPower = superPower;
         this.containerProgressBarLeft = document.getElementById("progress-bar-left");
         this.containerProgressBarRight = document.getElementById("progress-bar-right");
         this.fullSizePowerBar = fullSizePowerBar();
@@ -43,8 +44,9 @@ export class Game {
         this.camera = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000);
         this.camera.position.set(0, -23 , 15);
         this.camera.lookAt(0, 0, 0);
+        this.camera.position.z = 20;
+        this.activeCamera = this.camera;
         this.camera2;
-		this.camera.position.z = 20;
 		this.ballVelocity = { x: 0.1, y: 0.02 };
         this.paddleSpeed = 0.2;
         this.wallThickness = 1;
@@ -87,6 +89,10 @@ export class Game {
         this.rightWall = createWall(this, 0, 31, { x: 25, y: 0, z: -(1 / 2) }, 1);
         this.topWall = createWall(this, 50, this.wallThickness, { x: 0, y: 15, z: (this.wallHeight / 2) }, this.wallHeight);
         this.bottomWall = createWall(this, 50, this.wallThickness, { x: 0, y: -15, z: (1 / 2) }, 1);
+        this.camera2 = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000);
+		this.camera2.position.set(this.leftWall.position.x - 5, this.leftWall.position.y , 11.8);
+        this.camera2.lookAt(this.leftWall.position.x + 15, this.leftWall.position.y, -2);
+        this.camera2.rotation.z = Math.PI / 0.6666;
         addPaddles(this, colorPlayer1, colorPlayer2);
         if (this.modeGame == "multiPlayerFour")
             addPaddlesMini(this, colorPlayer1, colorPlayer2);
@@ -120,17 +126,20 @@ export class Game {
     }
 
 	getGameContainerDimensions() {
-        const width = this.container.clientWidth;
-        const height = this.container.clientHeight;
+        let width = this.container.clientWidth;
+        let height = this.container.clientHeight;
         return { width, height };
     }
 
     update() {
         if (!this.gamePaused)
         {
-            this.fullSizePowerBar = fullSizePowerBar();
-            this.emptySizePowerBar = emptySizePowerBar();
-            this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
+            if (this.superPower == "isSuperPower")
+            {
+                this.fullSizePowerBar = fullSizePowerBar();
+                this.emptySizePowerBar = emptySizePowerBar();
+                this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
+            }
 
             movePaddlesComputer(this);
 
@@ -149,20 +158,20 @@ export class Game {
             if (this.rightPaddle.position.y < (-15 + (this.wallThickness / 2) + (6 / 2))) {
                 this.rightPaddle.position.y = (-15 + (this.wallThickness / 2) + (6 / 2)); // Ajuster la position
             }
-            if (this.styleMatch == "multiPlayerFour")
+            if (this.modeGame == "multiPlayerFour")
             {
                 // Limiter le mouvement des raquettes mini dans les limites visibles
-                if (this.leftPaddleMini.position.y > ((15 - (this.wallThickness / 2)) - (1.5))) {
-                    this.leftPaddleMini.position.y = ((15 - (this.wallThickness / 2)) - (1.5)); // Ajuster la position
+                if (this.leftPaddleMini.position.y > ((15 - (this.wallThickness / 2)) - (3 / 2))) {
+                    this.leftPaddleMini.position.y = ((15 - (this.wallThickness / 2)) - (3 / 2)); // Ajuster la position
                 }
-                if (this.leftPaddleMini.position.y < (-15 + (this.wallThickness / 2) + (1.5))) {
-                    this.leftPaddleMini.position.y = (-15 + (this.wallThickness / 2) + (1.5)); // Ajuster la position
+                if (this.leftPaddleMini.position.y < (-15 + (this.wallThickness / 2) + (3 / 2))) {
+                    this.leftPaddleMini.position.y = (-15 + (this.wallThickness / 2) + (3 / 2)); // Ajuster la position
                 }
-                if (this.rightPaddleMini.position.y > ((15 - (this.wallThickness / 2)) - (1.5))) {
-                    this.rightPaddleMini.position.y = ((15 - (this.wallThickness / 2)) - (1.5)); // Ajuster la position
+                if (this.rightPaddleMini.position.y > ((15 - (this.wallThickness / 2)) - (3 / 2))) {
+                    this.rightPaddleMini.position.y = ((15 - (this.wallThickness / 2)) - (3 / 2)); // Ajuster la position
                 }
-                if (this.rightPaddleMini.position.y < (-15 + (this.wallThickness / 2) + (1.5))) {
-                    this.rightPaddleMini.position.y = (-15 + (this.wallThickness / 2) + (1.5)); // Ajuster la position
+                if (this.rightPaddleMini.position.y < (-15 + (this.wallThickness / 2) + (3 / 2))) {
+                    this.rightPaddleMini.position.y = (-15 + (this.wallThickness / 2) + (3 / 2)); // Ajuster la position
                 }
             }
 
@@ -204,7 +213,7 @@ export class Game {
         {
             this.renderer.setScissorTest(false);
             this.renderer.setViewport(0, 0, this.dimensions.width, this.dimensions.height);
-            this.renderer.render(this.scene, this.camera);
+            this.renderer.render(this.scene, this.activeCamera);
         }
     }
 

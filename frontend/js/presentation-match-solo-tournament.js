@@ -2,7 +2,7 @@ import { loadContent } from "./utils.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
 import { translation } from "./translate.js";
 
-export async function loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers)
+export async function loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers, sizePlayers, superPower)
 {
 	let username2 = "et6485Q";
 	let colorPlayer2 = "#3BB323";
@@ -64,11 +64,23 @@ export async function loadPresentationSoloPlayerPage(username1, courtColor, colo
 	const imagePlayer2 = document.getElementById("superhero-image2");
 	imagePlayer2.src = imageHeroPlayer2;
 
+	if (superPower == "isNotSuperPower")
+	{
+		let superHeroImage1 = document.getElementById("superhero-image");
+		let superHeroImage2 = document.getElementById("superhero-image2");
+		let superHeroPowerText1 = document.getElementById("superhero-power-text");
+		let superHeroPowerText2 = document.getElementById("superhero-power-text2");
+		superHeroImage1.style.display = "none";
+		superHeroImage2.style.display = "none";
+		superHeroPowerText1.style.display = "none";
+		superHeroPowerText2.style.display = "none";
+	}
+
 
 	const buttonStart = document.getElementById("send-preparation-game-button");
 	buttonStart.addEventListener('click', function (event) {
 		event.preventDefault();
-		loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, "tournament", numberPlayers / 2);
+		loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, "tournament", numberPlayers / 2, sizePlayers, superPower);
 	});
 }
 
@@ -104,7 +116,7 @@ function generateBodyPresentationPageHTML(username, username2, numberPlayers, he
 			<div class="presentation-solo-player1">
 				<h2>${username}</h2>
 				<img id="superhero-image" class="superhero-image" src="" alt="Photo Album" style="border-radius: 10px;"></img>
-				<div class="superhero-power-text">
+				<div class="superhero-power-text" id="superhero-power-text">
 					<i class="fa-brands fa-superpowers" style="text-align: center;"></i>
 					<p id="superhero-power-text-player1">${heroPowerPlayer1}</p>
 				</div>
@@ -115,7 +127,7 @@ function generateBodyPresentationPageHTML(username, username2, numberPlayers, he
 			<div class="presentation-solo-player2">
 				<h2>${username2}</h2>
 				<img id="superhero-image2" class="superhero-image" src="" alt="Photo Album" style="border-radius: 10px;"></img>
-				<div class="superhero-power-text">
+				<div class="superhero-power-text" id="superhero-power-text2">
 					<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
 					<p id="superhero-power-text-player1">${heroPowerPlayer2}</p>
 				</div>

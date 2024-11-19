@@ -45,5 +45,7 @@
 	"retry": "Reintentar",
 	"friends": "Amigos",
 	"twoPlayers": "2 Jugadores",
-	"fourPlayers": "4 Jugadores"
+	"fourPlayers": "4 Jugadores",
+	"isSuperPower": "con Superpoderes",
+	"isNotSuperPower": "sin Superpoderes"
 }

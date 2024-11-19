@@ -15,12 +15,13 @@
 }
 
 .solo-player-simple-match-button, .solo-player-tournament-button {
-	height: 40vh;
-	width: 40vw;
-	margin: 5px;
+	height: 100%;
+	width: 100%;
+	margin: 15px;
 	border-radius: 3px;
 	border: none;
 	color: white;
+	aspect-ratio: 1/1;
 }
 
 .solo-player-simple-match-button:hover, .solo-player-tournament-button:hover {

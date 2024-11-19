@@ -19,7 +19,7 @@ export function loadSoloPlayerPageChoiceGame()
 	const tournament = document.getElementById("solo-player-tournament-button");
 	tournament.addEventListener('click', function (event) {
 		event.preventDefault();
-		loadPreparationTournamentGamePage();
+		loadPreparationTournamentGamePage("soloPlayer");
 	});
 }
 
@@ -28,7 +28,7 @@ function soloPlayerPageChoiceGameHTML()
 	return `
 		<div class="solo-player-choice-game-container">
 			<h1 data-translate-key="choiceGame"></h1>
-			<div class="solo-player-choice-button">
+			<div class="button-finish-page">
 				<button id="solo-player-simple-match-button" class="solo-player-simple-match-button">
 					<i class="fa-solid fa-gamepad" style="font-size: 100px"></i>
 					<div class="item-name"

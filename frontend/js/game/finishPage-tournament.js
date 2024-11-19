@@ -14,6 +14,8 @@ export async function loadFinishPageTournament(endOfGame, numberPlayer, scoreLef
 	}
 	else
 		await putStatsInfo(2, {resultats: "D"})
+	if (numberPlayer == 1)
+		numberPlayer = 2;
 	await putStatsInfo(15, {bestResultTournament: numberPlayer})
 	await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
 	await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
@@ -50,7 +52,6 @@ function finishPageHTML(endOfGame)
 		else if (lang == "fr")
 			GameStr = "Vous avez gagne le tournoi"
 	}
-	let homeStr = "Home";
 
 
 	return `
@@ -58,13 +59,17 @@ function finishPageHTML(endOfGame)
 			<h1 data-translate-key="finish"></h1>
 			<h2>${GameStr}</h2>
 			<div class="button-finish-page">
-				<button id="home-button-end-party" class="button-center-items home-button-end-party" style="color: white">
-					<i class="fa-solid fa-house home-button-finish-page" style="color: white"></i>
-					<p style="font-size: 20px">${homeStr}</p>
+				<button id="home-button-end-party" class="solo-player-simple-match-button">
+					<i class="fa-solid fa-house home-button-finish-page" style="font-size: 100px; color: white"></i>
+					<div class="item-name"
+						<h1 data-translate-key="home"></h1>
+					</div>
 				</button>
-				<button id="retry-button-end-party" class="button-center-items retry-button-end-party" style="color: white">
-					<i class="fa-solid fa-rotate-right retry-button-finish-page" style="color: white"></i>
-					<p style="font-size: 20px" data-translate-key="retry"></p>
+				<button id="retry-button-end-party" class="solo-player-tournament-button" style="background-color: #1982c4">
+					<i class="fa-solid fa-rotate-right" style="font-size: 100px;></i>
+					<div class="item-name"
+						<h1 data-translate-key="retry"></p>
+					</div>
 				</button>
 			</div>
 		<div>

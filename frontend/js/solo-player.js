@@ -2,7 +2,7 @@ import { isMobileDevice, loadContent, putStatsInfo } from "./utils.js";
 import { Game } from "./game.js";
 import { translation } from "./translate.js";
 
-export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, styleMatch, numberPlayers, playerSize)
+export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, styleMatch, numberPlayers, playerSize, superPower)
 {
 	let soloPlayerHTML = generateGamePageHTML(username1, username2);
 
@@ -11,13 +11,20 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 	translation();
 	let pageGameContainer = document.getElementById("page-game-container");
 	toggleFullScreen();
+	if (superPower == "isNotSuperPower")
+	{
+		let progressBar = document.getElementById("progress-bar-container");
+		let powerContainer = document.getElementById("power-container");
+		progressBar.style.display = "none";
+		powerContainer.style.display = "none";
+	}
 	if (pageGameContainer)
 	{
 		if (styleMatch == "simple-match")
 			await putStatsInfo(3, {numberSimpleMatch: 1});
 		else if (styleMatch == "tournament")
 			await putStatsInfo(6, {numberMatchTournament: 1});
-		const game = new Game("game-container", playerSize, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers);
+		const game = new Game("game-container", playerSize, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers, superPower);
 		game.start();
 	}
 
@@ -54,7 +61,7 @@ function generateBodyGamePageHTML(username, username2)
 					<div class="score-container"><h1 class="board-score" id="board-score">0 - 0</h1></div>
 					<div class="player2-container"><h2 class="player2-username">${username2}</h2></div>
 				</div>
-				<div class="progress-bar-container">
+				<div class="progress-bar-container" id="progress-bar-container">
 					<div class="progress-bar-left-container" id="progress-bar-left-container">
 						<div class="progress-bar-left" id="progress-bar-left"></div>
 					</div>
@@ -62,7 +69,7 @@ function generateBodyGamePageHTML(username, username2)
 						<div class="progress-bar-right" id="progress-bar-right"></div>
 					</div>
 				</div>
-				<div class="power-container">
+				<div class="power-container" id="power-container">
 					<div class="power-container-left" id="power-container-left"><h3 style="font-size: 15px">GAME BREAKER</h3></div>
 					<div class="power-container-right" id="power-container-right"><h3 style="font-size: 15px">GAME BREAKER</h3></div>
 				</div>

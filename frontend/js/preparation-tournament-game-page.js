@@ -7,7 +7,7 @@ import { loadContent,  } from "./utils.js";
 import { putStatsInfo } from "./utils.js";
 import { rgbToHex } from "./utils.js";
 
-export async function loadPreparationTournamentGamePage()
+export async function loadPreparationTournamentGamePage(sizePlayers)
 {
 	let userInfo = await getUserInfo();
 
@@ -21,6 +21,7 @@ export async function loadPreparationTournamentGamePage()
 	let colorPlayer1 = "#E23F22";
 	let heroPowerPlayer1 = "Invisible";
 	let sizeTournament = 64;
+	let superPower = "isSuperPower";
 
 	loadContent(preparationGameHTML, "preparation-solo-tournament", true);
 
@@ -114,7 +115,7 @@ export async function loadPreparationTournamentGamePage()
 					await putStatsInfo(11, {heroSuperstrength: 1})
 				else if (heroPowerPlayer1 == "Time laps")
 					await putStatsInfo(12, {heroTimelaps: 1})
-				loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, sizeTournament);
+				loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, sizeTournament, sizePlayers, superPower);
 			}
 		});
 	}
@@ -238,6 +239,33 @@ export async function loadPreparationTournamentGamePage()
 	}
 	else
 		console.log("nextBtn not found");
+
+	const radios = document.querySelectorAll('input[name="choice"]');
+	radios.forEach(radio => {
+		radio.addEventListener('change', () => {
+			if (radio.checked) {
+				console.log(`Le bouton radio sélectionné est : ${radio.value}`);
+				let hero1 = document.getElementById("chose-superhero-container1");
+				let powerText = document.getElementById("superhero-power-text");
+				let title = document.getElementById("usernameGamePlayer1-text");
+				if (radio.value == "isSuperPower")
+				{
+					title.style.display = "display";
+					superPower = "isSuperPower";
+					hero1.style.display = "display";
+					powerText.style.display = "display";
+				}
+				else
+				{
+					title.style.display = "none";
+					superPower = "isNotSuperPower";
+					hero1.style.display = "none";
+					powerText.style.display = "none";
+
+				}
+			}
+		})
+	})
 }
 
 function generatePreparationTournamentGamePageHTML()
@@ -250,6 +278,16 @@ function generatePreparationTournamentGamePageHTML()
 		</div>
 		<div class="preparation-game-container" id="preparation-game-container">
 			<h1 data-translate-key="tournament"></h1>
+			<div class="radio-superPower">
+    			<div class="radio-isSuperPower">
+        			<input type="radio" id="isSuperPower" name="choice" value="isSuperPower" checked>
+        			<label for="isSuperPower" data-translate-key="isSuperPower">Avec Super-pouvoirs</label>
+    			</div>
+    			<div class="radio-isNotSuperPower">
+        			<input type="radio" id="isNotSuperPower" name="choice" value="isNotSuperPower">
+        			<label for="isNotSuperPower" data-translate-key="isNotSuperPower">Sans Super-pouvoirs</label>
+    			</div>
+			</div>
 			<div class="player-preparation-container">
 				<div class="player-preparation-container-content">
 					<div class="player-left-preparation">
@@ -263,7 +301,7 @@ function generatePreparationTournamentGamePageHTML()
 								<i class="fa-solid fa-arrow-right"></i>
 							</button>
 						</div>
-						<div class="superhero-power-text">
+						<div class="superhero-power-text" id="superhero-power-text">
 							<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
 							<p id="superhero-power-text-player1">Invisible</p>
 						</div>

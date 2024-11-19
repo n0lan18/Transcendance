@@ -20,6 +20,7 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 	let heroPowerPlayer1 = "Invisible";
 	let heroPowerPlayer2 = "Super strength";
 	let preparationGameHTML = generateSoloPlayerPageHTML(username1);
+	let superPower = "isSuperPower";
 
 	loadContent(preparationGameHTML, "preparation-game", true);
 
@@ -117,7 +118,7 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 					await putStatsInfo(11, {heroSuperstrength: 1})
 				else if (heroPowerPlayer1 == "Time laps")
 					await putStatsInfo(12, {heroTimelaps: 1})
-				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, -1, sizePlayers);
+				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, -1, sizePlayers, superPower);
 			}
 		});
 	}
@@ -322,6 +323,40 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 	}
 	else
 		console.log("nextBtn2 not found");
+
+	const radios = document.querySelectorAll('input[name="choice"]');
+	radios.forEach(radio => {
+		radio.addEventListener('change', () => {
+			if (radio.checked) {
+				console.log(`Le bouton radio sélectionné est : ${radio.value}`);
+				let hero1 = document.getElementById("chose-superhero-container1");
+				let hero2 = document.getElementById("chose-superhero-container2");
+				let powerText = document.getElementById("superhero-power-text");
+				let powerText2 = document.getElementById("superhero-power-text2");
+				let title = document.getElementById("usernameGamePlayer1-text");
+				if (radio.value == "isSuperPower")
+				{
+					title.style.display = "display";
+					superPower = "isSuperPower";
+					hero1.style.display = "display";
+					hero2.style.display = "display";
+					powerText.style.display = "display";
+					powerText2.style.display = "none";
+				}
+				else
+				{
+					title.style.display = "none";
+					superPower = "isNotSuperPower";
+					hero1.style.display = "none";
+					hero2.style.display = "none";
+					powerText.style.display = "none";
+					powerText2.style.display = "none";
+
+				}
+			}
+		})
+	})
+
 }
 
 function generateBodyPreparationGamePageHTML(username)
@@ -333,8 +368,18 @@ function generateBodyPreparationGamePageHTML(username)
 		</div>
 		<div class="preparation-game-container" id="preparation-game-container">
 			<h1 data-translate-key="simpleMatch"></h1>
+			<div class="radio-superPower">
+    			<div class="radio-isSuperPower">
+        			<input type="radio" id="isSuperPower" name="choice" value="isSuperPower" checked>
+        			<label for="isSuperPower" data-translate-key="isSuperPower">Avec Super-pouvoirs</label>
+    			</div>
+    			<div class="radio-isNotSuperPower">
+        			<input type="radio" id="isNotSuperPower" name="choice" value="isNotSuperPower">
+        			<label for="isNotSuperPower" data-translate-key="isNotSuperPower">Sans Super-pouvoirs</label>
+    			</div>
+			</div>
 			<div class="player-preparation-container">
-				<h3 id="usernameGamePlayer1-text" data-translate-key="choseHero"></h3>
+				<h2 id="usernameGamePlayer1-text" data-translate-key="choseHero"></h2>
 				<div class="player-preparation-container-content">
 					<div class="player-left-preparation">
 						<h2 id="usernameGamePlayer1-text">${username}</h2>
@@ -347,7 +392,7 @@ function generateBodyPreparationGamePageHTML(username)
 								<i class="fa-solid fa-arrow-right"></i>
 							</button>
 						</div>
-						<div class="superhero-power-text">
+						<div class="superhero-power-text" id="superhero-power-text">
 							<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
 							<p id="superhero-power-text-player1">Invisible</p>
 						</div>
@@ -384,7 +429,7 @@ function generateBodyPreparationGamePageHTML(username)
 									<i class="fa-solid fa-arrow-right"></i>
 								</button>
 							</div>
-							<div class="superhero-power-text">
+							<div class="superhero-power-text" id="superhero-power-text2">
 								<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
 								<p id="superhero-power-text-player2">Super strength</p>
 							</div>
@@ -413,7 +458,7 @@ function generateBodyPreparationGamePageHTML(username)
 				</div>
 			</div>
 			<div class="environnement-preparation-container" id="environnement-preparation-container">
-				<h3 data-translate-key="environnement"></h3>
+				<h2 data-translate-key="environnement"></h2>
 				<div class="environnement-preparation-container-button">
 					<button id="environnement-preparation-container-button-orange" class="environnement-preparation-container-button-orange btn-court" style="border: 3px solid #ffffff; border-radius: 10px">
 						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/orange-court.png" alt="Orange court">

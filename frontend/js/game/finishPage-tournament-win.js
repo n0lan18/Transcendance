@@ -2,7 +2,7 @@ import { loadPresentationSoloPlayerPage } from "../presentation-match-solo-tourn
 import { translation } from "../translate.js";
 import { putStatsInfo } from "../utils.js";
 
-export async function loadFinishPageTournamentWin(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers, scoreLeftPlayer, scoreRightPlayer)
+export async function loadFinishPageTournamentWin(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers, scoreLeftPlayer, scoreRightPlayer, superPower)
 {
 	await putStatsInfo(7, {numberVictoryMatchTournament: 1})
 	await putStatsInfo(2, {resultats: "V"})
@@ -17,7 +17,7 @@ export async function loadFinishPageTournamentWin(username1, courtColor, colorPl
 	const homeButtonFinishPage = document.getElementById("continue-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {
 		event.preventDefault();
-		loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers)
+		loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers, "soloPlayer", superPower)
 	});
 }
 
@@ -57,10 +57,12 @@ function finishPageHTML(numberPlayers)
 		<div class="finish-page" id="finish-page">
 			<h1 data-translate-key="winMatch"></h1>
 			<h2>${roadToStr}</h2>
-			<div class="button-finish-page">
-				<button id="continue-button-end-party" class="button-center-items home-button-end-party" style="color: white">
-					<i class="fa-solid fa-arrow-right-to-bracket home-button-finish-page" style="color: white"></i>
-					<p style="font-size: 20px" data-translate-key="continue"></p>
+			<div class="solo-player-choice-button">
+				<button id="continue-button-end-party" class="solo-player-simple-match-button" style="background-color: #ffca3a">
+					<i class="fa-solid fa-arrow-right-to-bracket" style="font-size: 100px;"></i>
+					<div class="item-name"
+						<h1 data-translate-key="continue"></h1>
+					</div>
 				</button>
 			</div>
 		<div>

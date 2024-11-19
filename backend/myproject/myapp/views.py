@@ -200,7 +200,7 @@ class UpdateIsConnectView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
-		isConnect = reques.data.get("isConnect")
+		isConnect = request.data.get("isConnect")
 		if isConnect:
 			user = request.user
 			user.isConnect = isConnect
