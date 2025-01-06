@@ -9,6 +9,8 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	max-width: 2300px;
+	max-height: 1400px;
 }
 
 .flex-game-container {

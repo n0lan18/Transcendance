@@ -1,4 +1,4 @@
-import { loadContent, getCookie } from "../utils.js";
+import { loadContent, getCookie, isValidUsername } from "../utils.js";
 import { loadAuthentificationPage } from "../auth.js";
 import { loadRegisterPasswordPage } from "./password-register.js";
 
@@ -25,45 +25,62 @@ export function loadRegisterUsernamePage(email) {
 		{
 			event.preventDefault();
 			const username = document.getElementById("usernameRegister");
-			const data = {
-				username: username.value,
-			}
-			console.log(data);
-			const csrftoken = getCookie('csrftoken');
-			fetch('api/check-username/', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-CSRFToken': csrftoken,
-				},
-				body: JSON.stringify({ data })
-			})
-			.then(async (response) => {
-				if (!response.ok) {
-                    // Si pas OK, gérer la réponse d'erreur
-                    return response.json().then((data) => {
-						let item = document.getElementById("RegisterPlace");
-						if (!document.getElementById("emailExist"))
-						{
-							let emailExist = document.createElement("p");
-							emailExist.id = "emailExist";
-							emailExist.classList.add("invalid-register");
-							emailExist.textContent = 'This username already exists';
-							item.appendChild(emailExist);
-							let buttonSend = document.getElementById("buttonSend");
-							buttonSend.classList.remove('btn-success');
-							buttonSend.classList.add('btn-danger');
-						}
-                        throw new Error(data.message || "Something went wrong");
-					});
+			if (isValidUsername(username.value))
+			{
+				const data = {
+					username: username.value,
 				}
-				return response.json();
-			})
-			.then((data) => {
-				if (!data.exists)
-					loadRegisterPasswordPage(email, username);
-			})
-			.catch(error => console.error('Error:', error));
+				const csrftoken = getCookie('csrftoken');
+				fetch('api/check-username/', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': csrftoken,
+					},
+					body: JSON.stringify({ data })
+				})
+				.then(async (response) => {
+					if (!response.ok) {
+                    	// Si pas OK, gérer la réponse d'erreur
+                    	return response.json().then((data) => {
+							let item = document.getElementById("RegisterPlace");
+							if (!document.getElementById("emailExist"))
+							{
+								let emailExist = document.createElement("p");
+								emailExist.id = "emailExist";
+								emailExist.classList.add("invalid-register");
+								emailExist.textContent = 'This username already exists';
+								item.appendChild(emailExist);
+								let buttonSend = document.getElementById("buttonSend");
+								buttonSend.classList.remove('btn-success');
+								buttonSend.classList.add('btn-danger');
+							}
+                        	throw new Error(data.message || "Something went wrong");
+						});
+					}
+					return response.json();
+				})
+				.then((data) => {
+					if (!data.exists)
+						loadRegisterPasswordPage(email, username);
+				})
+				.catch(error => console.error('Error:', error));
+			}
+			else
+			{
+				let item = document.getElementById("RegisterPlace");
+				if (!document.getElementById("badUsername"))
+				{
+					let emailExist = document.createElement("p");
+					emailExist.id = "badUsername";
+					emailExist.classList.add("invalid-register");
+					emailExist.textContent = 'Bad username';
+					item.appendChild(emailExist);
+					let buttonSend = document.getElementById("buttonSend");
+					buttonSend.classList.remove('btn-success');
+					buttonSend.classList.add('btn-danger');
+				}			
+			}
 		});
 	}
 

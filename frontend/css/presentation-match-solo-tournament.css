@@ -6,6 +6,7 @@
 	
 	width: 100%;
 	height: calc(80vh - 70px);
+	overflow-y: auto;
 }
 
 .players-presentation {

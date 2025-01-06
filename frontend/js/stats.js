@@ -59,11 +59,19 @@ export async function loadStatsPage()
 	console.log(numberDefeat);
 
 	const ctx1 = document.getElementById('myDonutChart1').getContext('2d');
-	let myDonutChart1 = addGraphics(numberVictory, numberDefeat, 'Victory', 'Defeat', ctx1);
+	let myDonutChart1;
+	if (numberVictory == 0 && numberDefeat == 0)
+		myDonutChart1 = addGraphics(1, 0, 'Victory', 'Defeat', ctx1);
+	else
+		myDonutChart1 = addGraphics(numberVictory, numberDefeat, 'Victory', 'Defeat', ctx1);
 
 	const ctx2 = document.getElementById('myDonutChart2').getContext('2d');
-	let myDonutChart2 = addGraphics(userStatsInfoAll.numberGoalWin, userStatsInfoAll.numberGoalLose, 'G.S', 'G.C', ctx2);
-
+	console.log(userStatsInfoAll.numberGoalsWin, userStatsInfoAll.numberGoalLose);
+	let myDonutChart2;
+	if (userStatsInfoAll.numberGoalsWin == 0 && userStatsInfoAll.numberGoalLose == 0)
+		myDonutChart2 = addGraphics(1, 0, 'G.S', 'G.C', ctx2);
+	else
+		myDonutChart2 = addGraphics(userStatsInfoAll.numberGoalsWin, userStatsInfoAll.numberGoalLose, 'G.S', 'G.C', ctx2);
 
 	let switchPageToLogout = document.getElementById("logoutLink");
 	if (switchPageToLogout)
@@ -157,6 +165,15 @@ function addLastMatchesAndResultats(userStatsInfoAll)
 			</div>
 		`
 	}
+	console.log("content " + content);
+	if (content == "")
+	{
+		content += `
+			<div class="scoresAndResultats">
+				<h3>No stats</h3>
+			</div>
+		`
+	}
 	lastMatchesContainer.innerHTML = content;
 }
 
@@ -228,7 +245,7 @@ function generateBodyStatsPageHTML(userStatsInfoAll)
         				<canvas id="myDonutChart2"></canvas>
     				</div>
 					<h3 data-translate-key="ratio"></h3>
-					<h3>${userStatsInfoAll.numberGoalWin / userStatsInfoAll.numberGoalLose}</h3>
+					<h3>${userStatsInfoAll.numberGoalsWin / userStatsInfoAll.numberGoalLose}</h3>
 				</div>
 			</div>
 		</div>

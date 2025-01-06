@@ -218,7 +218,7 @@ export function escapeHTML(input) {
 		.replace(/[\s\u200B\u200C\u200D\u200E\u200F]/g, '');
 }
 
-export function isValidUsername(username) {
+export function isValidUsernameBad(username) {
 	return username.length >= 1 && username.length <= 9;
 }
 
@@ -264,4 +264,10 @@ export function sizeOfStep(fullSizePowerBar, emptySizePowerBar)
 export function sizeOfAdvance(fullSizePowerBar, emptySizePowerBar)
 {
 	return fullSizePowerBar - emptySizePowerBar;
+}
+
+export function isValidUsername(username)
+{
+	const regex = /^[a-zA-Z0-9@.+_-]+$/;
+	return regex.test(username);
 }

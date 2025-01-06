@@ -195,8 +195,8 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 			}
 			albumImage.src = images[currentImageIndex];
 			heroPowerPlayer1 = superheroPlayerText.innerHTML;
-			albumImage.style.width = "60%";
-			albumImage.style.height = "60%";
+			albumImage.style.width = "40%";
+			albumImage.style.height = "40%";
 		});
 	}
 	else
@@ -233,8 +233,8 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 			}
 			albumImage.src = images[currentImageIndex];
 			heroPowerPlayer1 = superheroPlayerText.innerHTML;
-			albumImage.style.width = "60%";
-			albumImage.style.height = "60%";
+			albumImage.style.width = "40%";
+			albumImage.style.height = "40%";
 		});
 	}
 	else
@@ -244,24 +244,16 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 	radios.forEach(radio => {
 		radio.addEventListener('change', () => {
 			if (radio.checked) {
-				console.log(`Le bouton radio sélectionné est : ${radio.value}`);
-				let hero1 = document.getElementById("chose-superhero-container1");
-				let powerText = document.getElementById("superhero-power-text");
-				let title = document.getElementById("usernameGamePlayer1-text");
+				let superHeroContainer = document.getElementById("superhero-container1");
 				if (radio.value == "isSuperPower")
 				{
-					title.style.display = "display";
+					superHeroContainer.style.display = "inline";
 					superPower = "isSuperPower";
-					hero1.style.display = "display";
-					powerText.style.display = "display";
 				}
 				else
 				{
-					title.style.display = "none";
+					superHeroContainer.style.display = "none";
 					superPower = "isNotSuperPower";
-					hero1.style.display = "none";
-					powerText.style.display = "none";
-
 				}
 			}
 		})
@@ -292,18 +284,20 @@ function generatePreparationTournamentGamePageHTML()
 				<div class="player-preparation-container-content">
 					<div class="player-left-preparation">
 						<h3 id="usernameGamePlayer1-text" data-translate-key="choseHero"></h3>
-						<div class="chose-superhero-container" id="chose-superhero-container1">
-							<button class="left-arrow" id="left-arrow1">
-								<i class="fa-solid fa-arrow-left"></i>
-							</button>
-							<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
-							<button class="right-arrow" id="right-arrow1">
-								<i class="fa-solid fa-arrow-right"></i>
-							</button>
-						</div>
-						<div class="superhero-power-text" id="superhero-power-text">
-							<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
-							<p id="superhero-power-text-player1">Invisible</p>
+						<div class="superhero-container" id="superhero-container1">
+							<div class="chose-superhero-container" id="chose-superhero-container1">
+								<button class="left-arrow" id="left-arrow1">
+									<i class="fa-solid fa-arrow-left"></i>
+								</button>
+								<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
+								<button class="right-arrow" id="right-arrow1">
+									<i class="fa-solid fa-arrow-right"></i>
+								</button>
+							</div>
+							<div class="superhero-power-text" id="superhero-power-text">
+								<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
+								<p id="superhero-power-text-player1">Invisible</p>
+							</div>
 						</div>
 						<div class="color-button-container color-button-container-player1">
 							<div class="color-button-text">

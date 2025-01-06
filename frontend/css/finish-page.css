@@ -5,6 +5,7 @@
 	flex-direction: column;
 	height: 100vh;
 	width: 100vw;
+	overflow-y: auto;
 }
 
 .button-finish-page {

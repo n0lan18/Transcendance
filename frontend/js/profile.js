@@ -3,6 +3,7 @@ import { generateNavigator } from "./nav.js";
 import { translation } from "./translate.js";
 import { loadContent } from "./utils.js";
 import { errorPasswordForm, checkPasswordForm } from "./register/password-register.js";
+import { escapeHTML } from "./utils.js";
 
 export async function loadProfilePage()
 {
@@ -141,12 +142,11 @@ export async function loadProfilePage()
 		usernameUpdate.addEventListener("submit", (event) =>
 		{
 			event.preventDefault();
-			const username = document.getElementById("usernameUpdate");
-			console.log(username.value);
+			let username = document.getElementById("usernameUpdate");
+			username = escapeHTML(username.value);
 			const data = {
-				username: username.value,
+				username: username,
 			}
-			console.log(data.username);
 
 			updateDataToDatabase(data, "username", usernameUpdate);
 		});
@@ -220,24 +220,24 @@ async function updateDataToDatabase(data, typeData)
 function generateBodyProfilePageHTML()
 {
 	return `
-		<div>
+		<div class="profile-container">
 			<h1 class="text-center" data-translate-key="profile"></h1>
 			<div class="profile-image-update-container">
 				<h2 data-translate-key="updateProfilImage"></h2>
-    			<form id="profileForm" enctype="multipart/form-data">
-					<input type="file" id="profile_picture" name="profile_picture" accept="image/*" required/>
+    			<form class="profile-form" id="profileForm" enctype="multipart/form-data">
+					<input type="file" class="profile-picture" id="profile_picture" name="profile_picture" accept="image/*" required/>
 					<button class="btn btn-success btn-block mb-4 update-image-button" id="update-image-button" data-translate-key="update" type="submit" style="width: 50%;"></button>
 				</form>
 			</div>
 			<div class="email-update-container" id="email-update-container">
 				<h2 data-translate-key="updateEmail"></h2>
-				<form id="emailForm">
-					<div id="emailPlace" data-mdb-input-init class="form-outline mb-4">
+				<form class="email-form" id="emailForm">
+					<div class="email-place" id="emailPlace" data-mdb-input-init class="form-outline mb-4">
 						<div class="form-item">
-							<input type="text" id="emailUpdate" name="emailUpdate" autocomplete="email" data-translate-key="email" placeholder="" required class="form-control" style="width: 70%;"/>
+							<input type="text" id="emailUpdate" name="emailUpdate" autocomplete="email" data-translate-key="email" placeholder="" required class="form-control" style="width: 25%;"/>
 						</div>
-						<div style="display: flex; align-items: center;">
-							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-email-button" style="width: 50%;">
+						<div class="email-form-button">
+							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-email-button" style="width: 25%;">
 							<span id="result-email-update"></span>
 						</div>
 					</div>
@@ -245,13 +245,13 @@ function generateBodyProfilePageHTML()
 			</div>
 			<div class="username-update-container">
 				<h2 data-translate-key="updateUsername"></h2>
-				<form id="usernameForm">
-					<div id="usernamePlace" data-mdb-input-init class="form-outline mb-4">
+				<form class="username-form" id="usernameForm">
+					<div class="username-place" id="usernamePlace" data-mdb-input-init class="form-outline mb-4">
 						<div class="form-item">
-							<input type="text" id="usernameUpdate" name="usernameUpdate" autocomplete="usernameUpdate" data-translate-key="username" placeholder="" required class="form-control" style="width: 70%;"/>
+							<input type="text" id="usernameUpdate" name="usernameUpdate" autocomplete="usernameUpdate" data-translate-key="username" placeholder="" required class="form-control" style="width: 25%;"/>
 						</div>
-						<div style="display: flex; align-items: center;">
-							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-username-button" style="width: 50%;">
+						<div class="username-form-button">
+							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-username-button" style="width: 25%;">
 							<span id="result-username-update"></span>
 						</div>
 					</div>
@@ -259,15 +259,15 @@ function generateBodyProfilePageHTML()
 			</div>
 			<div class="password-update-container">
 				<h2 data-translate-key="updatePassword"></h2>
-				<form id="passwordForm">
-					<div id="passwordPlace" data-mdb-input-init class="form-outline mb-4">
-						<div id="input-password" style="position: relative; width: 70%;">
+				<form class="password-form" id="passwordForm">
+					<div class="password-place" id="passwordPlace" data-mdb-input-init class="form-outline mb-4">
+						<div id="input-password" style="position: relative; width: 25%;">
 							<input type="password" id="passwordUpdate" name="passwordUpdate" autocomplete="new-password" data-translate-key="password" placeholder="" required class="form-control"  style="padding-right: 40px;" />
 							<button type="button" class="toggle-password" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #b3b3b3; padding: 0;">
 								<i class="fa-solid fa-eye-slash"></i>
 							</button>
 						</div>
-						<ul style="padding-top: 5px; list-style: none; padding-left: 0;">
+						<ul class="list-password">
 							<div id="check-letter-password">
 								<li data-translate-key="password1"><i class="fa-solid fa-circle" style="font-size: 10px;"></i></li>
 							</div>
@@ -278,8 +278,8 @@ function generateBodyProfilePageHTML()
 								<li data-translate-key="password3"><i class="fa-solid fa-circle" style="font-size: 10px;"></i></li>
 							</div>
 						</ul>
-						<div style="display: flex; align-items: center;">
-							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-password-button" style="width: 50%;">
+						<div class="password-form-button">
+							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-password-button" style="width: 25%;">
 							<span id="result-password-update"></span>
 						</div>
 					</div>

@@ -28,8 +28,7 @@ export function fullScreen(Game) {
 	const container = document.getElementById("game-container");
 	if (container)
 	{
-		if (backgrondCountdownContainer)
-			container.appendChild(backgrondCountdownContainer);
+		container.appendChild(backgrondCountdownContainer);
 		container.appendChild(messageFullscreen);
 	}
 
@@ -38,8 +37,9 @@ export function fullScreen(Game) {
 		gameContainer.requestFullscreen().catch(err => {
 			console.error(`Erreur lors de la tentative d'activation du plein écran: ${err.message} (${err.name})`);
 		});
-		backgrondCountdownContainer.remove();
 		messageFullscreen.remove();
+		backgrondCountdownContainer.remove();
+
 		Game.gamePaused = false;
 		Game.start();
 	});

@@ -1,16 +1,17 @@
-h1
-{
-	margin-bottom: 20px;
-}
+
 
 .statsContainer
 {
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	flex-direction: column;
 	width: 100%;
+	height: calc(80vh - 70px);
 	max-width: 900px;
+	margin-top: 150px;;
+	margin-bottom: auto;
+	overflow-y: auto;
 }
 
 .lastMatches

@@ -133,7 +133,7 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 			username1 = escapeHTML(username1);
 			if (username1 === "")
 				username1 = userInfo.username;
-			if (isValidUsername(username1))
+			if (isValidUsernameBad(username1))
 				document.getElementById("usernameGamePlayer1-text").innerHTML = username1;
 		});
 	}
@@ -148,7 +148,7 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 			username2 = escapeHTML(username2);
 			if (username2 === "")
 				username2 = "Player 2"
-			if (isValidUsername(username2))
+			if (isValidUsernameBad(username2))
 				document.getElementById("usernameGamePlayer2-text").innerHTML = username2;
 		});
 	}
@@ -227,8 +227,8 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 			}
 			albumImage.src = images[currentImageIndex];
 			heroPowerPlayer1 = superheroPlayerText.innerHTML;
-			albumImage.style.width = "60%";
-			albumImage.style.height = "60%";
+			albumImage.style.width = "40%";
+			albumImage.style.height = "40%";
 		});
 	}
 	else
@@ -265,8 +265,8 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 			}
 			albumImage.src = images[currentImageIndex];
 			heroPowerPlayer1 = superheroPlayerText.innerHTML;
-			albumImage.style.width = "60%";
-			albumImage.style.height = "60%";
+			albumImage.style.width = "40%";
+			albumImage.style.height = "40%";
 		});
 	}
 	else
@@ -291,8 +291,8 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 				superheroPlayerText2.innerHTML = "Time laps";
 			albumImage2.src = images[currentImageIndex2];
 			heroPowerPlayer2 = superheroPlayerText2.innerHTML;
-			albumImage2.style.width = "60%";
-			albumImage2.style.height = "60%";
+			albumImage2.style.width = "40%";
+			albumImage2.style.height = "40%";
 		});
 	}
 	else
@@ -317,8 +317,8 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 				superheroPlayerText2.innerHTML = "Time laps";
 			albumImage2.src = images[currentImageIndex2];
 			heroPowerPlayer2 = superheroPlayerText2.innerHTML;
-			albumImage2.style.width = "60%";
-			albumImage2.style.height = "60%";
+			albumImage2.style.width = "40%";
+			albumImage2.style.height = "40%";
 		});
 	}
 	else
@@ -329,29 +329,19 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 		radio.addEventListener('change', () => {
 			if (radio.checked) {
 				console.log(`Le bouton radio sélectionné est : ${radio.value}`);
-				let hero1 = document.getElementById("chose-superhero-container1");
-				let hero2 = document.getElementById("chose-superhero-container2");
-				let powerText = document.getElementById("superhero-power-text");
-				let powerText2 = document.getElementById("superhero-power-text2");
-				let title = document.getElementById("usernameGamePlayer1-text");
+				let superHeroContainer1 = document.getElementById("superhero-container1");
+				let superHeroContainer2 = document.getElementById("superhero-container2");
 				if (radio.value == "isSuperPower")
 				{
-					title.style.display = "display";
+					superHeroContainer1.style.display = "inline";
+					superHeroContainer2.style.display = "inline";
 					superPower = "isSuperPower";
-					hero1.style.display = "display";
-					hero2.style.display = "display";
-					powerText.style.display = "display";
-					powerText2.style.display = "none";
 				}
 				else
 				{
-					title.style.display = "none";
+					superHeroContainer1.style.display = "none";
+					superHeroContainer2.style.display = "none";
 					superPower = "isNotSuperPower";
-					hero1.style.display = "none";
-					hero2.style.display = "none";
-					powerText.style.display = "none";
-					powerText2.style.display = "none";
-
 				}
 			}
 		})
@@ -383,18 +373,20 @@ function generateBodyPreparationGamePageHTML(username)
 				<div class="player-preparation-container-content">
 					<div class="player-left-preparation">
 						<h2 id="usernameGamePlayer1-text">${username}</h2>
-						<div class="chose-superhero-container" id="chose-superhero-container1">
-							<button class="left-arrow" id="left-arrow1">
-								<i class="fa-solid fa-arrow-left"></i>
-							</button>
-							<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
-							<button class="right-arrow" id="right-arrow1">
-								<i class="fa-solid fa-arrow-right"></i>
-							</button>
-						</div>
-						<div class="superhero-power-text" id="superhero-power-text">
-							<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
-							<p id="superhero-power-text-player1">Invisible</p>
+						<div class="superhero-container" id="superhero-container1">
+							<div class="chose-superhero-container" id="chose-superhero-container1">
+								<button class="left-arrow" id="left-arrow1">
+									<i class="fa-solid fa-arrow-left"></i>
+								</button>
+								<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
+								<button class="right-arrow" id="right-arrow1">
+									<i class="fa-solid fa-arrow-right"></i>
+								</button>
+							</div>
+							<div class="superhero-power-text" id="superhero-power-text">
+								<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
+								<p id="superhero-power-text-player1">Invisible</p>
+							</div>
 						</div>
 						<div class="color-button-container color-button-container-player1">
 							<div class="color-button-text">
@@ -419,7 +411,7 @@ function generateBodyPreparationGamePageHTML(username)
 					</div>
 					<div class="player-right-preparation">
 						<h2 id="usernameGamePlayer2-text" data-translate-key="simpleMatchUsername2"></h2>
-						<div class="superhero-container">
+						<div class="superhero-container" id="superhero-container2">
 							<div class="chose-superhero-container" id="chose-superhero-container2">
 								<button class="left-arrow" id="left-arrow2">
 									<i class="fa-solid fa-arrow-left"></i>

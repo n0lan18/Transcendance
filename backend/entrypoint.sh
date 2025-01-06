@@ -16,7 +16,9 @@ if [ ! -d "myapp" ]; then
 fi
 
 echo "Applying makemigrations..."
-python manage.py makemigrations
+python manage.py makemigrations &
+
+wait
 
 # Appliquer les migrations
 echo "Applying migrations..."
