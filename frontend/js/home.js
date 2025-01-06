@@ -174,12 +174,6 @@ function generateBodyHomePageHTML(username, profile_photo)
 						<h1 data-translate-key="multiplayer"></h1>
 					</div>
 				</button>
-				<button id="online-button" class="flex-item box5">
-					<img class="img-box4-5" src="../images/online-logo-white.png" alt="logo online" width="100" height="100">
-					<div class="item-name">
-						<h1 data-translate-key="online"></h1>
-					</div>
-				</button>
 		</div>
 	`;
 }

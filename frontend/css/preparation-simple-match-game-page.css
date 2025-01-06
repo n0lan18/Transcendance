@@ -1,16 +1,18 @@
 
 .message-change-orientation {
-	display: none;
-}
+		display: none;
+	}
 
 .preparation-game-container {
+	max-width: 1024px;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: center;
 	width: 100%;
-	margin-bottom: 40px;
-	margin-top: 30px;
+	height: calc(80vh - 70px);
+	margin-top: 70px;
+	margin-bottom: auto;
 }
 
 .player-preparation-container {
@@ -27,6 +29,7 @@
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+	height: auto;
 }
 
 .radio-isSuperPower, .radio-isNotSuperPower {
@@ -34,7 +37,7 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	margin: 10px;
+	margin: 1%;
 }
 
 .player-preparation-container-content {
@@ -139,10 +142,11 @@
 .environnement-preparation-container {
 	display: flex;
 	width: 100%;
+	height: auto;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	margin: 10px;
+	margin-top: 10px;
 }
 
 .environnement-preparation-container-button {
@@ -150,13 +154,30 @@
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	width: 100%;
+	width: 40%;
+	height: 40%;
 	max-width: 600px;
 }
 
 .environnement-preparation-container-button-orange, .environnement-preparation-container-button-dark-blue, .environnement-preparation-container-button-light-blue, .environnement-preparation-container-button-green {
 	width: 100%;
-	height: auto;
+	height: 100%;
+	aspect-ratio: 1 / 1;
+}
+
+.environnement-preparation-random-button {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 40%;
+	height: 35%;
+	max-width: 600px;
+}
+
+.random-court-container {
+	width: 100%;
+	height: 100%;
 }
 
 .btn-court {
@@ -230,7 +251,7 @@
 	margin-bottom: 0;
 }
 
-@media screen and (orientation: portrait){
+@media screen and (orientation: portrait) and (max-width: 900px) {
 	.message-change-orientation {
 		display: none;
 	}
@@ -238,14 +259,17 @@
 	.preparation-game-container {
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
+		justify-content: flex-end;
 		align-items: center;
+		width: 100%;
+		height: calc((100vh - 20vh) - 50px);
+		margin-bottom: 50px;
+		margin-top: auto;
 	}
-
 
 }
 
-@media screen and (orientation: landscape) and (max-width: 768px) {
+@media screen and (orientation: landscape) and (max-width: 900px) {
 	.message-change-orientation {
 		display: flex;
 		flex-direction: column;

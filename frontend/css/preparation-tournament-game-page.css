@@ -4,14 +4,15 @@
 
 .number-players-tournament-buttons {
 	display: flex;
-	justify-content: space-between; /* Espace entre les boutons */
+	justify-content: space-between;
 	align-items: center;
-	width: 100%; /* Les boutons prennent tout l'espace disponible */
+	width: 100%;
+	height: auto;
 }
 
 .players-button {
 	width: 100%; /* Largeur des boutons sur 100% de l'espace */
-	height: 40px; /* Ajustez la hauteur si nécessaire */
+	height: 100%; /* Ajustez la hauteur si nécessaire */
 	display: flex;
 	justify-content: center; /* Centrage horizontal */
 	align-items: center; /* Centrage vertical */
@@ -32,18 +33,7 @@
 	font-size: 18px; /* Taille de police ajustée */
 }
 
-@media (max-width: 900px) {
-	
-}
-
-@media screen and (orientation: portrait) and (max-width: 768px) {
-	h2 {
-		font-size: 20px;
-	}
-
-	h3 {
-		font-size: 15px;
-	}
+@media screen and (orientation: portrait) and (max-width: 900px) {
 
 	.superhero-image {
 		height: 45%;

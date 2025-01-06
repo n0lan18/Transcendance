@@ -32,13 +32,13 @@ function soloPlayerPageChoiceGameHTML()
 				<button id="solo-player-simple-match-button" class="solo-player-simple-match-button">
 					<i class="fa-solid fa-gamepad" style="font-size: 100px"></i>
 					<div class="item-name"
-						<h1 data-translate-key="simpleMatch"></h1>
+						<h3 data-translate-key="simpleMatch"></h1>
 					</div>
 				</button>
 				<button id="solo-player-tournament-button" class="solo-player-tournament-button">
 					<i class="fa-solid fa-trophy" style="font-size: 100px"></i>
 					<div class="item-name"
-						<h1 data-translate-key="tournament"></h1>
+						<h3 data-translate-key="tournament"></h1>
 					</div>
 				</button>
 			</div>

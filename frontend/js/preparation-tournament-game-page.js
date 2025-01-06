@@ -296,7 +296,7 @@ function generatePreparationTournamentGamePageHTML()
 							<button class="left-arrow" id="left-arrow1">
 								<i class="fa-solid fa-arrow-left"></i>
 							</button>
-							<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 50%; height: 50%; border-radius: 10px;">
+							<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
 							<button class="right-arrow" id="right-arrow1">
 								<i class="fa-solid fa-arrow-right"></i>
 							</button>
