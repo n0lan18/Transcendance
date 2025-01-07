@@ -107,6 +107,7 @@ export function checkPasswordForm(regex, value, partForm)
 	if (!partForm)
 		return ;
 	const item = partForm.querySelector('i');
+	console.log(item);
 	if (regex.test(value))
 	{
 		item.classList.remove('fa-circle');

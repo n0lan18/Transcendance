@@ -169,7 +169,7 @@ function generateBodyHomePageHTML(username, profile_photo)
 					</div>
 				</button>
 				<button id="multiplayer-button" class="flex-item box4">
-					<img class="img-box4-5" src="../images/multiplayer-logo-white.png" alt="logo multiplayer" width="100" height="100">
+					<img class="img-box4-5" src="../images/multiplayer-logo-white.png" alt="logo multiplayer" width="175" height="175">
 					<div class="item-name">
 						<h1 data-translate-key="multiplayer"></h1>
 					</div>

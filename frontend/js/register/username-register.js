@@ -44,12 +44,12 @@ export function loadRegisterUsernamePage(email) {
                     	// Si pas OK, gérer la réponse d'erreur
                     	return response.json().then((data) => {
 							let item = document.getElementById("RegisterPlace");
-							if (!document.getElementById("emailExist"))
+							if (!document.getElementById("usernameExist"))
 							{
-								let emailExist = document.createElement("p");
-								emailExist.id = "emailExist";
-								emailExist.classList.add("invalid-register");
-								emailExist.textContent = 'This username already exists';
+								let usernameExist = document.createElement("p");
+								usernameExist.id = "usernameExist";
+								usernameExist.classList.add("invalid-register");
+								usernameExist.textContent = 'This username already exists';
 								item.appendChild(emailExist);
 								let buttonSend = document.getElementById("buttonSend");
 								buttonSend.classList.remove('btn-success');
@@ -71,11 +71,11 @@ export function loadRegisterUsernamePage(email) {
 				let item = document.getElementById("RegisterPlace");
 				if (!document.getElementById("badUsername"))
 				{
-					let emailExist = document.createElement("p");
-					emailExist.id = "badUsername";
-					emailExist.classList.add("invalid-register");
-					emailExist.textContent = 'Bad username';
-					item.appendChild(emailExist);
+					let badUsername = document.createElement("p");
+					badUsername.id = "badUsername";
+					badUsername.classList.add("invalid-register");
+					badUsername.textContent = 'Bad username';
+					item.appendChild(badUsername);
 					let buttonSend = document.getElementById("buttonSend");
 					buttonSend.classList.remove('btn-success');
 					buttonSend.classList.add('btn-danger');

@@ -4,6 +4,7 @@ import { translation } from "./translate.js";
 import { loadContent } from "./utils.js";
 import { errorPasswordForm, checkPasswordForm } from "./register/password-register.js";
 import { escapeHTML } from "./utils.js";
+import { getCookie } from "./utils.js";
 
 export async function loadProfilePage()
 {
@@ -112,25 +113,29 @@ export async function loadProfilePage()
 		{
 			event.preventDefault();
 			const email = document.getElementById("emailUpdate");
-			console.log(email.value);
 			const data = {
 				email: email.value,
 			}
-			console.log(data.email);
 
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,3}$/;
 			if (emailRegex.test(email.value))
-			{
-				let buttonSend = document.getElementById("update-email-button");
-				buttonSend.classList.remove('btn-danger');
-				buttonSend.classList.add('btn-success');
-				updateDataToDatabase(data, "email", emailRegister);
-			}
+				checkEmailIfExist(data, email);
 			else
 			{
-				let buttonSend = document.getElementById("update-email-button");
-				buttonSend.classList.remove('btn-success');
-				buttonSend.classList.add('btn-danger');
+				let registerPlace = document.getElementById("RegisterPlace");
+				if (document.getElementById("newEmailValidate"))
+					document.getElementById("newEmailValidate").remove();
+				if (!document.getElementById('badEmail'))
+				{
+					let item = document.createElement('p');
+					item.id = "badEmail";
+					item.textContent = 'Invalid email';
+					item.classList.add("invalid-register");
+					registerPlace.appendChild(item);
+					let buttonSend = document.getElementById("update-email-button");
+					buttonSend.classList.remove('btn-success');
+					buttonSend.classList.add('btn-danger');
+				}
 			}
 		});
 
@@ -147,8 +152,7 @@ export async function loadProfilePage()
 			const data = {
 				username: username,
 			}
-
-			updateDataToDatabase(data, "username", usernameUpdate);
+			checkUsernameIfExist(data, username);
 		});
 
 	}	
@@ -196,6 +200,7 @@ async function updateDataToDatabase(data, typeData)
 			link = "api/update-username/";
 		else if (typeData == "email")
 			link = "api/update-email/";
+		console.log(link);
 		const response = await fetch(`${link}`, {
 			method: "PUT",
 			headers: {
@@ -208,13 +213,151 @@ async function updateDataToDatabase(data, typeData)
 		if (!response.ok) {
 			throw new Error(`HTTP error! Status: ${response.status}`);
 		}
-
+		else
+		{
+			if (typeData == "email")
+			{
+				if (document.getElementById("emailExist"))
+					document.getElementById("emailExist").remove();
+				let item = document.getElementById("email-update-container");
+				if (!document.getElementById("newEmailValidate"))
+				{
+					let newEmailValidate = document.createElement("p");
+					newEmailValidate.id = "newEmailValidate";
+					newEmailValidate.classList.add("valid-password");
+					newEmailValidate.textContent = 'Successful new e-mail';
+					item.appendChild(newEmailValidate);
+					let buttonSend = document.getElementById("update-email-button");
+					buttonSend.classList.remove('btn-danger');
+					buttonSend.classList.add('btn-success');
+				}
+			}
+			else if (typeData == "username")
+			{
+				if (document.getElementById("usernameExist"))
+					document.getElementById("usernameExist").remove();
+				let item = document.getElementById("username-update-container");
+				if (!document.getElementById("newUsernameValidate"))
+				{
+					let newUsernameValidate = document.createElement("p");
+					newUsernameValidate.id = "newUsernameValidate";
+					newUsernameValidate.classList.add("valid-password");
+					newUsernameValidate.textContent = 'Successful new username';
+					item.appendChild(newUsernameValidate);
+					let buttonSend = document.getElementById("update-username-button");
+					buttonSend.classList.remove('btn-danger');
+					buttonSend.classList.add('btn-success');
+				}				
+			}
+			else if (typeData == "password")
+			{
+				if (document.getElementById("badPassword"))
+					document.getElementById("badPassword").remove();
+				let item = document.getElementById("password-update-container");
+				if (!document.getElementById("newPasswordValidate"))
+				{
+					let newPasswordValidate = document.createElement("p");
+					newPasswordValidate.id = "newPasswordValidate";
+					newPasswordValidate.classList.add("valid-password");
+					newPasswordValidate.textContent = 'Successful new password';
+					item.appendChild(newPasswordValidate);
+					let buttonSend = document.getElementById("update-password-button");
+					buttonSend.classList.remove('btn-danger');
+					buttonSend.classList.add('btn-success');
+				}					
+			}
+		}
 		const result = await response.json();
 
 	} catch (error) {
 		console.error('Error:', error);
 	}
+}
 
+async function checkEmailIfExist(data, email)
+{
+	const dataCopy = data;
+	const csrftoken = getCookie('csrftoken');
+	fetch('api/check-email/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': csrftoken,
+		},
+		body: JSON.stringify({ data })
+	})
+	.then(async (response) => {
+		if (!response.ok) {
+			// Si pas OK, gérer la réponse d'erreur
+			return response.json().then((data) => {
+				let item = document.getElementById("email-update-container");
+				if (document.getElementById("newEmailValidate"))
+					document.getElementById("newEmailValidate").remove();
+				if (!document.getElementById("emailExist"))
+				{
+					let emailExist = document.createElement("p");
+					emailExist.id = "emailExist";
+					emailExist.classList.add("invalid-register");
+					emailExist.textContent = 'This email address already exists';
+					item.appendChild(emailExist);
+					let buttonSend = document.getElementById("update-email-button");
+					buttonSend.classList.remove('btn-success');
+					buttonSend.classList.add('btn-danger');
+				}
+				throw new Error(data.message || "Something went wrong");
+			});
+		}
+		return response.json();
+	})
+	.then((data) => {
+		if (!data.exists)
+			updateDataToDatabase(dataCopy, "email")
+	})
+	.catch(error => {
+		console.error('Error:', error);
+	})
+}
+
+async function checkUsernameIfExist(data, username)
+{
+	const dataCopy = data;
+	const csrftoken = getCookie('csrftoken');
+	fetch('api/check-username/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': csrftoken,
+		},
+		body: JSON.stringify({ data })
+	})
+	.then(async (response) => {
+		if (!response.ok) {
+			// Si pas OK, gérer la réponse d'erreur
+			return response.json().then((data) => {
+				let item = document.getElementById("username-update-container");
+				if (document.getElementById("newUsernameValidate"))
+					document.getElementById("newUsernameValidate").remove();
+				if (!document.getElementById("usernameExist"))
+				{
+					let usernameExist = document.createElement("p");
+					usernameExist.id = "usernameExist";
+					usernameExist.classList.add("invalid-register");
+					usernameExist.textContent = 'This username already exists';
+					item.appendChild(usernameExist);
+					let buttonSend = document.getElementById("update-username-button");
+					buttonSend.classList.remove('btn-success');
+					buttonSend.classList.add('btn-danger');
+				}
+				throw new Error(data.message || "Something went wrong");
+			});
+		}
+		return response.json();
+	})
+	.then((data) => {
+		if (!data.exists)
+			updateDataToDatabase(dataCopy, "username");
+	})
+	.catch(error => console.error('Error:', error));
 }
 
 function generateBodyProfilePageHTML()
@@ -243,7 +386,7 @@ function generateBodyProfilePageHTML()
 					</div>
 				</form>
 			</div>
-			<div class="username-update-container">
+			<div class="username-update-container" id="username-update-container">
 				<h2 data-translate-key="updateUsername"></h2>
 				<form class="username-form" id="usernameForm">
 					<div class="username-place" id="usernamePlace" data-mdb-input-init class="form-outline mb-4">
@@ -269,13 +412,19 @@ function generateBodyProfilePageHTML()
 						</div>
 						<ul class="list-password">
 							<div id="check-letter-password">
-								<li data-translate-key="password1"><i class="fa-solid fa-circle" style="font-size: 10px;"></i></li>
+								<li data-translate-key="password1">
+									<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
+								</li>
 							</div>
 							<div id="check-num-or-special-character-password">
-								<li data-translate-key="password2"><i class="fa-solid fa-circle" style="font-size: 10px;"></i></li>
+								<li data-translate-key="password2">
+									<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
+								</li>
 							</div>
 							<div id="check-number-characters-password">
-								<li data-translate-key="password3"><i class="fa-solid fa-circle" style="font-size: 10px;"></i></li>
+								<li data-translate-key="password3">
+									<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
+								</li>
 							</div>
 						</ul>
 						<div class="password-form-button">
