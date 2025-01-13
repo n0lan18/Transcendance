@@ -8,6 +8,8 @@ import { loadMultiPlayerPageChoiceGame } from "./multiplayer.js";
 import { loadOnlinePage } from "./online.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { translation } from "./translate.js";
+import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
+import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
 
 let globalSocket = null;
 
@@ -77,12 +79,30 @@ export async function loadHomePage()
 		});
 	}
 
-	let switchPageToMultiplayerPage = document.getElementById("multiplayer-button");
-	if (switchPageToMultiplayerPage)
+	let switchPageToTournamentPage = document.getElementById("tournament-button");
+	if (switchPageToTournamentPage)
 	{
-		switchPageToMultiplayerPage.addEventListener('click', function (event) {
+		switchPageToTournamentPage.addEventListener('click', function (event) {
 			event.preventDefault();
-			loadMultiPlayerPageChoiceGame();
+			loadPreparationTournamentGamePage("multiplayer");
+		});
+	}
+
+	let switchPageToSimpleMatchPage = document.getElementById("simple-match-button");
+	if (switchPageToSimpleMatchPage)
+	{
+		switchPageToSimpleMatchPage.addEventListener('click', function (event) {
+			event.preventDefault();
+			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerTwo");
+		});
+	}
+
+	let switchPageToDoublesPage = document.getElementById("doubles-button");
+	if (switchPageToDoublesPage)
+	{
+		switchPageToDoublesPage.addEventListener('click', function (event) {
+			event.preventDefault();
+			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerFour");
 		});
 	}
 
@@ -162,16 +182,24 @@ function generateBodyHomePageHTML(username, profile_photo)
 						<h1 data-translate-key="statistics"></h1>
 					</div>
 				</button>
-				<button id="solo-player-button" class="flex-item box3">
-					<img class="img-box3" src="../images/solo-logo-white.png" alt="logo solo" width="175" height="175">
+				<button id="tournament-button" class="flex-item box3">
+					<img class="img-box3" src="../images/trophy-logo-white.png" alt="logo solo" width="175" height="175">
 					<div class="item-name">
-						<h1 data-translate-key="solo"></h1>
+						<h1 data-translate-key="tournament"></h1>
 					</div>
 				</button>
-				<button id="multiplayer-button" class="flex-item box4">
-					<img class="img-box4-5" src="../images/multiplayer-logo-white.png" alt="logo multiplayer" width="175" height="175">
+				<button id="simple-match-button" class="flex-item box4">
+					<img class="img-box4-5" src="../images/multiplayer-logo-2-players-white.png" alt="logo 2 players" width="100" height="100">
 					<div class="item-name">
-						<h1 data-translate-key="multiplayer"></h1>
+						<h1 data-translate-key="simple"></h1>
+						<h3 data-translate-key="one-vs-one"></h3>
+					</div>
+				</button>
+				<button id="doubles-button" class="flex-item box5">
+					<img class="img-box4-5" src="../images/multiplayer-logo-4-players-white.png" alt="logo 4 players" width="100" height="100">
+					<div class="item-name">
+						<h1 data-translate-key="doubles"></h1>
+						<h3 data-translate-key="two-vs-two"></h3>
 					</div>
 				</button>
 		</div>

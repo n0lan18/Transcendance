@@ -58,6 +58,8 @@ export async function loadProfilePage()
 				updateDataToDatabase(data, "password");
 			} else {
 				// Affiche les erreurs si les conditions ne sont pas remplies
+				if (document.getElementById("newPasswordValidate"))
+					document.getElementById("newPasswordValidate").remove();
 				if (!letterRegex.test(passwordInput.value)) {
 					errorPasswordForm(document.getElementById("check-letter-password"));
 				}
@@ -200,7 +202,6 @@ async function updateDataToDatabase(data, typeData)
 			link = "api/update-username/";
 		else if (typeData == "email")
 			link = "api/update-email/";
-		console.log(link);
 		const response = await fetch(`${link}`, {
 			method: "PUT",
 			headers: {
@@ -254,6 +255,7 @@ async function updateDataToDatabase(data, typeData)
 				if (document.getElementById("badPassword"))
 					document.getElementById("badPassword").remove();
 				let item = document.getElementById("password-update-container");
+				console.log(item);
 				if (!document.getElementById("newPasswordValidate"))
 				{
 					let newPasswordValidate = document.createElement("p");
@@ -400,7 +402,7 @@ function generateBodyProfilePageHTML()
 					</div>
 				</form>
 			</div>
-			<div class="password-update-container">
+			<div class="password-update-container" id="password-update-container">
 				<h2 data-translate-key="updatePassword"></h2>
 				<form class="password-form" id="passwordForm">
 					<div class="password-place" id="passwordPlace" data-mdb-input-init class="form-outline mb-4">
@@ -412,19 +414,16 @@ function generateBodyProfilePageHTML()
 						</div>
 						<ul class="list-password">
 							<div id="check-letter-password">
-								<li data-translate-key="password1">
-									<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
-								</li>
+								<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
+								<span data-translate-key="password1"></span>
 							</div>
 							<div id="check-num-or-special-character-password">
-								<li data-translate-key="password2">
-									<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
-								</li>
+								<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
+								<span data-translate-key="password2"></span>
 							</div>
 							<div id="check-number-characters-password">
-								<li data-translate-key="password3">
-									<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
-								</li>
+								<i class="fa-solid fa-circle" style="font-size: 10px;"></i>
+								<span data-translate-key="password3"></span>
 							</div>
 						</ul>
 						<div class="password-form-button">
@@ -432,7 +431,7 @@ function generateBodyProfilePageHTML()
 							<span id="result-password-update"></span>
 						</div>
 					</div>
-				</form>		
+				</form>
 			</div>
 		</div>
 	`;

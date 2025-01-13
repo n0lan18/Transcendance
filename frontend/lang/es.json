@@ -47,5 +47,9 @@
 	"twoPlayers": "2 Jugadores",
 	"fourPlayers": "4 Jugadores",
 	"isSuperPower": "con Superpoderes",
-	"isNotSuperPower": "sin Superpoderes"
+	"isNotSuperPower": "sin Superpoderes",
+	"doubles": "Dobles",
+	"simple": "Individual",
+	"two-vs-two": "2 vs 2",
+	"one-vs-one": "1 vs 1"
 }

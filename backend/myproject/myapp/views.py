@@ -172,8 +172,7 @@ class UpdatePasswordView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
-		data = request.data.get('data', {})
-		new_password = data.get('password', None)
+		new_password = request.data.get("password")
 		print('Password: ', new_password)
 		if new_password:
 			user = request.user

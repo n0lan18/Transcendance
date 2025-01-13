@@ -1,6 +1,6 @@
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { generateNavigator } from "./nav.js";
-import { loadPresentationSoloPlayerPage } from "./presentation-match-solo-tournament.js";
+import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
 import { translation } from "./translate.js";
 import { getUserInfo } from "./utils.js";
 import { loadContent,  } from "./utils.js";
@@ -20,7 +20,7 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 	let courtColor = 0xCF5A30;
 	let colorPlayer1 = "#E23F22";
 	let heroPowerPlayer1 = "Invisible";
-	let sizeTournament = 64;
+	let sizeTournament = 32;
 	let superPower = "isSuperPower";
 
 	loadContent(preparationGameHTML, "preparation-solo-tournament", true);
@@ -66,9 +66,6 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 			event.currentTarget.style.border = "3px solid #ffffff";
 			let idPlayer = event.currentTarget.id;
 			switch (idPlayer) {
-				case "players-button-64":
-					sizeTournament = 64
-					break;
 				case "players-button-32":
 					sizeTournament = 32;
 					break;
@@ -106,16 +103,8 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 			}
 			else
 			{
-				await putStatsInfo(5, {numberTournament: 1});
-				if (heroPowerPlayer1 == "Invisible")
-					await putStatsInfo(9, {heroInvisible: 1})
-				else if (heroPowerPlayer1 == "Duplication")
-					await putStatsInfo(10, {heroDuplication: 1})
-				else if (heroPowerPlayer1 == "Super strength")
-					await putStatsInfo(11, {heroSuperstrength: 1})
-				else if (heroPowerPlayer1 == "Time laps")
-					await putStatsInfo(12, {heroTimelaps: 1})
-				loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, sizeTournament, sizePlayers, superPower);
+				loadUsernamePlayersTournament(username1, courtColor, sizeTournament, sizePlayers, superPower);
+//				loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, sizeTournament, sizePlayers, superPower);
 			}
 		});
 	}
@@ -161,85 +150,6 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 		"../images/super4.png",
 	];
 
-	let currentImageIndex = 0;
-
-	const prevBtn = document.getElementById("left-arrow1");
-	if (prevBtn)
-	{
-		prevBtn.addEventListener('click', (event) => {
-			console.log("prevBtn");
-			const albumImage = document.getElementById("superhero-image");
-			const superheroPlayerText = document.getElementById("superhero-power-text-player1");
-			currentImageIndex--;
-			if (currentImageIndex < 0)
-				currentImageIndex = images.length - 1;
-			if (currentImageIndex === 0)
-			{
-				superheroPlayerText.innerHTML = "Invisible";
-				heroPowerPlayer1 = "Invisible";
-			}
-			else if (currentImageIndex === 1)
-			{
-				superheroPlayerText.innerHTML = "Duplication";
-				heroPowerPlayer1 = "Duplication";
-			}
-			else if (currentImageIndex === 2)
-			{
-				superheroPlayerText.innerHTML = "Super strength";
-				heroPowerPlayer1 = "Super strength";
-			}
-			else if (currentImageIndex === 3)
-			{
-				superheroPlayerText.innerHTML = "Time laps";
-				heroPowerPlayer1 = "Time laps";
-			}
-			albumImage.src = images[currentImageIndex];
-			heroPowerPlayer1 = superheroPlayerText.innerHTML;
-			albumImage.style.width = "40%";
-			albumImage.style.height = "40%";
-		});
-	}
-	else
-		console.log("prevBtn not found");
-
-	const nextBtn = document.getElementById("right-arrow1");
-	if (nextBtn)
-	{
-		nextBtn.addEventListener('click', () => {
-			const albumImage = document.getElementById("superhero-image");
-			const superheroPlayerText = document.getElementById("superhero-power-text-player1");
-			currentImageIndex++;
-			if (currentImageIndex >= images.length)
-				currentImageIndex = 0;
-			if (currentImageIndex === 0)
-			{
-				superheroPlayerText.innerHTML = "Invisible";
-				heroPowerPlayer1 = "Invisible";
-			}
-			else if (currentImageIndex === 1)
-			{
-				superheroPlayerText.innerHTML = "Duplication";
-				heroPowerPlayer1 = "Duplication";
-			}
-			else if (currentImageIndex === 2)
-			{
-				superheroPlayerText.innerHTML = "Super strength";
-				heroPowerPlayer1 = "Super strength";
-			}
-			else if (currentImageIndex === 3)
-			{
-				superheroPlayerText.innerHTML = "Time laps";
-				heroPowerPlayer1 = "Time laps";
-			}
-			albumImage.src = images[currentImageIndex];
-			heroPowerPlayer1 = superheroPlayerText.innerHTML;
-			albumImage.style.width = "40%";
-			albumImage.style.height = "40%";
-		});
-	}
-	else
-		console.log("nextBtn not found");
-
 	const radios = document.querySelectorAll('input[name="choice"]');
 	radios.forEach(radio => {
 		radio.addEventListener('change', () => {
@@ -263,6 +173,7 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 function generatePreparationTournamentGamePageHTML()
 {
 	let numberPlayer = 64;
+	let number = Math.floor(Math.random() * 4) + 1;
 	return `
 		<div class="message-change-orientation">
 			<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
@@ -283,40 +194,9 @@ function generatePreparationTournamentGamePageHTML()
 			<div class="player-preparation-container">
 				<div class="player-preparation-container-content">
 					<div class="player-left-preparation">
-						<h3 id="usernameGamePlayer1-text" data-translate-key="choseHero"></h3>
 						<div class="superhero-container" id="superhero-container1">
 							<div class="chose-superhero-container" id="chose-superhero-container1">
-								<button class="left-arrow" id="left-arrow1">
-									<i class="fa-solid fa-arrow-left"></i>
-								</button>
-								<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
-								<button class="right-arrow" id="right-arrow1">
-									<i class="fa-solid fa-arrow-right"></i>
-								</button>
-							</div>
-							<div class="superhero-power-text" id="superhero-power-text">
-								<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
-								<p id="superhero-power-text-player1">Invisible</p>
-							</div>
-						</div>
-						<div class="color-button-container color-button-container-player1">
-							<div class="color-button-text">
-								<button id="color-button-red-player1" class="color-button color-button-player1" style="background-color: #E23F22; border: 3px solid #ffffff;"></button>
-								<p class="text-under-color-button" data-translate-key="textUnderColorButton1"></p>
-							</div>
-							<div class="color-button-text">
-								<button id="color-button-green-player1" class="color-button color-button-player1" style="background-color: #3BB323;"></button>
-								<p class="text-under-color-button" data-translate-key="textUnderColorButton2"></p>
-							</div>
-							<div class="color-button-text">
-								<button id="color-button-blue-player1" class="color-button color-button-player1" style="background-color: #32689A;"></button>
-								<p class="text-under-color-button" data-translate-key="textUnderColorButton3"></p>
-							</div>
-							<div class="color-button-text">
-								<div class="color-picker-container1" id="color-picker-container1">
-									<input type="color" class="color-picker" id="color-picker-player1" value="#EEDC1B">
-								</div>
-								<p class="text-under-color-button" data-translate-key="textUnderColorButton4"></p>
+								<img id="superhero-image" class="superhero-image" src="../images/super${number}.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
 							</div>
 						</div>
 					</div>
@@ -325,9 +205,6 @@ function generatePreparationTournamentGamePageHTML()
 			<div class="number-players-tournament">
 				<h3 data-translate-key="numberPlayers"></h3>
 				<div class="number-players-tournament-buttons">
-					<button id="players-button-64" class="players-button players-button-64" style="background-color: #6a4c93; border: 3px solid #ffffff;">
-						<p class="string-plyers-button">${numberPlayer}</p>
-					</button>
 					<button id="players-button-32" class="players-button players-button-32" style="background-color: #8ac926">
 						<p class="string-plyers-button">${numberPlayer /= 2}</p>
 					</button>
