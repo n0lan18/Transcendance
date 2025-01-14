@@ -51,5 +51,6 @@
 	"doubles": "Dobles",
 	"simple": "Individual",
 	"two-vs-two": "2 vs 2",
-	"one-vs-one": "1 vs 1"
+	"one-vs-one": "1 vs 1",
+	"startRandom": "Comenzar al azar"
 }

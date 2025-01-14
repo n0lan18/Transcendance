@@ -49,3 +49,13 @@
 .btn-username-players-tournament {
     width: 20%;
 }
+
+.button-launch-tournament {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+}

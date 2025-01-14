@@ -5,7 +5,7 @@ import { translation } from "./translate.js";
 
 export function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, sizePlayers, superPower)
 {
-    const usernamePlayersTournamentHTML = generateUsernamePlayersTournament(username1);
+    const usernamePlayersTournamentHTML = generateUsernamePlayersTournament();
 
     addNavigatorEventListeners();
 
@@ -14,6 +14,23 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
 	document.getElementById("app").innerHTML = usernamePlayersTournamentHTML;
     translation();
 	addNavigatorEventListeners();
+
+
+    let tab = [];
+    for (let i = 0; i < sizeTournament; i++)
+    {
+        let playerdef = [];
+        if (i == 0)
+            playerdef.push(username1);
+        else
+            playerdef.push(`Player${i + 1}`);
+        if (superPower === "isSuperPower")
+            playerdef.push("Invisible");
+        else
+            playerdef.push("none");
+        playerdef.push("#E23F22")
+        tab.push(playerdef);
+    }
 
     const userTemplate = (index, username) => `
         <div class="superhero-container-for-username-tournament" id="superhero-container-for-username-tournament${index}">
@@ -57,7 +74,7 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
                 <p class="text-under-color-button" data-translate-key="textUnderColorButton4"></p>
             </div>
         </div>
-        <input type="submit" value="Submit" class="btn btn-success btn-block mb-4 btn-username-players-tournament" id="buttonSend${index}">
+        <input type="submit" value="Submit" class="btn btn-success btn-block mb-4 btn-username-players-tournament" id="buttonSend${index}" style="width: 20%;">
     `;
 
     const addLinesPlayers = document.getElementById("username-players-line");
@@ -83,7 +100,7 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
     }
 }
 
-function generateUsernamePlayersTournamentHTML(username1)
+function generateUsernamePlayersTournamentHTML()
 {
     return `
     	<div class="message-change-orientation">
@@ -93,14 +110,18 @@ function generateUsernamePlayersTournamentHTML(username1)
         <div class="preparation-username-players-container">
             <h1 data-translate-key="tournament"></h1>
             <div class="username-players-line" id="username-players-line"></div>
+            <div class="button-launch-tournament">
+                <input id="send-preparation-game-button" data-translate-key="start" value="" class="btn btn-success btn-block mb-4 send-preparation-game-button" style="width: 30%; margin-right: 5px;">
+                <input id="send-preparation-game-button-random" data-translate-key="startRandom" value="" class="btn btn-primary mb-4 send-preparation-game-button" style="width: 30%; margin-left: 5px;">
+            </div>        
         </div>
     `;
 }
 
-function generateUsernamePlayersTournament(username1)
+function generateUsernamePlayersTournament()
 {
     let nav = generateNavigator();
-	let body = generateUsernamePlayersTournamentHTML(username1);
+	let body = generateUsernamePlayersTournamentHTML();
 
 	return (nav + body);
 }

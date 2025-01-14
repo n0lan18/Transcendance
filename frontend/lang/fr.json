@@ -51,5 +51,6 @@
 	"doubles": "Double",
 	"simple": "Simple",
 	"two-vs-two": "2 contre 2",
-	"one-vs-one": "1 contre 1"
+	"one-vs-one": "1 contre 1",
+	"startRandom": "Start aleatoire"
 }
