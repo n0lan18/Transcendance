@@ -1,15 +1,20 @@
 import { loadPresentationSoloPlayerPage } from "../presentation-match-solo-tournament.js";
 import { translation } from "../translate.js";
 import { putStatsInfo } from "../utils.js";
+import { getUserInfo } from "../utils.js";
+import { loadTournamentPresentation } from "../tournament-presentation.js";
 
-export async function loadFinishPageTournamentWin(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers, scoreLeftPlayer, scoreRightPlayer, superPower)
+export async function loadFinishPageTournamentWin(username1, courtColor, numberPlayers, scoreLeftPlayer, scoreRightPlayer, superPower, tab, numberMatch, tabNewRound)
 {
-	await putStatsInfo(7, {numberVictoryMatchTournament: 1})
-	await putStatsInfo(2, {resultats: "V"})
-	await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-	await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
-	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer})
-
+	let userInfo = await getUserInfo();
+	if (userInfo.username == username1)
+	{
+		await putStatsInfo(7, {numberVictoryMatchTournament: 1})
+		await putStatsInfo(2, {resultats: "V"})
+		await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+		await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+		await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer})
+	}
 	document.getElementById("app").innerHTML = finishPageHTML(numberPlayers);
 	translation();
 
@@ -17,12 +22,13 @@ export async function loadFinishPageTournamentWin(username1, courtColor, colorPl
 	const homeButtonFinishPage = document.getElementById("continue-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {
 		event.preventDefault();
-		loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, numberPlayers, "soloPlayer", superPower)
+		loadTournamentPresentation(tab, courtColor, numberPlayers, "tournament-multi-local", superPower, numberMatch, tabNewRound)
 	});
 }
 
 function finishPageHTML(numberPlayers)
 {
+	numberPlayers /= 2;
 	const lang = localStorage.getItem('language') || 'en';
 	let roadToStr;
 	if (lang == "fr")

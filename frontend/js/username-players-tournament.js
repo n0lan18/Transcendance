@@ -1,7 +1,11 @@
 import { generateNavigator } from "./nav.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { loadContent } from "./utils.js";
+import { escapeHTML, isValidUsername, loadContent } from "./utils.js";
 import { translation } from "./translate.js";
+import { rgbToHex } from "./utils.js";
+import { loadTournamentPresentation } from "./tournament-presentation.js";
+
+let tabNewRound = [];
 
 export function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, sizePlayers, superPower)
 {
@@ -15,6 +19,12 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
     translation();
 	addNavigatorEventListeners();
 
+    const images = [
+        "../images/super1.png",
+        "../images/super2.png",
+        "../images/super3.png",
+        "../images/super4.png",
+    ];
 
     let tab = [];
     for (let i = 0; i < sizeTournament; i++)
@@ -55,27 +65,31 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
 			</div>
 		</div>
         <div class="color-button-container color-button-container-player${index}">
-            <div class="color-button-text">
+            <div class=color-button-text color-button-text${index}">
                 <button id="color-button-red-player${index}" class="color-button" style="background-color: #E23F22; border: 3px solid #ffffff;"></button>
                 <p class="text-under-color-button" data-translate-key="textUnderColorButton1"></p>
             </div>
-            <div class="color-button-text">
+            <div class="color-button-text color-button-text${index}">
                 <button id="color-button-green-player${index}" class="color-button" style="background-color: #3BB323;"></button>
                 <p class="text-under-color-button" data-translate-key="textUnderColorButton2"></p>
             </div>
-            <div class="color-button-text">
+            <div class="color-button-text color-button-text${index}">
                 <button id="color-button-blue-player${index}" class="color-button" style="background-color: #32689A;"></button>
                 <p class="text-under-color-button" data-translate-key="textUnderColorButton3"></p>
             </div>
-            <div class="color-button-text">
-                <div class="color-picker-container1">
+            <div class="color-button-text color-button-text${index}">
+                <div class="color-picker-container1" id="color-picker-container${index}">
                     <input type="color" class="color-picker" id="color-picker-player${index}" value="#EEDC1B">
                 </div>
                 <p class="text-under-color-button" data-translate-key="textUnderColorButton4"></p>
             </div>
         </div>
-        <input type="submit" value="Submit" class="btn btn-success btn-block mb-4 btn-username-players-tournament" id="buttonSend${index}" style="width: 20%;">
     `;
+
+    const buttonSendEvent = function(event) {
+        event.preventDefault();
+        loadTournamentPresentation(tab, courtColor, sizeTournament, sizePlayers, superPower, 0, tabNewRound);
+    }
 
     const addLinesPlayers = document.getElementById("username-players-line");
     if (addLinesPlayers)
@@ -96,7 +110,164 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
                 if (superheroContainer)
                     superheroContainer.remove();
             }
+            let currentImageIndex = 0;
+            let usernameInput;
+
+            let prevBtn = document.getElementById(`left-arrow${i + 1}`);
+            if (prevBtn)
+            {
+                prevBtn.addEventListener('click', (event) => {
+                    const albumImage = document.getElementById(`superhero-image${i + 1}`);
+                    const superheroPlayerText = document.getElementById(`superhero-power-text-player${i + 1}`);
+                    currentImageIndex--;
+                    if (currentImageIndex < 0)
+                        currentImageIndex = images.length - 1;
+                    if (currentImageIndex === 0)
+                        superheroPlayerText.innerHTML = "Invisible";
+                    else if (currentImageIndex === 1)
+                        superheroPlayerText.innerHTML = "Duplication";
+                    else if (currentImageIndex === 2)
+                        superheroPlayerText.innerHTML = "Super strength";
+                    else if (currentImageIndex === 3)
+                        superheroPlayerText.innerHTML = "Time laps";
+                    albumImage.src = images[currentImageIndex];
+                    tab[i][1] = superheroPlayerText.innerHTML;
+                    albumImage.style.width = "50%";
+                    albumImage.style.height = "50%";
+                    console.log(tab[i]);
+                });
+            }
+            else
+                console.log("prevBtn not found");
+        
+            let nextBtn = document.getElementById(`right-arrow${i + 1}`);
+            if (nextBtn)
+            {
+                nextBtn.addEventListener('click', () => {
+                    const albumImage = document.getElementById(`superhero-image${i + 1}`);
+                    const superheroPlayerText = document.getElementById(`superhero-power-text-player${i + 1}`);
+                    currentImageIndex++;
+                    if (currentImageIndex >= images.length)
+                        currentImageIndex = 0;
+                    if (currentImageIndex === 0)
+                        superheroPlayerText.innerHTML = "Invisible";
+                    else if (currentImageIndex === 1)
+                        superheroPlayerText.innerHTML = "Duplication";
+                    else if (currentImageIndex === 2)
+                        superheroPlayerText.innerHTML = "Super strength";
+                    else if (currentImageIndex === 3)
+                        superheroPlayerText.innerHTML = "Time laps";
+                    albumImage.src = images[currentImageIndex];
+                    tab[i][1] = superheroPlayerText.innerHTML;
+                    albumImage.style.width = "50%";
+                    albumImage.style.height = "50%";
+                    console.log(tab[i]);
+                });
+            }
+            else
+                console.log("nextBtn not found");
+
+            usernameInput = document.getElementById(`usernameRegister${i + 1}`);
+
+            let inputUsername;
+            if (usernameInput)
+            {
+                usernameInput.addEventListener(('input'), function(event) {
+                    inputUsername = event.target.value;
+                    let exist = 0;
+                    for (let i = 0; i < sizeTournament; i++)
+                    {
+                        if (tab[i].includes(inputUsername))
+                            exist = 1;
+                    }
+                    if (exist == 1)
+                    {
+                        const parent = document.getElementById(`RegisterPlace${i + 1}`);
+                        if (parent)
+                        {
+                            if (!document.getElementById(`message-bad-username${i + 1}`))
+                            {
+                                let message = document.createElement("p");
+                                message.id = `message-bad-username${i + 1}`;
+                                message.classList.add("invalid-register");
+                                message.textContent = "Username already exist";
+                                parent.appendChild(message);
+                                document.getElementById("send-preparation-game-button").classList.remove("btn-success");
+                                document.getElementById("send-preparation-game-button").classList.add("btn-danger");
+                                document.getElementById("send-preparation-game-button").removeEventListener('click', buttonSendEvent);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (document.getElementById(`message-bad-username${i + 1}`))
+                            document.getElementById(`message-bad-username${i + 1}`).remove();
+                        document.getElementById("send-preparation-game-button").classList.remove("btn-danger");
+                        document.getElementById("send-preparation-game-button").classList.add("btn-success");
+                        document.getElementById("send-preparation-game-button").addEventListener('click', buttonSendEvent);
+                    }
+                    if (inputUsername.length <= 14)
+                        tab[i][0] = escapeHTML(inputUsername);
+                    if (inputUsername.length == 0)
+                    {
+                        if (i == 0)
+                            tab[i][0] = username1;
+                        else
+                            tab[i][0] = `Player${i + 1}`;
+                    }
+                });
+            }
+
+            document.querySelectorAll(`.color-button-container-player${i + 1} .color-button`).forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    document.querySelectorAll(`.color-button-container-player${i + 1} .color-button`).forEach(button => {
+                        button.style.border = "none";
+                    });
+                    event.target.style.border = "3px solid #ffffff";
+                    let color = event.target.style.backgroundColor;
+                    tab[i][2] = rgbToHex(color);
+                    const colorPickerContainer1 = document.getElementById(`color-picker-container${i + 1}`);
+                    const colorPicker1 = document.getElementById(`color-picker-player${i + 1}`);
+                    colorPickerContainer1.style.backgroundColor = colorPicker1.value;
+                    console.log(tab[i]);
+                });
+            });
+            let colorPicker1 = document.getElementById(`color-picker-player${i + 1}`);
+            if (colorPicker1)
+            {
+                colorPicker1.addEventListener('input', function (event) {
+                    tab[i][2] = event.target.value;
+                    console.log(tab[i][2]);
+                    const colorPickerContainer1 = document.getElementById(`color-picker-container${i + 1}`);
+                    colorPickerContainer1.style.backgroundColor = "#ffffff";
+                    document.querySelectorAll(`.color-button-container-player${i + 1} .color-button`).forEach(button => {
+                        button.style.border = "none";
+                    });
+                });
+            }
         }
+    }
+
+    const buttonStart = document.getElementById("send-preparation-game-button");
+    if (buttonStart)
+        buttonStart.addEventListener('click', buttonSendEvent);
+
+    const buttonStartRandom = document.getElementById("send-preparation-game-button-random");
+    if (buttonStartRandom)
+    {
+        buttonStartRandom.addEventListener( ('click'), function (event) {
+            event.preventDefault();
+            const stringsHeroPowerPlayer = ["Invisible", "Duplication", "Super strength", "Time laps"];
+            const stringsColorPlayer = ["#E23F22", "#3BB323", "#32689A", "#EEDC1B", "#1BD5EE", "#9A1BEE", "#FD5DBDB", "#9ADBAD"];
+            for (let i = 0; i < sizeTournament; i++)
+            {
+                if (superPower === "isSuperPower")
+                    tab[i][1] = stringsHeroPowerPlayer[Math.floor(Math.random() * stringsHeroPowerPlayer.length)];
+                tab[i][2] = stringsColorPlayer[Math.floor(Math.random() * stringsColorPlayer.length)];
+            }
+            loadTournamentPresentation(tab, courtColor, sizeTournament, sizePlayers, superPower, 0, tabNewRound);
+        });
     }
 }
 

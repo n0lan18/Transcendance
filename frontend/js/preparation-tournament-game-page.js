@@ -102,10 +102,7 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 				}
 			}
 			else
-			{
 				loadUsernamePlayersTournament(username1, courtColor, sizeTournament, sizePlayers, superPower);
-//				loadPresentationSoloPlayerPage(username1, courtColor, colorPlayer1, heroPowerPlayer1, sizeTournament, sizePlayers, superPower);
-			}
 		});
 	}
 

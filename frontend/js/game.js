@@ -22,7 +22,7 @@ import { startCountdown } from './game/countdown.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
 
 export class Game {
-    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers, superPower) {
+    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers, superPower, numberMatch,tab, tabNewRound) {
         this.container = document.getElementById(containerId);
         this.superPower = superPower;
         this.containerProgressBarLeft = document.getElementById("progress-bar-left");
@@ -75,6 +75,10 @@ export class Game {
         this.numberPlayers = numberPlayers;
         this.colorCourt = colorCourt;
         this.colorPlayer1 = colorPlayer1;
+        this.numberMatch = numberMatch
+        this.tab = tab;
+        this.tabNewRound = tabNewRound;
+        console.log(this.tab);
         this.init(colorPlayer1, colorPlayer2, colorCourt);
     }
 

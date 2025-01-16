@@ -42,6 +42,8 @@ function applyTranslations()
             element.value = translations[key];
         else if (key == "start")
             element.value = translations[key];
+        else if (key == "startRandom")
+            element.value = translations[key];
         else if (translations[key])
 			element.textContent = translations[key];
 	});

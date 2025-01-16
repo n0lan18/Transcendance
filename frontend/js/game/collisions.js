@@ -4,6 +4,7 @@ import { startCountdown } from "./countdown.js";
 import { loadFinishPage } from "./finishPage.js";
 import { loadFinishPageTournament } from "./finishPage-tournament.js";
 import { loadFinishPageTournamentWin } from "./finishPage-tournament-win.js";
+import { loadTournamentPresentation } from "../tournament-presentation.js";
 
 export async function handleCollisions(Game) {
 	if (Game.ball.position.y > 13.5 || Game.ball.position.y < -13.5) {
@@ -112,23 +113,26 @@ export async function handleCollisions(Game) {
 			const lang = localStorage.getItem('language') || 'en';
 			if (scores.leftPlayerScore >= 5)
 			{
+				const user = Game.tab.find(row => row.includes(Game.username1));
+				Game.tabNewRound.push(user);
 				if (lang == "en")
-					winOrLostStr = "Congratulations! You've won!";
+					winOrLostStr = `Congratulations! ${Game.username1} you've won!`;
 				else if (lang == "es")
-					winOrLostStr = "¡Felicidades! ¡Has ganado!";
+					winOrLostStr = `¡Felicidades! ${Game.username1} ¡Has ganado!`;
 				else if (lang == "fr")
-					winOrLostStr = "Felicitations! Tu as gagne!";
+					winOrLostStr = `Felicitations! ${Game.username1} tu as gagne!`;
 				isWin = true;
 			}
 			else
 			{
+				const user = Game.tab.find(row => row.includes(Game.username2));
+				Game.tabNewRound.push(user);
 				if (lang == "en")
-					winOrLostStr = "So sad! You've lost!";
+					winOrLostStr = `Congratulations! ${Game.username2} you've won!`;
 				else if (lang == "es")
-					winOrLostStr = "Has perdido!";
+					winOrLostStr = `¡Felicidades! ${Game.username2} ¡Has ganado!`;
 				else if (lang == "fr")
-					winOrLostStr = "Tu as perdu!";
-				
+					winOrLostStr = `Felicitations! ${Game.username2} tu as gagne!`;
 				isWin = false;
 			}
 			if (Game.styleMatch == "tournament")
@@ -136,9 +140,21 @@ export async function handleCollisions(Game) {
 				if (Game.numberPlayers == 1 && scores.leftPlayerScore >= 5)
 					loadFinishPageTournament("win", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 				else if (scores.leftPlayerScore >= 5)
-					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.colorPlayer1, Game.heroPowerPlayer1, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower);
+					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.colorPlayer1, Game.heroPowerPlayer1, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab);
 				else
 					loadFinishPageTournament("lose", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
+			}
+			else if (Game.styleMatch == "tournament-multi-local")
+			{
+				if (Game.numberPlayers == 2)
+				{
+					if (scores.leftPlayerScore >= 5)
+						loadFinishPageTournament(Game.username1, Game.username2, "left", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
+					else
+						loadFinishPageTournament(Game.username1, Game.username2, "right", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
+				}
+				else
+					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab, Game.numberMatch, Game.tabNewRound);
 			}
 			else
 				loadFinishPage(winOrLostStr, scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.styleMatch, Game.modeGame);
