@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Télécharger le script wait-for-it.sh et le rendre exécutable
+curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+chmod +x wait-for-it.sh
+
+echo "Waiting for PostgreSQL to be ready..."
+./wait-for-it.sh db:5432 --timeout=15 --strict -- echo "PostgreSQL is up!"
+
 # Créer un projet Django s'il n'existe pas déjà
 if [ ! -d "myproject" ]; then
     echo "Creating Django project..."

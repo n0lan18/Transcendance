@@ -7,8 +7,12 @@ WORKDIR /app
 
 COPY . .
 
+RUN apt-get update && apt-get install -y curl
+
 # Installer les dépendances
-RUN pip install --no-cache-dir -r requirements.txt \
+RUN  pip install --upgrade pip \
+&& pip install --no-cache-dir -r requirements.txt \
+&& apt-get install -y curl \
 && pip install channels \
 && pip install channels-redis \
 && pip install daphne \

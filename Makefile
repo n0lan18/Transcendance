@@ -24,7 +24,6 @@ clean-images:
 	docker rmi $$(docker images -q) || true
 
 clean-volumes:
-	clean-volumes:
 	docker stop $$(docker ps -aq) || true
 	docker rm $$(docker ps -aq) || true
 	docker volume rm $$(docker volume ls -q) || true
