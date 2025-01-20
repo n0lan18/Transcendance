@@ -9,7 +9,7 @@ import { rgbToHex } from "./utils.js";
 import { putStatsInfo } from "./utils.js";
 import { translation } from "./translate.js";
 
-export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers)
+export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 {
 	let userInfo = await getUserInfo();
 
@@ -118,7 +118,7 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, sizePlayers
 					await putStatsInfo(11, {heroSuperstrength: 1})
 				else if (heroPowerPlayer1 == "Time laps")
 					await putStatsInfo(12, {heroTimelaps: 1})
-				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, -1, sizePlayers, superPower);
+				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, -1, modeGame, superPower);
 			}
 		});
 	}

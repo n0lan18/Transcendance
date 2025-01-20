@@ -7,8 +7,10 @@ import { loadTournamentPresentation } from "./tournament-presentation.js";
 
 let tabNewRound = [];
 
-export function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, sizePlayers, superPower)
+export function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower)
 {
+    console.log(typeOfGame);
+    console.log(modeGame);
     const usernamePlayersTournamentHTML = generateUsernamePlayersTournament();
 
     addNavigatorEventListeners();
@@ -88,7 +90,7 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
 
     const buttonSendEvent = function(event) {
         event.preventDefault();
-        loadTournamentPresentation(tab, courtColor, sizeTournament, sizePlayers, superPower, 0, tabNewRound);
+        loadTournamentPresentation(tab, courtColor, sizeTournament, typeOfGame, modeGame, superPower, 0, tabNewRound);
     }
 
     const addLinesPlayers = document.getElementById("username-players-line");
@@ -266,7 +268,7 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
                     tab[i][1] = stringsHeroPowerPlayer[Math.floor(Math.random() * stringsHeroPowerPlayer.length)];
                 tab[i][2] = stringsColorPlayer[Math.floor(Math.random() * stringsColorPlayer.length)];
             }
-            loadTournamentPresentation(tab, courtColor, sizeTournament, sizePlayers, superPower, 0, tabNewRound);
+            loadTournamentPresentation(tab, courtColor, sizeTournament, typeOfGame, modeGame, superPower, 0, tabNewRound);
         });
     }
 }

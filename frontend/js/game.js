@@ -22,7 +22,7 @@ import { startCountdown } from './game/countdown.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
 
 export class Game {
-    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers, superPower, numberMatch,tab, tabNewRound) {
+    constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound) {
         this.container = document.getElementById(containerId);
         this.superPower = superPower;
         this.containerProgressBarLeft = document.getElementById("progress-bar-left");
@@ -31,7 +31,7 @@ export class Game {
         this.emptySizePowerBar = emptySizePowerBar();
         this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
         this.modeGame = modeGame;
-        console.log(this.modeGame)
+        console.log("mode game " + this.modeGame)
         this.scoreContainer = document.getElementById("board-score");
         this.gamePaused = true;
         this.animationFrameId;
@@ -70,15 +70,15 @@ export class Game {
         this.ballVelocityReplica = { x: 0.1, y: 0.1 };
         this.username1 = username1;
         this.username2 = username2;
-        this.styleMatch = styleMatch;
-        console.log(styleMatch)
+        this.typeOfGame = typeOfGame;
+        console.log("type of game " + typeOfGame)
         this.numberPlayers = numberPlayers;
         this.colorCourt = colorCourt;
         this.colorPlayer1 = colorPlayer1;
         this.numberMatch = numberMatch
         this.tab = tab;
         this.tabNewRound = tabNewRound;
-        console.log(this.tab);
+        console.log(this.tabNewRound);
         this.init(colorPlayer1, colorPlayer2, colorCourt);
     }
 

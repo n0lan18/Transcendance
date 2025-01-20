@@ -10,7 +10,7 @@ export async function loadFinishPageTournament(username1, username2, sideWin, nu
 	let userInfo = await getUserInfo();
 	if (userInfo.username == username1 || userInfo.username == username2)
 	{
-		if (endOfGame == "win")
+		if (sideWin == "left")
 		{
 			await putStatsInfo(7, {numberVictoryMatchTournament: 1})
 			await putStatsInfo(8, {numberVictoryTournament: 1})
@@ -64,17 +64,17 @@ function finishPageHTML(sideWin)
 			<div class="button-finish-page">
 				<button id="home-button-end-party" class="solo-player-simple-match-button">
 					<i class="fa-solid fa-house home-button-finish-page" style="font-size: 100px; color: white"></i>
-					<div class="item-name"
+					<div class="item-name">
 						<h1 data-translate-key="home"></h1>
 					</div>
 				</button>
-				<button id="retry-button-end-party" class="solo-player-tournament-button" style="background-color: #1982c4">
-					<i class="fa-solid fa-rotate-right" style="font-size: 100px;></i>
-					<div class="item-name"
-						<h1 data-translate-key="retry"></p>
+				<button id="retry-button-end-party" class="solo-player-simple-match-button" style="background-color: #1982c4">
+					<i class="fa-solid fa-rotate-right" style="font-size: 100px;"></i>
+					<div class="item-name">
+						<h1 data-translate-key="retry"></h1>
 					</div>
 				</button>
 			</div>
-		<div>
+		</div>
 	`;
 }

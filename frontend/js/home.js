@@ -84,7 +84,7 @@ export async function loadHomePage()
 	{
 		switchPageToTournamentPage.addEventListener('click', function (event) {
 			event.preventDefault();
-			loadPreparationTournamentGamePage("multiplayer");
+			loadPreparationTournamentGamePage("multiplayer", "tournament-multi-local");
 		});
 	}
 

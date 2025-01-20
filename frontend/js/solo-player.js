@@ -2,15 +2,16 @@ import { isMobileDevice, loadContent, putStatsInfo } from "./utils.js";
 import { Game } from "./game.js";
 import { translation } from "./translate.js";
 
-export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, styleMatch, numberPlayers, playerSize, superPower, numberMatch, tab, tabNewRound)
+export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound)
 {
+	console.log(modeGame);
 	let soloPlayerHTML = generateGamePageHTML(username1, username2);
 
 	loadContent(soloPlayerHTML, "solo-player", true);
 	document.getElementById("app").innerHTML = soloPlayerHTML;
 	translation();
 	let pageGameContainer = document.getElementById("page-game-container");
-	if (isMobileDevice)
+//	if (isMobileDevice)
 		toggleFullScreen();
 	if (superPower == "isNotSuperPower")
 	{
@@ -21,11 +22,11 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 	}
 	if (pageGameContainer)
 	{
-		if (styleMatch == "simple-match")
+		if (modeGame == "simple-match")
 			await putStatsInfo(3, {numberSimpleMatch: 1});
-		else if (styleMatch == "tournament")
-			await putStatsInfo(6, {numberMatchTournament: 1});
-		const game = new Game("game-container", "tournament-multi-local", colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, styleMatch, numberPlayers, superPower, numberMatch, tab, tabNewRound);
+		else if (modeGame == "tournament" || modeGame == "tournament-multi-local")
+			await putStatsInfo(6, {numberMatchTournament: 1});		
+		const game = new Game("game-container", modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
 		game.start();
 	}
 

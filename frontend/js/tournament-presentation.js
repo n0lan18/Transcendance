@@ -4,7 +4,7 @@ import { translation } from "./translate.js";
 import { generateNavigator } from "./nav.js";
 import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi-local-tournament.js";
 
-export function loadTournamentPresentation(tab, courtColor, sizeTournament, sizePlayers, superPower, numberMatch, tabNewRound)
+export function loadTournamentPresentation(tab, courtColor, sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tabNewRound)
 {
 	if (numberMatch == sizeTournament / 2)
 	{
@@ -13,7 +13,6 @@ export function loadTournamentPresentation(tab, courtColor, sizeTournament, size
 		tab = tabNewRound;
 		tabNewRound = [];
 	}
-	console.log(tabNewRound);
 	const tournamentPresentationHTML = generateTournamentPresentation();
 
     loadContent(tournamentPresentationHTML, "tournament-presentation", true);
@@ -41,10 +40,11 @@ export function loadTournamentPresentation(tab, courtColor, sizeTournament, size
 		levelTournament.textContent = level;
 		tabPresentation.appendChild(levelTournament);
 	}
-	createTableau(sizeTournament, tab, courtColor, superPower, sizePlayers, numberMatch, tabNewRound);
+	createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, modeGame, numberMatch, tabNewRound);
+
 }
 
-function createTableau(sizeTournament, tab, courtColor, superPower, sizePlayers, numberMatch, tabNewRound)
+function createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, modeGame, numberMatch, tabNewRound)
 {
 	const tabPresentation = document.getElementById("tab-presentation-tournament-round");
 	if (tabPresentation)
@@ -60,28 +60,67 @@ function createTableau(sizeTournament, tab, courtColor, superPower, sizePlayers,
 			}
 			const divMatch = document.createElement("div");
 			divMatch.className = `match`;
+			divMatch.classList.add("btn");
+			divMatch.classList.add("btn-primary");
+			divMatch.classList.add("btn-block");
+			divMatch.style.width = "20%";
+			divMatch.style.marginTop = "0";
 			divMatch.id = `match${i + 1}`;
 			const playerTab1 = document.createElement("p");
 			playerTab1.className = "playerTab";
 			playerTab1.id = `playerTab${i + 1}`;
 			playerTab1.textContent = `${tab[i][0]}`;
+			playerTab1.style.color = "white";
 			const playerTab2 = document.createElement("p");
 			playerTab2.className = "playerTab";
 			playerTab2.id = `playerTab${i + 2}`;
 			playerTab2.textContent = `${tab[i + 1][0]}`;
+			playerTab2.style.color = "white";
+			const hr = document.createElement("hr");
+			hr.style.border = "1px solid white"; // Personnalisation de la barre
+			hr.style.margin = "3px 0";
 			divMatch.appendChild(playerTab1);
+			divMatch.appendChild(hr);
 			divMatch.appendChild(playerTab2);
 			divTableau.appendChild(divMatch);
-			console.log(document.getElementById(`match${i + 1}`));
-			checkUsername(tab, i, divMatch, courtColor, sizeTournament, sizePlayers, superPower, numberMatch, tabNewRound);
+			checkUsername(tab, i, divMatch, courtColor, sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tabNewRound);
+
+			const buttonMatch = document.getElementById(`match${i + 1}`);
+			if (buttonMatch)
+			{
+				if (buttonMatch.classList.contains("btn-primary"))
+				{
+					buttonMatch.addEventListener("mouseover", () => {
+						document.getElementById(`playerTab${i + 1}`).textContent = "PLAY";
+						document.getElementById(`playerTab${i + 2}`).textContent = "GAME";
+					});
+
+					buttonMatch.addEventListener("mouseout", () => {
+						document.getElementById(`playerTab${i + 1}`).textContent = `${tab[i][0]}`;
+						document.getElementById(`playerTab${i + 2}`).textContent = `${tab[i + 1][0]}`;
+					});
+				}
+/*				else if (buttonMatch.classList.contains("btn-danger"))
+				{
+					buttonMatch.addEventListener("mouseover", () => {
+						document.getElementById(`playerTab${i + 1}`).textContent = "ALLREADY";
+						document.getElementById(`playerTab${i + 2}`).textContent = "PLAY";
+					});
+
+					buttonMatch.addEventListener("mouseout", () => {
+						document.getElementById(`playerTab${i + 1}`).textContent = `${tab[i][0]}`;
+						document.getElementById(`playerTab${i + 2}`).textContent = `${tab[i + 1][0]}`;
+					});	
+				}
+*/			}
 		}
 	}
 }
 
-function checkUsername(tab, inc, div, courtColor, sizeTournament, sizePlayers, superPower, numberMatch, tabNewRound)
+function checkUsername(tab, inc, div, courtColor, sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tabNewRound)
 {
 	let usernameFound
-	if (tabNewRound.length > 0)
+	if (tabNewRound && tabNewRound.length > 0)
 	{
 		const paragraphs = div.querySelectorAll("p");
 		if (paragraphs.length === 0) {
@@ -94,7 +133,10 @@ function checkUsername(tab, inc, div, courtColor, sizeTournament, sizePlayers, s
 				if (tabNewRound[i] && Array.isArray(tabNewRound[i]) && tabNewRound[i][0] === p.textContent) {
 					console.log(tabNewRound[i]);
 					console.log(p.textContent);
-					div.style.backgroundColor = "red";
+					div.classList.remove("btn-primary");
+					div.classList.add("btn-danger");
+					document.getElementById(`playerTab${i + 1}`).textContent = `${tabNewRound[i][0]}`;
+					document.getElementById(`playerTab${i + 2}`).textContent = "WON";
 					usernameFound = true; // Une correspondance a été trouvée
 					return; // Arrête la recherche
 				}
@@ -106,7 +148,7 @@ function checkUsername(tab, inc, div, courtColor, sizeTournament, sizePlayers, s
 	if (!usernameFound)
 	{
 		div.addEventListener(('click'), function(event, sizePlayers) {
-			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc][1], sizeTournament, sizePlayers, superPower, numberMatch, tab, tabNewRound);
+			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc][1], sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound);
 		});
 	}
 }

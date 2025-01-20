@@ -142,7 +142,7 @@ function specialShotComputerPlayer2(Game)
 	if (Game.superPower == "isSuperPower")
 	{
 		window.addEventListener('keypress', (event) => {
-			if (event.key === "0" && (Game.styleMatch == "multiplayer" || Game.styleMatch == "tournament-multi-local"))
+			if (event.key === "0" && (Game.typeOfGame == "multiplayer"))
 			{
 					if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
 				{

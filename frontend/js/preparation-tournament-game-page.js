@@ -7,7 +7,7 @@ import { loadContent,  } from "./utils.js";
 import { putStatsInfo } from "./utils.js";
 import { rgbToHex } from "./utils.js";
 
-export async function loadPreparationTournamentGamePage(sizePlayers)
+export async function loadPreparationTournamentGamePage(typeOfGame, modeGame)
 {
 	let userInfo = await getUserInfo();
 
@@ -102,7 +102,7 @@ export async function loadPreparationTournamentGamePage(sizePlayers)
 				}
 			}
 			else
-				loadUsernamePlayersTournament(username1, courtColor, sizeTournament, sizePlayers, superPower);
+				loadUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower);
 		});
 	}
 

@@ -2,7 +2,7 @@ import { loadContent } from "./utils.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
 import { translation } from "./translate.js";
 
-export async function loadPresentationMultiLocalPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, numberPlayers, sizePlayers, superPower, numberMatch, tab, tabNewRound)
+export async function loadPresentationMultiLocalPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, numberPlayers, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound)
 {
 	let imageHeroPlayer1;
 	switch (heroPowerPlayer1)
@@ -67,7 +67,7 @@ export async function loadPresentationMultiLocalPlayerPage(username1, username2,
 	buttonStart.addEventListener('click', function (event) {
 		event.preventDefault();
 		numberMatch++;
-		loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, "tournament-multi-local", numberPlayers, sizePlayers, superPower, numberMatch, tab, tabNewRound);
+		loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound);
 	});
 }
 

@@ -4,8 +4,9 @@ import { putStatsInfo } from "../utils.js";
 import { getUserInfo } from "../utils.js";
 import { loadTournamentPresentation } from "../tournament-presentation.js";
 
-export async function loadFinishPageTournamentWin(username1, courtColor, numberPlayers, scoreLeftPlayer, scoreRightPlayer, superPower, tab, numberMatch, tabNewRound)
+export async function loadFinishPageTournamentWin(username1, courtColor, numberPlayers, scoreLeftPlayer, scoreRightPlayer, typeOfGame, modeGame, superPower, tab, numberMatch, tabNewRound)
 {
+	console.log(tabNewRound);
 	let userInfo = await getUserInfo();
 	if (userInfo.username == username1)
 	{
@@ -22,7 +23,7 @@ export async function loadFinishPageTournamentWin(username1, courtColor, numberP
 	const homeButtonFinishPage = document.getElementById("continue-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {
 		event.preventDefault();
-		loadTournamentPresentation(tab, courtColor, numberPlayers, "tournament-multi-local", superPower, numberMatch, tabNewRound)
+		loadTournamentPresentation(tab, courtColor, numberPlayers, typeOfGame, modeGame, superPower, numberMatch, tabNewRound)
 	});
 }
 

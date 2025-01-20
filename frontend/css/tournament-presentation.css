@@ -28,7 +28,7 @@
 	justify-content: space-evenly;
 	margin: 10px 0;
 }
-
+/*
 .match {
     display: flex;
     flex-direction: column;
@@ -41,6 +41,7 @@
     text-align: center;
     box-shadow: 0 4px 6px rgba(255, 255, 255, 0.823);
 }
+*/
 
 .playerTab {
     font-size: 16px; /* Taille de texte uniforme */

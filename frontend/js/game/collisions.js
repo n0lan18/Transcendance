@@ -113,8 +113,11 @@ export async function handleCollisions(Game) {
 			const lang = localStorage.getItem('language') || 'en';
 			if (scores.leftPlayerScore >= 5)
 			{
-				const user = Game.tab.find(row => row.includes(Game.username1));
-				Game.tabNewRound.push(user);
+				if (Game.modeGame == "tournament-multi-local")
+				{
+					const user = Game.tab.find(row => row.includes(Game.username1));
+					Game.tabNewRound.push(user);
+				}
 				if (lang == "en")
 					winOrLostStr = `Congratulations! ${Game.username1} you've won!`;
 				else if (lang == "es")
@@ -125,8 +128,11 @@ export async function handleCollisions(Game) {
 			}
 			else
 			{
-				const user = Game.tab.find(row => row.includes(Game.username2));
-				Game.tabNewRound.push(user);
+				if (Game.modeGame == "tournament-multi-local")
+				{
+					const user = Game.tab.find(row => row.includes(Game.username2));
+					Game.tabNewRound.push(user);
+				}
 				if (lang == "en")
 					winOrLostStr = `Congratulations! ${Game.username2} you've won!`;
 				else if (lang == "es")
@@ -135,16 +141,16 @@ export async function handleCollisions(Game) {
 					winOrLostStr = `Felicitations! ${Game.username2} tu as gagne!`;
 				isWin = false;
 			}
-			if (Game.styleMatch == "tournament")
+			if (Game.modeGame == "tournament")
 			{
 				if (Game.numberPlayers == 1 && scores.leftPlayerScore >= 5)
 					loadFinishPageTournament("win", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 				else if (scores.leftPlayerScore >= 5)
-					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.colorPlayer1, Game.heroPowerPlayer1, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab);
+					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.colorPlayer1, Game.heroPowerPlayer1, Game.typeOfGame, Game.mode,Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab);
 				else
 					loadFinishPageTournament("lose", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 			}
-			else if (Game.styleMatch == "tournament-multi-local")
+			else if (Game.modeGame == "tournament-multi-local")
 			{
 				if (Game.numberPlayers == 2)
 				{
@@ -154,10 +160,10 @@ export async function handleCollisions(Game) {
 						loadFinishPageTournament(Game.username1, Game.username2, "right", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 				}
 				else
-					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab, Game.numberMatch, Game.tabNewRound);
+					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.typeOfGame, Game.modeGame, Game.superPower, Game.tab, Game.numberMatch, Game.tabNewRound);
 			}
 			else
-				loadFinishPage(winOrLostStr, scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.styleMatch, Game.modeGame);
+				loadFinishPage(winOrLostStr, scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.typeOfGame, Game.modeGame);
 		}
 		else
 			startCountdown(Game);

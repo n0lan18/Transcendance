@@ -3,9 +3,9 @@ import { loadPreparationSimpleMatchGamePage } from "../preparation-simple-match-
 import { translation } from "../translate.js";
 import { putStatsInfo } from "../utils.js";
 
-export async function loadFinishPage(winOrLostStr, scoreLeftPlayer, scoreRightPlayer, isWin, styleGame, modeGame)
+export async function loadFinishPage(winOrLostStr, scoreLeftPlayer, scoreRightPlayer, isWin, typeOfGame, modeGame)
 {
-	if (styleGame != "multiplayer")
+	if (typeOfGame != "multiplayer")
 	{
 		if (isWin == true)
 		{
