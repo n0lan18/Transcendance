@@ -66,7 +66,6 @@ export async function loadPresentationMultiLocalPlayerPage(username1, username2,
 	const buttonStart = document.getElementById("send-preparation-game-button");
 	buttonStart.addEventListener('click', function (event) {
 		event.preventDefault();
-		numberMatch++;
 		loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound);
 	});
 }

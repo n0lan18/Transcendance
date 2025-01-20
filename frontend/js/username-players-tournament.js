@@ -1,13 +1,13 @@
 import { generateNavigator } from "./nav.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { escapeHTML, isValidUsername, loadContent } from "./utils.js";
+import { escapeHTML, isValidUsername, loadContent, putTournamentInfo } from "./utils.js";
 import { translation } from "./translate.js";
 import { rgbToHex } from "./utils.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
 
 let tabNewRound = [];
 
-export function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower)
+export async function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower)
 {
     console.log(typeOfGame);
     console.log(modeGame);
@@ -88,9 +88,10 @@ export function loadUsernamePlayersTournament(username1, courtColor, sizeTournam
         </div>
     `;
 
-    const buttonSendEvent = function(event) {
+    const buttonSendEvent = async function(event) {
         event.preventDefault();
-        loadTournamentPresentation(tab, courtColor, sizeTournament, typeOfGame, modeGame, superPower, 0, tabNewRound);
+        await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
+        loadTournamentPresentation(typeOfGame, modeGame);
     }
 
     const addLinesPlayers = document.getElementById("username-players-line");

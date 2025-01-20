@@ -24,7 +24,6 @@
 .username-line {
     display: flex;
     flex-direction: row;
-    width: 100%;
     justify-content: center;
     align-items: center;
     margin: 10px 10px 10px 10px;

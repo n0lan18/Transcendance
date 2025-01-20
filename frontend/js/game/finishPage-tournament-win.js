@@ -1,12 +1,13 @@
 import { loadPresentationSoloPlayerPage } from "../presentation-match-solo-tournament.js";
 import { translation } from "../translate.js";
-import { putStatsInfo } from "../utils.js";
+import { insertWinnerInTabNewRound, putStatsInfo } from "../utils.js";
 import { getUserInfo } from "../utils.js";
 import { loadTournamentPresentation } from "../tournament-presentation.js";
 
 export async function loadFinishPageTournamentWin(username1, courtColor, numberPlayers, scoreLeftPlayer, scoreRightPlayer, typeOfGame, modeGame, superPower, tab, numberMatch, tabNewRound)
 {
 	console.log(tabNewRound);
+	await insertWinnerInTabNewRound(tabNewRound);
 	let userInfo = await getUserInfo();
 	if (userInfo.username == username1)
 	{

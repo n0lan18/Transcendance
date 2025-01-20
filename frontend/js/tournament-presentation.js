@@ -1,18 +1,20 @@
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { loadContent } from "./utils.js";
+import { getTournamentInfo, loadContent } from "./utils.js";
 import { translation } from "./translate.js";
 import { generateNavigator } from "./nav.js";
 import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi-local-tournament.js";
+import { putTournamentInfoNewRound } from "./utils.js";
 
-export function loadTournamentPresentation(tab, courtColor, sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tabNewRound)
+export async function loadTournamentPresentation(typeOfGame, modeGame)
 {
-	if (numberMatch == sizeTournament / 2)
+	let dataTournament = await getTournamentInfo();
+	console.log(dataTournament.numberMatchPlayed)
+	if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
 	{
-		sizeTournament /= 2;
-		numberMatch /= sizeTournament;
-		tab = tabNewRound;
-		tabNewRound = [];
+		putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+		dataTournament = await getTournamentInfo();
 	}
+	console.log(dataTournament.tabPlayersNewRound)
 	const tournamentPresentationHTML = generateTournamentPresentation();
 
     loadContent(tournamentPresentationHTML, "tournament-presentation", true);
@@ -25,22 +27,22 @@ export function loadTournamentPresentation(tab, courtColor, sizeTournament, type
 	if (tabPresentation)
 	{
 		let level;
-		if (sizeTournament == 2)
+		if (dataTournament.sizeTournament == 2)
 			level = "Final";
-		else if (sizeTournament == 4)
+		else if (dataTournament.sizeTournament == 4)
 			level = "Semi-Final";
-		else if (sizeTournament == 8)
+		else if (dataTournament.sizeTournament == 8)
 			level = "1/4 Final";
-		else if (sizeTournament == 16)
+		else if (dataTournament.sizeTournament == 16)
 			level = "1/8 Final";
-		else if (sizeTournament == 32)
+		else if (dataTournament.sizeTournament == 32)
 			level = "1/16 Final";
 		const levelTournament = document.createElement("h2");
 		levelTournament.className = "level-tournament";
 		levelTournament.textContent = level;
 		tabPresentation.appendChild(levelTournament);
 	}
-	createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, modeGame, numberMatch, tabNewRound);
+	createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, dataTournament.courtColor, dataTournament.superPower, typeOfGame, modeGame, dataTournament.numberMatch, dataTournament.tabPlayersNewRound);
 
 }
 
@@ -77,7 +79,7 @@ function createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, 
 			playerTab2.textContent = `${tab[i + 1][0]}`;
 			playerTab2.style.color = "white";
 			const hr = document.createElement("hr");
-			hr.style.border = "1px solid white"; // Personnalisation de la barre
+			hr.style.border = "1px solid white";
 			hr.style.margin = "3px 0";
 			divMatch.appendChild(playerTab1);
 			divMatch.appendChild(hr);
@@ -100,19 +102,7 @@ function createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, 
 						document.getElementById(`playerTab${i + 2}`).textContent = `${tab[i + 1][0]}`;
 					});
 				}
-/*				else if (buttonMatch.classList.contains("btn-danger"))
-				{
-					buttonMatch.addEventListener("mouseover", () => {
-						document.getElementById(`playerTab${i + 1}`).textContent = "ALLREADY";
-						document.getElementById(`playerTab${i + 2}`).textContent = "PLAY";
-					});
-
-					buttonMatch.addEventListener("mouseout", () => {
-						document.getElementById(`playerTab${i + 1}`).textContent = `${tab[i][0]}`;
-						document.getElementById(`playerTab${i + 2}`).textContent = `${tab[i + 1][0]}`;
-					});	
-				}
-*/			}
+			}
 		}
 	}
 }
@@ -147,7 +137,7 @@ function checkUsername(tab, inc, div, courtColor, sizeTournament, typeOfGame, mo
 		usernameFound = false;
 	if (!usernameFound)
 	{
-		div.addEventListener(('click'), function(event, sizePlayers) {
+		div.addEventListener(('click'), function() {
 			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc][1], sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound);
 		});
 	}

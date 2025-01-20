@@ -44,3 +44,12 @@ class GameStatsLocal(models.Model):
     bestResultTournament = models.IntegerField(default=64)
 
 
+class TournamentUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="tournament_user")
+    tabPlayers = models.JSONField(default=list)
+    tabPlayersNewRound = models.JSONField(default=list)
+    numberMatchPlayed = models.IntegerField(default=0)
+    courtColor = models.CharField(max_length=8, default="0xCF5A30")
+    sizeTournament = models.IntegerField(default=0)
+    superPower = models.CharField(max_length=20, default="isSuperPower")
+    

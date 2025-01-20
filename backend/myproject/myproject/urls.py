@@ -35,6 +35,10 @@ from myapp.views import UpdatePasswordView
 from myapp.views import UpdateEmailView
 from myapp.views import UpdateIsConnectView
 from myapp.views import Friends
+from myapp.views import CreateTournamentView
+from myapp.views import NewRoundTournamentView
+from myapp.views import RemoveTournamentView
+from myapp.views import InsertWinnerInTabNewRoundView
 
 urlpatterns = [ 
     path('api/admin/', admin.site.urls),
@@ -54,6 +58,10 @@ urlpatterns = [
     path('api/gamestats/<int:pk>/', GameStatsLocalDetailView.as_view(), name='gamestats-detail'),
     path('api/update-isconnect/', UpdateIsConnectView.as_view(), name='update-isconnect'),
     path('api/friends/<str:action>/<int:friend_id>/', Friends.as_view(), name='friends_action'),
+    path('api/create-tournament/', CreateTournamentView.as_view(), name='create-tournament'),
+    path('api/new-round-tournament/', NewRoundTournamentView.as_view(), name='new-round-tournament'),
+    path('api/remove-tournament/', RemoveTournamentView.as_view(), name='remove-tournament'),
+    path('api/insert-winner-in-tab/', InsertWinnerInTabNewRoundView.as_view(), name='insert-winner-in-tab'),
 ]
 
 if settings.DEBUG:

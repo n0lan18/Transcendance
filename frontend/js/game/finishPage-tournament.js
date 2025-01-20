@@ -3,6 +3,7 @@ import { loadPreparationTournamentGamePage } from "../preparation-tournament-gam
 import { translation } from "../translate.js";
 import { putStatsInfo } from "../utils.js";
 import { getUserInfo } from "../utils.js";
+import { removeTournament } from "../utils.js";
 
 
 export async function loadFinishPageTournament(username1, username2, sideWin, numberPlayer, scoreLeftPlayer, scoreRigthPlayer)
@@ -32,6 +33,8 @@ export async function loadFinishPageTournament(username1, username2, sideWin, nu
 		finishPage = finishPageHTML(username2);
 	document.getElementById("app").innerHTML = finishPage;
 	translation();
+
+	await removeTournament();
 
 	const homeButtonFinishPage = document.getElementById("home-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {

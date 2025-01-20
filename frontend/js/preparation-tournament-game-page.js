@@ -17,7 +17,7 @@ export async function loadPreparationTournamentGamePage(typeOfGame, modeGame)
 	
 	addNavigatorEventListeners();
 
-	let courtColor = 0xCF5A30;
+	let courtColor = "0xCF5A30";
 	let colorPlayer1 = "#E23F22";
 	let heroPowerPlayer1 = "Invisible";
 	let sizeTournament = 32;
@@ -119,19 +119,19 @@ export async function loadPreparationTournamentGamePage(typeOfGame, modeGame)
 
 			switch (buttonId) {
 				case "environnement-preparation-container-button-orange":
-					courtColor = 0xCF5A30;
+					courtColor = "0xCF5A30";
 					break;
 				case "environnement-preparation-container-button-dark-blue":
-					courtColor = 0x043976;
+					courtColor = "0x043976";
 					break;
 				case "environnement-preparation-container-button-light-blue":
-					courtColor = 0x0183CB;
+					courtColor = "0x0183CB";
 					break;
 				case "environnement-preparation-container-button-green":
-					courtColor = 0x689D63;
+					courtColor = "0x689D63";
 					break;
 				case "environnement-preparation-container-button-random":
-					const strings = [0xCF5A30, 0x043976, 0x0183CB, 0x689D63];
+					const strings = ["0xCF5A30", "0x043976", "0x0183CB", "0x689D63"];
 					courtColor = strings[Math.floor(Math.random() * strings.length)];
 					break;
 				default :

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, GameStatsLocal
+from .models import User, GameStatsLocal, TournamentUser
 from pathlib import os
 from django.conf import settings
 import random
@@ -67,3 +67,8 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class TournamentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TournamentUser
+        fields = ['user', 'tabPlayers', 'tabPlayersNewRound', 'numberMatchPlayed', 'courtColor', 'sizeTournament', 'superPower']
+        read_only_fields = ['user']

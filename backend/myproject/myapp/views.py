@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from random import shuffle
 import re
 
 
@@ -15,6 +16,8 @@ from .serializers import UserSerializer
 from .models import GameStatsLocal
 from .serializers import GameStatsLocalSerializer
 from .serializers import FriendSerializer
+from .models import TournamentUser
+from .serializers import TournamentSerializer
 
 class RegisterView(APIView):
 	permission_classes = [AllowAny]
@@ -333,3 +336,100 @@ class GameStatsLocalDetailView(APIView):
 		game_stat = get_object_or_404(GameStatsLocal, pk=pk, user=request.user)
 		game_stat.delete()
 		return Response(status=status.HTTP_204_NO_CONTENT)
+	
+
+
+class CreateTournamentView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request):
+		print('request user', request.user)
+		tournament_user = TournamentUser.objects.get(user=request.user)
+		if (tournament_user):
+			serialized = TournamentSerializer(tournament_user)
+			print(serialized.data)
+			return Response(serialized.data)
+		else:
+			return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+	def put(self, request):
+		print(request.data)
+
+		user = request.user
+		
+		try:
+			tournament_user = TournamentUser.objects.get(user=user)
+			tournament_user.delete()
+		except TournamentUser.DoesNotExist:
+			print(f"No existing TournamentUser for {user}, creating a new one.")
+
+		new_tournament_user = TournamentUser.objects.create(user=user)
+
+		tabPlayers = request.data.get('tabPlayers')
+		if not isinstance(tabPlayers, list):
+			return Response({'error': 'tabPlayers must be a list'}, status=400)
+		shuffle(tabPlayers)
+		tabPlayersNewRound = []
+		if not isinstance(tabPlayersNewRound, list):
+			return Response({'error': 'tabPlayers must be a list'}, status=400)
+		numberMatchPlayed = request.data.get('numberMatchPlayed')
+		courtColor = request.data.get('courtColor')
+		sizeTournament = request.data.get('sizeTournament')
+		superPower = request.data.get('superPower')
+		
+		new_tournament_user.tabPlayers = tabPlayers
+		new_tournament_user.tabPlayersNewRound = tabPlayersNewRound
+		new_tournament_user.numberMatchPlayed = numberMatchPlayed
+		new_tournament_user.courtColor = courtColor
+		new_tournament_user.sizeTournament = sizeTournament
+		new_tournament_user.superPower = superPower
+
+		print('tournament_user.tabPlayers ', new_tournament_user.tabPlayers)
+		print('tournament_user.tabPlayersNewRound ', new_tournament_user.tabPlayersNewRound)
+		print('tournament_user.numberMatchPlayed ', new_tournament_user.numberMatchPlayed)
+		print('tournament_user.courtColor ', new_tournament_user.courtColor)
+		print('tournament_user.sizeTournament ', new_tournament_user.sizeTournament)
+		print('tournament_user.superPower ', new_tournament_user.superPower)
+
+		new_tournament_user.save()
+		return Response({"message": "Tournament create successfull."}, status=status.HTTP_200_OK)
+	
+class NewRoundTournamentView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+
+		user = request.user
+		tournament_user = TournamentUser.objects.get(user=user)
+		if not isinstance(request.data.get('tabPlayersNewRound'), list):
+			return Response({'error': 'tabPlayers must be a list'}, status=400)
+		tournament_user.tabPlayers = request.data.get('tabPlayersNewRound')
+
+		tournament_user.sizeTournament /= 2
+		tournament_user.numberMatchPlayed = 0
+		tournament_user.tabPlayersNewRound = []
+		tournament_user.save()
+		return Response({"message": "Tournament New Round modify successfull."}, status=status.HTTP_200_OK)
+	
+class RemoveTournamentView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+		user = request.user
+		tournament_user = TournamentUser.objects.get(user=user)
+		tournament_user.delete()
+		return Response({"message": "Tournament remove successfull."}, status=status.HTTP_200_OK)
+	
+class InsertWinnerInTabNewRoundView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+		user = request.user
+		tournament_user = TournamentUser.objects.get(user=user)
+		print('QOQOQOQOQOOQOQOQOQOQOQOQO ', request.data)
+		tournament_user.tabPlayersNewRound = request.data.get('tabPlayersNewRound')
+		tournament_user.numberMatchPlayed = tournament_user.numberMatchPlayed + 1
+		tournament_user.save()
+		return Response({"message": "Tournament insert winner successfull."}, status=status.HTTP_200_OK)
+		
