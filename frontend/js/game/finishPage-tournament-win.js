@@ -4,19 +4,42 @@ import { insertWinnerInTabNewRound, putStatsInfo } from "../utils.js";
 import { getUserInfo } from "../utils.js";
 import { loadTournamentPresentation } from "../tournament-presentation.js";
 
-export async function loadFinishPageTournamentWin(username1, courtColor, numberPlayers, scoreLeftPlayer, scoreRightPlayer, typeOfGame, modeGame, superPower, tab, numberMatch, tabNewRound)
+export async function loadFinishPageTournamentWin(username1, username2, numberPlayers, scoreLeftPlayer, scoreRightPlayer, typeOfGame, modeGame, tabNewRound)
 {
-	console.log(tabNewRound);
 	await insertWinnerInTabNewRound(tabNewRound);
 	let userInfo = await getUserInfo();
-	if (userInfo.username == username1)
+	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer});
+	await putStatsInfo(6, {numberMatchTournament: 1});
+	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRightPlayer) || (userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
 	{
-		await putStatsInfo(7, {numberVictoryMatchTournament: 1})
 		await putStatsInfo(2, {resultats: "V"})
-		await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-		await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
-		await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer})
+		await putStatsInfo(7, {numberVictoryMatchTournament: 1});
+		if ((userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
+		else
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+		}
 	}
+	else
+	{
+		await putStatsInfo(2, {resultats: "D"})
+		if (scoreRightPlayer > scoreLeftPlayer)
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+		}
+		else
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
+	}
+	
 	document.getElementById("app").innerHTML = finishPageHTML(numberPlayers);
 	translation();
 
@@ -24,7 +47,7 @@ export async function loadFinishPageTournamentWin(username1, courtColor, numberP
 	const homeButtonFinishPage = document.getElementById("continue-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {
 		event.preventDefault();
-		loadTournamentPresentation(tab, courtColor, numberPlayers, typeOfGame, modeGame, superPower, numberMatch, tabNewRound)
+		loadTournamentPresentation(typeOfGame, modeGame)
 	});
 }
 

@@ -1,4 +1,4 @@
-import { loadContent } from "./utils.js";
+import { checkIsTournament, loadContent } from "./utils.js";
 import { generateNavigator } from "./nav.js";
 import { getUserInfo } from "./utils.js";
 import { loadProfilePage } from "./profile.js";
@@ -10,6 +10,8 @@ import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { translation } from "./translate.js";
 import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
 import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
+import { loadContinueOrNewTournamentPage } from "./continue-or-finish-page.js";
+
 
 let globalSocket = null;
 
@@ -82,9 +84,13 @@ export async function loadHomePage()
 	let switchPageToTournamentPage = document.getElementById("tournament-button");
 	if (switchPageToTournamentPage)
 	{
-		switchPageToTournamentPage.addEventListener('click', function (event) {
+		switchPageToTournamentPage.addEventListener('click', async function (event) {
 			event.preventDefault();
-			loadPreparationTournamentGamePage("multiplayer", "tournament-multi-local");
+			let checkIsTour = await checkIsTournament();
+			if (checkIsTour)
+				loadContinueOrNewTournamentPage();
+			else
+				loadPreparationTournamentGamePage("multiplayer", "tournament-multi-local");
 		});
 	}
 

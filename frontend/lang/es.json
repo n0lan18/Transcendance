@@ -4,7 +4,7 @@
     "solo": "Solo",
     "multiplayer": "Multijugador",
     "online": "En línea",
-    "messageChangeOrientation": "Gire su dispositivo<br>a modo vertical",
+    "messageChangeOrientation": "Gire su dispositivo a modo vertical",
 	"home": "Home",
 	"logout": "Descon.",
 	"updateProfilImage": "Actualizar imagen de perfil",
@@ -52,5 +52,8 @@
 	"simple": "Individual",
 	"two-vs-two": "2 vs 2",
 	"one-vs-one": "1 vs 1",
-	"startRandom": "Comenzar al azar"
+	"startRandom": "Comenzar al azar",
+	"continue-tournament": "Continuar torneo",
+	"new-tournament": "Nuevo torneo",
+	"user-online": "Jugadores en linea"
 }

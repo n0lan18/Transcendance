@@ -5,8 +5,9 @@ import { putStatsInfo } from "../utils.js";
 
 export async function loadFinishPage(winOrLostStr, scoreLeftPlayer, scoreRightPlayer, isWin, typeOfGame, modeGame)
 {
-	if (typeOfGame != "multiplayer")
+	if (modeGame == "multiPlayerTwo")
 	{
+		await putStatsInfo(3, {numberSimpleMatch: 1});
 		if (isWin == true)
 		{
 			await putStatsInfo(2, {resultats: "V"})

@@ -18,6 +18,7 @@ from .serializers import GameStatsLocalSerializer
 from .serializers import FriendSerializer
 from .models import TournamentUser
 from .serializers import TournamentSerializer
+from .models import OnlinePlayers
 
 class RegisterView(APIView):
 	permission_classes = [AllowAny]
@@ -36,12 +37,14 @@ class LoginView(APIView):
 
 	def post(self, request, *args, **kwargs):
 		usernameOrEmail = request.data.get('emailUsername')
-		print('EmailUsername: ',usernameOrEmail)
 		password = request.data.get('password')
-		print('Password: ',password)
 		
 		user = authenticate(request, username=usernameOrEmail, password=password)
 		if user is not None:
+			if not OnlinePlayers.objects.filter(user=user).exists():
+				OnlinePlayers.objects.create(user=user)
+				print(f"Utilisateur {user.username} ajouté dans la table OnlinePlayers.")
+
 			refresh = RefreshToken.for_user(user)
 			return Response({
 				'access': str(refresh.access_token),
@@ -281,9 +284,9 @@ class GameStatsLocalDetailView(APIView):
 		game_stat = get_object_or_404(GameStatsLocal, user=request.user)
 		new_value = request.data.get(field_name)
 		current_value = getattr(game_stat, field_name, None)
-		
 		if new_value is not None:
 			if pk == 1 or pk == 2:
+				print(pk)
 				if pk == 1:
 					regex = r'^(100|[1-9]?[0-9])-(100|[1-9]?[0-9])$'
 					if not re.match(regex, str(new_value)):
@@ -344,6 +347,7 @@ class CreateTournamentView(APIView):
 
 	def get(self, request):
 		print('request user', request.user)
+		
 		tournament_user = TournamentUser.objects.get(user=request.user)
 		if (tournament_user):
 			serialized = TournamentSerializer(tournament_user)
@@ -427,9 +431,73 @@ class InsertWinnerInTabNewRoundView(APIView):
 	def put(self, request):
 		user = request.user
 		tournament_user = TournamentUser.objects.get(user=user)
-		print('QOQOQOQOQOOQOQOQOQOQOQOQO ', request.data)
 		tournament_user.tabPlayersNewRound = request.data.get('tabPlayersNewRound')
 		tournament_user.numberMatchPlayed = tournament_user.numberMatchPlayed + 1
 		tournament_user.save()
 		return Response({"message": "Tournament insert winner successfull."}, status=status.HTTP_200_OK)
 		
+class CheckTournamentView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request):
+		user = request.user
+		try:
+			tournament_user = TournamentUser.objects.get(user=user)
+			return Response({
+				"message": "Tournament exists.",
+				"tournament": str(tournament_user)
+				}, status=status.HTTP_200_OK)
+		except TournamentUser.DoesNotExist:
+			print(f"No existing TournamentUser for {request.user}")
+			return Response({
+				"message": "No Tournament found."
+			}, status=status.HTTP_404_NOT_FOUND)
+
+class RemoveOnlineListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        OnlinePlayers.objects.filter(user=user).delete()
+        return Response({'detail': 'Déconnexion réussie.'}, status=status.HTTP_200_OK)
+
+class ConnectedUsersView(APIView):
+	permission_classes = [IsAuthenticated]  # Accessible uniquement aux utilisateurs authentifiés
+
+	def get(self, request, *args, **kwargs):
+		# Récupérer tous les utilisateurs connectés
+		connected_users = OnlinePlayers.objects.select_related('user').all()
+
+		data = []
+		for player in connected_users:
+			data.append({
+                'username': player.user.username,
+                'isConnect': player.user.is_authenticated,
+                'connected_at': player.connected_at,
+				'profile-photo': player.user.profile_photo.url if player.user.profile_photo else None,
+        	})
+		return Response({'connected_users': data}, status=200)
+
+class ConnectedFriendsView(APIView):
+	permission_classes = [IsAuthenticated]  # Accessible uniquement aux utilisateurs authentifiés
+
+	def get(self, request, *args, **kwargs):
+		# Récupérer tous les utilisateurs connectés
+		connected_users = OnlinePlayers.objects.select_related('user').all()
+
+		data = []
+		for player in connected_users:
+            # Récupérer les statistiques de l'utilisateur
+			try:
+				stats = GameStatsLocal.objects.get(user=player.user)
+				stats_serializer = GameStatsLocalSerializer(stats).data
+			except GameStatsLocal.DoesNotExist:
+				stats_serializer = None
+
+			data.append({
+                'username': player.user.username,
+                'isConnect': player.user.is_authenticated,
+                'connected_at': player.connected_at,
+                'stats': stats_serializer,  # Inclure les statistiques
+        	})
+		return Response({'connected_users': data}, status=200)

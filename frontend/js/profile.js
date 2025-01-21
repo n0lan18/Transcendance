@@ -365,6 +365,10 @@ async function checkUsernameIfExist(data, username)
 function generateBodyProfilePageHTML()
 {
 	return `
+		<div class="message-change-orientation">
+			<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
+			<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
+		</div>
 		<div class="profile-container">
 			<h1 class="text-center" data-translate-key="profile"></h1>
 			<div class="profile-image-update-container">

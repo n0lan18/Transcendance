@@ -2,6 +2,7 @@ import { loadAuthentificationPage } from "../auth.js";
 import { loadHomePage } from "../home.js";
 import { reorderLanguages, translation, changeLanguage } from "../translate.js";
 import { loadFriendsPage } from "../friends.js";
+import { removeUserInPlayerOnline } from "../utils.js";
 
 export function addNavigatorEventListeners()
 {
@@ -47,7 +48,8 @@ function switchPageToLogout()
 	let switchPageToLogout = document.getElementById("logoutLink");
 	if (switchPageToLogout)
 	{
-		switchPageToLogout.addEventListener('click', function (event) {
+		switchPageToLogout.addEventListener('click', async function (event) {
+			await removeUserInPlayerOnline();
 			localStorage.removeItem('jwt_token');
 			event.preventDefault();
 			loadAuthentificationPage();

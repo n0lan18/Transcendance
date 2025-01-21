@@ -146,21 +146,16 @@ export async function handleCollisions(Game) {
 				if (Game.numberPlayers == 1 && scores.leftPlayerScore >= 5)
 					loadFinishPageTournament("win", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 				else if (scores.leftPlayerScore >= 5)
-					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.colorPlayer1, Game.heroPowerPlayer1, Game.typeOfGame, Game.mode,Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab);
+					loadFinishPageTournamentWin(Game.username1, Game.colorPlayer1, Game.heroPowerPlayer1, Game.typeOfGame, Game.mode,Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab);
 				else
 					loadFinishPageTournament("lose", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 			}
 			else if (Game.modeGame == "tournament-multi-local")
 			{
 				if (Game.numberPlayers == 2)
-				{
-					if (scores.leftPlayerScore >= 5)
-						loadFinishPageTournament(Game.username1, Game.username2, "left", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
-					else
-						loadFinishPageTournament(Game.username1, Game.username2, "right", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
-				}
+					loadFinishPageTournament(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
 				else
-					loadFinishPageTournamentWin(Game.username1, Game.colorCourt, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.typeOfGame, Game.modeGame, Game.superPower, Game.tab, Game.numberMatch, Game.tabNewRound);
+					loadFinishPageTournamentWin(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.typeOfGame, Game.modeGame, Game.tabNewRound);
 			}
 			else
 				loadFinishPage(winOrLostStr, scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.typeOfGame, Game.modeGame);

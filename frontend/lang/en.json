@@ -4,7 +4,7 @@
     "solo": "Solo",
     "multiplayer": "Multiplayer",
     "online": "Online",
-    "messageChangeOrientation": "Please rotate your device<br>to portrait mode",
+    "messageChangeOrientation": "Please rotate your device to portrait mode",
 	"home": "Home",
 	"logout": "Logout",
 	"updateProfilImage": "Update profil image",
@@ -52,5 +52,8 @@
 	"simple": "Single match",
 	"two-vs-two": "2 vs 2",
 	"one-vs-one": "1 vs 1",
-	"startRandom": "Start Random"
+	"startRandom": "Start Random",
+	"continue-tournament": "Continue tournament",
+	"new-tournament": "New tournament",
+	"user-online": "Players online"
 }

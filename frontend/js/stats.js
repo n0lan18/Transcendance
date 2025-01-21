@@ -53,10 +53,12 @@ export async function loadStatsPage()
 	textPlayer.textContent = powerHero;
 
 	let numberVictory = userStatsInfoAll.numberVictoryMatchTournament + userStatsInfoAll.numberVictorySimpleMatch;
-	let numberDefeat = (userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch) - numberVictory;
+	let numberDefeat =  (userStatsInfoAll.numberSimpleMatch + userStatsInfoAll.numberMatchTournament)- numberVictory;
 	console.log((userStatsInfoAll.numberMatchTournament))
 	console.log(userStatsInfoAll.numberSimpleMatch)
 	console.log(numberDefeat);
+	console.log(numberVictory);
+	console.log((userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch))
 
 	const ctx1 = document.getElementById('myDonutChart1').getContext('2d');
 	let myDonutChart1;
@@ -206,6 +208,10 @@ function generateBodyStatsPageHTML(userStatsInfoAll)
 	}
 
 	return `
+		<div class="message-change-orientation">
+			<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
+			<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
+		</div>
 		<div class="statsContainer" id="statsContainer">
 			<h1 data-translate-key="stats"></h1>
 			<div class="bestHeroAndTotalMatches">

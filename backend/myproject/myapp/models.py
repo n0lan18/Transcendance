@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
+from django.utils.timezone import now
 
 
 class User(AbstractUser):
@@ -52,4 +53,8 @@ class TournamentUser(models.Model):
     courtColor = models.CharField(max_length=8, default="0xCF5A30")
     sizeTournament = models.IntegerField(default=0)
     superPower = models.CharField(max_length=20, default="isSuperPower")
+
+class OnlinePlayers(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # L'utilisateur connecté
+    connected_at = models.DateTimeField(default=now)
     

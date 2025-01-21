@@ -1,5 +1,5 @@
 import { generateNavigator } from "./nav.js";
-import { loadContent } from "./utils.js";
+import { connectedUsersList, loadContent } from "./utils.js";
 import { translation } from "./translate.js";
 import { getUserInfo } from "./utils.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
@@ -7,7 +7,8 @@ import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 export async function loadFriendsPage()
 {
 	let userInfo = await getUserInfo();
-	console.log(userInfo);
+	let userConnected = await connectedUsersList();
+	console.log(userConnected)
 	let friendsHTML = generateFriendsPageHTML();
 	loadContent(friendsHTML, "friends", true);
 	document.getElementById("app").innerHTML = generateFriendsPageHTML();
@@ -57,8 +58,23 @@ function displayFriends(friends)
 function generateFriendsHTML()
 {
 	return `
+		<div class="message-change-orientation">
+			<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
+			<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
+		</div>
 		<div class="friends-container">
-			<h1 data-translate-key="friends"></h1>
+			<div class="button-users">
+				<button id="friends-online-button" class="friends-button-online">
+					<div class="item-name"
+						<h1 data-translate-key="friends"></h1>
+					</div>
+				</button>
+				<button id="user-online-button" class="user-online-button">
+					<div class="item-name"
+						<h1 data-translate-key="user-online"></h1>
+					</div>
+				</button>
+			</div>
 			<div class="list-friends-online">
 				<h2 data-translate-key="online"></h2>
 				<div id="friends-online" class="firends-online"></div>

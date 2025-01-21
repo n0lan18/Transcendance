@@ -11,7 +11,7 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 	document.getElementById("app").innerHTML = soloPlayerHTML;
 	translation();
 	let pageGameContainer = document.getElementById("page-game-container");
-//	if (isMobileDevice)
+	if (isMobileDevice())
 		toggleFullScreen();
 	if (superPower == "isNotSuperPower")
 	{
@@ -22,10 +22,6 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 	}
 	if (pageGameContainer)
 	{
-		if (modeGame == "simple-match")
-			await putStatsInfo(3, {numberSimpleMatch: 1});
-		else if (modeGame == "tournament" || modeGame == "tournament-multi-local")
-			await putStatsInfo(6, {numberMatchTournament: 1});		
 		const game = new Game("game-container", modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
 		game.start();
 	}

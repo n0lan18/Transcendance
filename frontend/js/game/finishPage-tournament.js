@@ -6,28 +6,46 @@ import { getUserInfo } from "../utils.js";
 import { removeTournament } from "../utils.js";
 
 
-export async function loadFinishPageTournament(username1, username2, sideWin, numberPlayer, scoreLeftPlayer, scoreRigthPlayer)
+export async function loadFinishPageTournament(username1, username2, numberPlayer, scoreLeftPlayer, scoreRigthPlayer)
 {
 	let userInfo = await getUserInfo();
-	if (userInfo.username == username1 || userInfo.username == username2)
+	await putStatsInfo(6, {numberMatchTournament: 1});
+	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRigthPlayer) || (userInfo.username == username2 && scoreRigthPlayer > scoreLeftPlayer))
 	{
-		if (sideWin == "left")
+		await putStatsInfo(7, {numberVictoryMatchTournament: 1})
+		await putStatsInfo(8, {numberVictoryTournament: 1})
+		await putStatsInfo(2, {resultats: "V"})
+		if (scoreLeftPlayer > scoreRigthPlayer)
 		{
-			await putStatsInfo(7, {numberVictoryMatchTournament: 1})
-			await putStatsInfo(8, {numberVictoryTournament: 1})
-			await putStatsInfo(2, {resultats: "V"})
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
 		}
 		else
-			await putStatsInfo(2, {resultats: "D"})
-		if (numberPlayer == 1)
-			numberPlayer = 2;
-		await putStatsInfo(15, {bestResultTournament: numberPlayer})
-		await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-		await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
-		await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRigthPlayer})
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
 	}
+	else
+	{
+		await putStatsInfo(2, {resultats: "D"})
+		if (scoreLeftPlayer > scoreRigthPlayer)
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
+		else
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
+		}
+	}
+	if (numberPlayer == 1)
+		numberPlayer = 2;
+	await putStatsInfo(15, {bestResultTournament: numberPlayer})
+	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRigthPlayer})
 	let finishPage
-	if (sideWin == "left")
+	if (scoreLeftPlayer > scoreRigthPlayer)
 		finishPage = finishPageHTML(username1);
 	else
 		finishPage = finishPageHTML(username2);

@@ -9,8 +9,6 @@ let tabNewRound = [];
 
 export async function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower)
 {
-    console.log(typeOfGame);
-    console.log(modeGame);
     const usernamePlayersTournamentHTML = generateUsernamePlayersTournament();
 
     addNavigatorEventListeners();
@@ -259,17 +257,18 @@ export async function loadUsernamePlayersTournament(username1, courtColor, sizeT
     const buttonStartRandom = document.getElementById("send-preparation-game-button-random");
     if (buttonStartRandom)
     {
-        buttonStartRandom.addEventListener( ('click'), function (event) {
+        buttonStartRandom.addEventListener( ('click'), async function (event) {
             event.preventDefault();
-            const stringsHeroPowerPlayer = ["Invisible", "Duplication", "Super strength", "Time laps"];
-            const stringsColorPlayer = ["#E23F22", "#3BB323", "#32689A", "#EEDC1B", "#1BD5EE", "#9A1BEE", "#FD5DBDB", "#9ADBAD"];
+            const stringsHeroPowerPlayer = ["Invisible", "Duplication", "Super strength", "Time laps", "Invisible", "Duplication", "Super strength", "Time laps", "Invisible", "Duplication", "Super strength", "Time laps"];
+            const stringsColorPlayer = ["#E23F22", "#3BB323", "#32689A", "#EEDC1B", "#1BD5EE", "#9A1BEE", "#FD5DBDB", "#5FEC8A"];
             for (let i = 0; i < sizeTournament; i++)
             {
                 if (superPower === "isSuperPower")
                     tab[i][1] = stringsHeroPowerPlayer[Math.floor(Math.random() * stringsHeroPowerPlayer.length)];
                 tab[i][2] = stringsColorPlayer[Math.floor(Math.random() * stringsColorPlayer.length)];
             }
-            loadTournamentPresentation(tab, courtColor, sizeTournament, typeOfGame, modeGame, superPower, 0, tabNewRound);
+            await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
+            loadTournamentPresentation(typeOfGame, modeGame);
         });
     }
 }

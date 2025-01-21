@@ -1,0 +1,13 @@
+.friends-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+	width: 100%;
+	height: calc(80vh - 70px, 1028px);
+	max-width: 900px;
+	max-height: 800px;
+	margin-top: 150px;;
+	margin-bottom: auto;
+	overflow-y: auto;
+}

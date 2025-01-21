@@ -1,5 +1,5 @@
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { getTournamentInfo, loadContent } from "./utils.js";
+import { decodeStrToHex, getTournamentInfo, loadContent } from "./utils.js";
 import { translation } from "./translate.js";
 import { generateNavigator } from "./nav.js";
 import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi-local-tournament.js";
@@ -9,11 +9,13 @@ export async function loadTournamentPresentation(typeOfGame, modeGame)
 {
 	let dataTournament = await getTournamentInfo();
 	console.log(dataTournament.numberMatchPlayed)
+	console.log(dataTournament.sizeTournament)
 	if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
 	{
-		putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+		await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
 		dataTournament = await getTournamentInfo();
 	}
+	console.log(dataTournament.tabPlayers)
 	console.log(dataTournament.tabPlayersNewRound)
 	const tournamentPresentationHTML = generateTournamentPresentation();
 
@@ -42,7 +44,7 @@ export async function loadTournamentPresentation(typeOfGame, modeGame)
 		levelTournament.textContent = level;
 		tabPresentation.appendChild(levelTournament);
 	}
-	createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, dataTournament.courtColor, dataTournament.superPower, typeOfGame, modeGame, dataTournament.numberMatch, dataTournament.tabPlayersNewRound);
+	createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, typeOfGame, modeGame, dataTournament.numberMatch, dataTournament.tabPlayersNewRound);
 
 }
 
@@ -138,7 +140,7 @@ function checkUsername(tab, inc, div, courtColor, sizeTournament, typeOfGame, mo
 	if (!usernameFound)
 	{
 		div.addEventListener(('click'), function() {
-			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc][1], sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound);
+			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc + 1][1], sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound);
 		});
 	}
 }

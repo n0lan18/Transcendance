@@ -4,7 +4,7 @@
     "solo": "Solo",
     "multiplayer": "Multijoueur",
     "online": "En ligne",
-    "messageChangeOrientation": "Veuillez tourner votre appareil<br>en mode portrait",
+    "messageChangeOrientation": "Veuillez tourner votre appareil en mode portrait",
 	"home": "Home",
 	"logout": "Decon.",
 	"updateProfilImage": "MaJ image profil",
@@ -52,5 +52,8 @@
 	"simple": "Simple",
 	"two-vs-two": "2 contre 2",
 	"one-vs-one": "1 contre 1",
-	"startRandom": "Start aleatoire"
+	"startRandom": "Start aleatoire",
+	"continue-tournament": "Continuer le tournoi",
+	"new-tournament": "Nouveau tournoi",
+	"user-online": "Joueurs en ligne"
 }
