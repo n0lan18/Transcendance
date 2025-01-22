@@ -44,6 +44,7 @@ from myapp.views import RemoveOnlineListView
 from myapp.views import ConnectedUsersView
 from myapp.views import ConnectedFriendsView
 from myapp.views import AddFriendView
+from myapp.views import RemoveFriendView
 
 urlpatterns = [ 
     path('api/admin/', admin.site.urls),
@@ -72,6 +73,7 @@ urlpatterns = [
     path('api/connected-users/', ConnectedUsersView.as_view(), name='connected-users'),
     path('api/connected-friends/', ConnectedFriendsView.as_view(), name='connect-friends'),
     path('api/add-friend/', AddFriendView.as_view(), name='add-friend'),
+    path('api/remove-friend/', RemoveFriendView.as_view(), name='remove-friend'),
 ]
 
 if settings.DEBUG:

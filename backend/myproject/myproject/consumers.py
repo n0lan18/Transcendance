@@ -55,14 +55,28 @@ class UserStatusConsumer(AsyncWebsocketConsumer):
         user.save()
         print(f"User {user.username} isConnect status updated to {status}")
 
+    @sync_to_async
+    def delete_online_player(self, user):
+        from myapp.models import OnlinePlayers
+        OnlinePlayers.objects.filter(user=user).delete()
+
+    @sync_to_async
+    def add_online_player(self, user):
+        from myapp.models import OnlinePlayers
+        if not OnlinePlayers.objects.filter(user=user).exists():
+            OnlinePlayers.objects.create(user=user)
+            print(f"Utilisateur {user} ajouté à la liste des joueurs en ligne.")
+        else:
+            print(f"Utilisateur {user} est déjà dans la liste des joueurs en ligne.")
+
     async def connect(self):
-        print("WebSocket connection attempt COOOOOONNNNECCCT")
         await self.accept()
         await self.send_json({"event": "connected", "message": "Connection successfully established."})
         print("WebSocket connection established ETABLIShED")
          # Vérifiez que l'utilisateur est bien connecté et qu'il existe dans self.scope
         user = self.scope.get('user')
         if user and user.is_authenticated:
+            await self.add_online_player(user)
             print(f"Utilisateur {user.username} connecté")
         else:
             print("L'utilisateur n'est pas authentifié.")
@@ -77,8 +91,10 @@ class UserStatusConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         print(user)
         if user.is_authenticated:
+            await self.delete_online_player(user)
+            print(f"Utilisateur {user} supprimé de la liste des joueurs en ligne.")
             await self.set_user_online(user, False)
-        print("WebSocket disconnected")
+            print("WebSocket disconnected")
         
         # Annuler la tâche de ping
         if self.ping_task:

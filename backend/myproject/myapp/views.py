@@ -68,7 +68,7 @@ class UserInfoView(APIView):
 
 		friends_data = []
 		for friend in user.friends.all():
-			friend_profile_photo_url = friend.profile_photo.url if friend.profile_photo else None,
+			friend_profile_photo_url = friend.profile_photo.url if friend.profile_photo else None
 			if friend_profile_photo_url:
 				friend_profile_photo_url = request.build_absolute_uri(friend_profile_photo_url)
 				friend_profile_photo_url = friend_profile_photo_url.replace('http://', 'https://')
@@ -536,3 +536,23 @@ class AddFriendView(APIView):
 		except User.DoesNotExist:
 			return Response({'error': 'Aucun utilisateur trouvé avec cet ID.'}, status=status.HTTP_404_NOT_FOUND)
 		
+class RemoveFriendView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+		user = request.user
+		friend_id = request.data.get('id')
+		
+		if not friend_id:
+			return Response({'error': 'friend_id est requis.'}, status=status.HTTP_400_BAD_REQUEST)
+		
+		try:
+			friend = User.objects.get(id=friend_id)
+
+			if user == friend:
+				return Response({'error': 'Vous ne pouvez pas vous supprimer vous-même comme ami.'}, status=status.HTTP_400_BAD_REQUEST)
+
+			user.remove_friend(friend)
+			return Response({'message': f'{friend.username} a été supprime de votre liste d amis.'}, status=status.HTTP_200_OK)
+		except User.DoesNotExist:
+			return Response({'error': 'Aucun utilisateur trouvé avec cet ID.'}, status=status.HTTP_404_NOT_FOUND)

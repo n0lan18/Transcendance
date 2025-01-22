@@ -584,6 +584,55 @@ export async function addFriend(friend_id)
 	}
 }
 
+export async function removeFriend(friend_id)
+{
+	const data = {
+		id: friend_id,
+	};
+	console.log(data);
+	try
+	{
+		const response = await fetch(`api/remove-friend/`, {
+			method: 'PUT',
+			headers: {
+				'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		})
+		if (response.ok) {
+			let valueData = await response.json();
+			console.log("value Data:", JSON.stringify(valueData));
+			return valueData;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch tournament info:', response.statusText);
+			const contentType = response.headers.get("content-type");
+			if (contentType && contentType.includes("application/json")) {
+				const errorData = await response.json();
+				console.error('Erreur détaillée:', errorData);
+			} else {
+				const errorText = await response.text();
+				console.error('Erreur non-JSON:', errorText);
+			}
+			return null;
+		}
+	
+	}
+	catch (error) {
+		console.error('Error:', error);
+		return null;
+	}
+}
+
 export async function checkEmailExist()
 {
 	const response = await fetch('check-email/', {
@@ -694,7 +743,7 @@ export function isUserInList(list, user)
 {
 	for (let i = 0; i < list.length; i++)
 	{
-		if (list.username == user)
+		if (list[i].username == user)
 			return (true);		
 	}
 	return (false);
