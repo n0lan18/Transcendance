@@ -63,19 +63,25 @@ class UserInfoView(APIView):
 			profile_photo_url = request.build_absolute_uri(profile_photo_url)
 			profile_photo_url = profile_photo_url.replace('http://', 'https://')
 			profile_photo_url = profile_photo_url.replace('https://localhost', settings.IP_ADDRESS)
-		print(profile_photo_url, flush=True)
 
 		isConnect = user.isConnect
 
-		friends_data = [
-			{
+		friends_data = []
+		for friend in user.friends.all():
+			friend_profile_photo_url = friend.profile_photo.url if friend.profile_photo else None,
+			if friend_profile_photo_url:
+				friend_profile_photo_url = request.build_absolute_uri(friend_profile_photo_url)
+				friend_profile_photo_url = friend_profile_photo_url.replace('http://', 'https://')
+				friend_profile_photo_url = friend_profile_photo_url.replace('https://localhost', settings.IP_ADDRESS)
+			friends_data.append({
+				'id': friend.id,
 				'username': friend.username,
-				'profile_photo': request.build_absolute_uri(friend.profile_photo.url) if friend.profile_photo else None,
+				'profile_photo': friend_profile_photo_url,
 				'isConnect': friend.isConnect,
-			}
-			for friend in user.friends.all()
-		]
+			})			
+
 		return Response({
+			'id': user.id,
 			'username': user.username,
 			'profile_photo': profile_photo_url,
 			'friends': friends_data,
@@ -470,11 +476,17 @@ class ConnectedUsersView(APIView):
 
 		data = []
 		for player in connected_users:
+			profile_photo_url = player.user.profile_photo.url if player.user.profile_photo else None
+			if profile_photo_url:
+				profile_photo_url = request.build_absolute_uri(profile_photo_url)
+				profile_photo_url = profile_photo_url.replace('http://', 'https://')
+				profile_photo_url = profile_photo_url.replace('https://localhost', settings.IP_ADDRESS)
 			data.append({
+				'id': player.user.id,
                 'username': player.user.username,
                 'isConnect': player.user.is_authenticated,
                 'connected_at': player.connected_at,
-				'profile-photo': player.user.profile_photo.url if player.user.profile_photo else None,
+				'profile-photo': profile_photo_url,
         	})
 		return Response({'connected_users': data}, status=200)
 
@@ -495,9 +507,32 @@ class ConnectedFriendsView(APIView):
 				stats_serializer = None
 
 			data.append({
+				'id': player.user.id,
                 'username': player.user.username,
                 'isConnect': player.user.is_authenticated,
                 'connected_at': player.connected_at,
                 'stats': stats_serializer,  # Inclure les statistiques
         	})
 		return Response({'connected_users': data}, status=200)
+	
+class AddFriendView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+		user = request.user
+		friend_id = request.data.get('id')
+		
+		if not friend_id:
+			return Response({'error': 'friend_id est requis.'}, status=status.HTTP_400_BAD_REQUEST)
+		
+		try:
+			friend = User.objects.get(id=friend_id)
+
+			if user == friend:
+				return Response({'error': 'Vous ne pouvez pas vous ajouter vous-même comme ami.'}, status=status.HTTP_400_BAD_REQUEST)
+
+			user.add_friend(friend)
+			return Response({'message': f'{friend.username} a été ajouté comme ami.'}, status=status.HTTP_200_OK)
+		except User.DoesNotExist:
+			return Response({'error': 'Aucun utilisateur trouvé avec cet ID.'}, status=status.HTTP_404_NOT_FOUND)
+		

@@ -43,6 +43,7 @@ from myapp.views import CheckTournamentView
 from myapp.views import RemoveOnlineListView
 from myapp.views import ConnectedUsersView
 from myapp.views import ConnectedFriendsView
+from myapp.views import AddFriendView
 
 urlpatterns = [ 
     path('api/admin/', admin.site.urls),
@@ -69,7 +70,8 @@ urlpatterns = [
     path('api/check-tournament/', CheckTournamentView.as_view(), name='check-tournament'),
     path('api/remove-online-list/', RemoveOnlineListView.as_view(), name='remove-online-list'),
     path('api/connected-users/', ConnectedUsersView.as_view(), name='connected-users'),
-    path('api/connected-friends/', ConnectedFriendsView.as_view(), name='connect-friends')
+    path('api/connected-friends/', ConnectedFriendsView.as_view(), name='connect-friends'),
+    path('api/add-friend/', AddFriendView.as_view(), name='add-friend'),
 ]
 
 if settings.DEBUG:
