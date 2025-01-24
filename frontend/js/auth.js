@@ -7,8 +7,34 @@ export function loadAuthentificationPage()
 	history.replaceState({}, '', window.location.href);
 		
 	let authHTML = generateAuthentificationHTML();
-	loadContent(authHTML, "login", true);
+	loadContent(document.getElementById("app"), authHTML, "login", true, 'Authentification Page', "", "", addEventListenerAuthPage);
     document.getElementById("app").innerHTML = generateAuthentificationHTML();
+
+	const switchHidePasswordToSee = document.getElementById("input-password");
+	if (switchHidePasswordToSee)
+	{
+		const buttonChange = document.getElementById("togglePassword");
+		const toggleIcon = buttonChange.querySelector('i');
+		const passwordInput = document.getElementById("passwordLogin");
+		buttonChange.addEventListener('click', function () {
+			if (passwordInput.type === 'password') {
+				passwordInput.type = 'text';
+				toggleIcon.classList.remove('fa-eye-slash');
+				toggleIcon.classList.add('fa-eye'); // Change l'icône en œil barré
+			} else {
+				passwordInput.type = 'password';
+				toggleIcon.classList.remove('fa-eye');
+				toggleIcon.classList.add('fa-eye-slash'); // Change l'icône en œil ouvert
+			}
+		})
+	}
+
+	addEventListenerAuthPage()
+
+}
+
+export function addEventListenerAuthPage()
+{
     let champsEmail = document.getElementById("usernameEmailLogin");
 	if (champsEmail)
 	{
@@ -40,33 +66,7 @@ export function loadAuthentificationPage()
 	    });
 	}
 
-	const switchHidePasswordToSee = document.getElementById("input-password");
-	if (switchHidePasswordToSee)
-	{
-		const buttonChange = document.getElementById("togglePassword");
-		const toggleIcon = buttonChange.querySelector('i');
-		const passwordInput = document.getElementById("passwordLogin");
-		buttonChange.addEventListener('click', function () {
-			if (passwordInput.type === 'password') {
-				passwordInput.type = 'text';
-				toggleIcon.classList.remove('fa-eye-slash');
-				toggleIcon.classList.add('fa-eye'); // Change l'icône en œil barré
-			} else {
-				passwordInput.type = 'password';
-				toggleIcon.classList.remove('fa-eye');
-				toggleIcon.classList.add('fa-eye-slash'); // Change l'icône en œil ouvert
-			}
-		})
-	}
-
 	checkConnexion();
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
-	});
 }
 
 async function checkConnexion()
@@ -106,7 +106,7 @@ async function checkConnexion()
 
 					localStorage.setItem('jwt_token', token);
 					console.log('Login successful!');
-					history.replaceState({}, '', window.location.href);		
+					history.replaceState({}, '', '/home');		
 					loadHomePage();
 				}
 				else

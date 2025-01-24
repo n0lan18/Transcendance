@@ -8,8 +8,6 @@ import { putTournamentInfoNewRound } from "./utils.js";
 export async function loadTournamentPresentation(typeOfGame, modeGame)
 {
 	let dataTournament = await getTournamentInfo();
-	console.log(dataTournament.numberMatchPlayed)
-	console.log(dataTournament.sizeTournament)
 	if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
 	{
 		await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
@@ -19,7 +17,7 @@ export async function loadTournamentPresentation(typeOfGame, modeGame)
 	console.log(dataTournament.tabPlayersNewRound)
 	const tournamentPresentationHTML = generateTournamentPresentation();
 
-    loadContent(tournamentPresentationHTML, "tournament-presentation", true);
+    loadContent(document.getElementById("app"), tournamentPresentationHTML, "tournament-presentation", true, 'Tournament Presentation Page', translation, addNavigatorEventListeners, );
 
 	document.getElementById("app").innerHTML = tournamentPresentationHTML;
     translation();

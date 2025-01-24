@@ -1,10 +1,16 @@
 import { loadAuthentificationPage } from "./auth.js";
 import { loadHomePage } from "./home.js";
 
-export function loadContent(page, url, addToHistory) {
-	$('#app').html(page);
+export function loadContent(appDiv, page, url, addToHistory, namePage, translate, eventListenerNavigator, eventListenerPage) {
+	appDiv.innerHTML = page;
+	if (typeof translate === "function")
+		translate();
+	if (typeof eventListenerNavigator === "function")
+		eventListenerNavigator();
+	if (typeof eventListenerPage === "function")
+		eventListenerPage();
 	if (addToHistory) {
-		history.pushState({ page: page }, '', `/${url}`);
+		history.pushState({ page: page }, namePage, `/${url}`);
 	}
 }
 
@@ -794,4 +800,22 @@ export function isUserInList(list, user)
 			return (true);		
 	}
 	return (false);
+}
+
+export function saveData(data, element) {
+    const formData = {
+        data: element.value,
+	}
+    sessionStorage.setItem(data + "Pong", JSON.stringify(formData));
+}
+
+export function loadDataStorage(data) {
+	const savedData = sessionStorage.getItem(data + "Pong");
+	let value;
+	if (savedData)
+	{
+		const formData = JSON.parse(savedData);
+		return formData.data;
+	}
+	return null
 }

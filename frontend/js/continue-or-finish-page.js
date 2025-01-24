@@ -1,5 +1,5 @@
 import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
-import { removeTournament } from "./utils.js";
+import { loadContent, removeTournament } from "./utils.js";
 import { generateNavigator } from "./nav.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
@@ -10,10 +10,17 @@ export function loadContinueOrNewTournamentPage()
 {
     const continueOrNewTournament = generateContinueOrRemoveTournamentHTML();
 
+    loadContent(document.getElementById('app'), continueOrNewTournament, '/continue-or-new-tournament', true, 'Continue Or New Tournament', translation, addNavigatorEventListeners, addEventListenerContinueOrNewTournament)
+
     document.getElementById("app").innerHTML = continueOrNewTournament;
     translation();
     addNavigatorEventListeners();
 
+    addEventListenerContinueOrNewTournament();
+}
+
+export function addEventListenerContinueOrNewTournament()
+{
     const continueTournamentButton = document.getElementById("continue-tournament-button");
     continueTournamentButton.addEventListener('click', function (event) {
         event.preventDefault();
@@ -26,7 +33,7 @@ export function loadContinueOrNewTournamentPage()
         await removeTournament();
         loadPreparationTournamentGamePage("multiplayer", "tournament-multi-local");
     });
-} 
+}
 
 function ContinueOrFinishTournamentPageHTML()
 {

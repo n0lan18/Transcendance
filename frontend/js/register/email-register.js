@@ -1,4 +1,4 @@
-import { getCookie, loadContent } from "../utils.js";
+import { getCookie, loadContent, saveData } from "../utils.js";
 import { loadAuthentificationPage } from "../auth.js";
 import { loadRegisterUsernamePage } from "./username-register.js";
 
@@ -6,10 +6,15 @@ export function loadRegisterEmailPage() {
 
 	let emailRegisterHTML = generateEmailPartHTML();
 
-	loadContent(emailRegisterHTML, "register-email", true);
+	loadContent(document.getElementById("app"), emailRegisterHTML, "register-email", true, "Register Email", "", "", addEventListenerEmailRegister);
 	
 	document.getElementById("app").innerHTML = generateEmailPartHTML();
 
+	addEventListenerEmailRegister();
+}
+
+export function addEventListenerEmailRegister()
+{
 	let switchPageEmailRegisterToLogin = document.getElementById("switchPageEmailRegisterToLogin");
     if (switchPageEmailRegisterToLogin) {
         switchPageEmailRegisterToLogin.addEventListener("click", (event) => {
@@ -29,7 +34,6 @@ export function loadRegisterEmailPage() {
 			const data = {
 				email: email.value,
 			}
-			console.log(data.email);
 
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,3}$/;
 			if (emailRegex.test(email.value))
@@ -50,54 +54,49 @@ export function loadRegisterEmailPage() {
 				}
 			}
 		});
-
 	}
+}
 
-	function sendDataToDatabase(data, email)
-	{
-		const csrftoken = getCookie('csrftoken');
-		fetch('api/check-email/', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-CSRFToken': csrftoken,
-			},
-			body: JSON.stringify({ data })
-		})
-		.then(async (response) => {
-			if (!response.ok) {
-				// Si pas OK, gérer la réponse d'erreur
-				return response.json().then((data) => {
-					let item = document.getElementById("RegisterPlace");
-					if (!document.getElementById("emailExist"))
-					{
-						let emailExist = document.createElement("p");
-						emailExist.id = "emailExist";
-						emailExist.classList.add("invalid-register");
-						emailExist.textContent = 'This email address already exists';
-						item.appendChild(emailExist);
-						let buttonSend = document.getElementById("buttonSend");
-						buttonSend.classList.remove('btn-success');
-						buttonSend.classList.add('btn-danger');
-					}
-					throw new Error(data.message || "Something went wrong");
-				});
-			}
-			return response.json();
-		})
-		.then((data) => {
-			if (!data.exists)
-				loadRegisterUsernamePage(email);
-		})
-		.catch(error => console.error('Error:', error));
-	}
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
+function sendDataToDatabase(data, email)
+{
+	const csrftoken = getCookie('csrftoken');
+	fetch('api/check-email/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': csrftoken,
+		},
+		body: JSON.stringify({ data })
+	})
+	.then(async (response) => {
+		if (!response.ok) {
+			// Si pas OK, gérer la réponse d'erreur
+			return response.json().then((data) => {
+				let item = document.getElementById("RegisterPlace");
+				if (!document.getElementById("emailExist"))
+				{
+					let emailExist = document.createElement("p");
+					emailExist.id = "emailExist";
+					emailExist.classList.add("invalid-register");
+					emailExist.textContent = 'This email address already exists';
+					item.appendChild(emailExist);
+					let buttonSend = document.getElementById("buttonSend");
+					buttonSend.classList.remove('btn-success');
+					buttonSend.classList.add('btn-danger');
+				}
+				throw new Error(data.message || "Something went wrong");
+			});
 		}
-	});
+		return response.json();
+	})
+	.then((data) => {
+		if (!data.exists)
+		{
+			saveData("email", email);
+			loadRegisterUsernamePage();
+		}
+	})
+	.catch(error => console.error('Error:', error));
 }
 
 function generateEmailPartHTML() {

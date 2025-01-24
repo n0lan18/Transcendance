@@ -11,17 +11,15 @@ export async function loadProfilePage()
 {
 	let profileHTML = generateProfilePageHTML();
 
-	loadContent(profileHTML, "profile", true);
+	loadContent(document.getElementById("app"), profileHTML, "profile", true, "Profile Page", translation, addNavigatorEventListeners, addEventListenerProfile);
 	document.getElementById("app").innerHTML = generateProfilePageHTML();
 	
 	translation();
 	addNavigatorEventListeners()
 	addButtonEventListener()
-
-//	history.pushState({ page: 'profile' }, 'Profile Page', '/profile');
 }
 
-function addButtonEventListener()
+export function addEventListenerProfile()
 {
 	let profileForm = document.getElementById('profileForm');
 	if (profileForm)
@@ -160,15 +158,6 @@ function addButtonEventListener()
 		});
 	}
 }
-
-window.addEventListener('popstate', function(event) {
-	if (event.state && event.state.page) {
-		// Charger le contenu associé à la page
-		loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-	} else {
-		loadHomePage();
-	}
-});
 
 async function updateImageToDatabase(data)
 {

@@ -9,23 +9,33 @@ export async function loadStatsPage(userStat)
 {
 	let userStatsInfoAll;
 	if (userStat)
-	{
-		console.log("aaa")
 		userStatsInfoAll = await getStatsInfoAllById(userStat);
-	}
 	else
 		userStatsInfoAll = await getStatsInfoAll();
 
-	console.log(userStatsInfoAll)
 	let settingsHTML = generateStatsPageHTML(userStatsInfoAll);
 
-	loadContent(settingsHTML, "stats", true);
+	window.addEventListener('popstate', function(event) {
+		if (event.state && event.state.page) {
+			// Charger le contenu associé à la page
+			if (this.window.location.pathname === "/stats")
+				loadContent(this.document.getElementById("app"), event.state.page, '', false, "Stats Page", translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
+			}
+	});	
+
+	loadContent(document.getElementById('app'), settingsHTML, "stats", true, 'Stats Page', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
+	
 	document.getElementById("app").innerHTML = generateStatsPageHTML(userStatsInfoAll);
 	translation();
-	addLastMatchesAndResultats(userStatsInfoAll);
 
 	addNavigatorEventListeners()
 
+	addEventListenerStats(userStatsInfoAll);
+	addLastMatchesAndResultats(userStatsInfoAll);
+}
+
+export function  addEventListenerStats(userStatsInfoAll)
+{
 	let imageHero;
 	let powerHero;
 
@@ -83,30 +93,11 @@ export async function loadStatsPage(userStat)
 	else
 		myDonutChart2 = addGraphics(userStatsInfoAll.numberGoalsWin, userStatsInfoAll.numberGoalLose, 'G.S', 'G.C', ctx2);
 
-	let switchPageToLogout = document.getElementById("logoutLink");
-	if (switchPageToLogout)
-	{
-		switchPageToLogout.addEventListener('click', function (event) {
-			localStorage.removeItem('jwt_token');
-			event.preventDefault();
-			loadAuthentificationPage();
-		});
-	}
-
-
-
 	window.addEventListener('resize', () => {
 		if (window.innerWidth <= 900)
 		{
 			myDonutChart1.resize();
 			myDonutChart2.resize();
-		}
-	});
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
 		}
 	});
 }

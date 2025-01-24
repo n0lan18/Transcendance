@@ -17,13 +17,6 @@ export async function loadOnlinePage()
 	addNavigatorEventListeners()
 
 	newWebSocket();
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
-	});
 }
 
 function generateBodyOnlinePageHTML()

@@ -25,13 +25,6 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 		const game = new Game("game-container", modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
 		game.start();
 	}
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
-	});
 }
 
 function toggleFullScreen() {

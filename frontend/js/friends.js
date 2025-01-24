@@ -11,7 +11,7 @@ export async function loadFriendsPage()
 	console.log(userInfo)
 	let userConnected = await connectedUsersList();
 	let friendsHTML = generateFriendsPageHTML();
-	loadContent(friendsHTML, "friends", true);
+	loadContent(document.getElementById("app"), friendsHTML, "friends", true, 'Friends Page', translation, addNavigatorEventListeners, );
 	document.getElementById("app").innerHTML = generateFriendsPageHTML();
 	await translation();
 	
@@ -51,6 +51,12 @@ export async function loadFriendsPage()
 			`;
 		};
 
+
+	addEventListenerFriendsPage(friendsTemplate, usersTemplate);
+}
+
+export function addEventListenerFriendsPage(friendsTemplate, usersTemplate)
+{
 	const friendsButton = document.getElementById("friends-online-button");
 	if (friendsButton)
 	{

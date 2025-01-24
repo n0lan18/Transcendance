@@ -1,15 +1,20 @@
-import { loadContent, getCookie, isValidUsername } from "../utils.js";
+import { loadContent, getCookie, isValidUsername, saveData } from "../utils.js";
 import { loadAuthentificationPage } from "../auth.js";
 import { loadRegisterPasswordPage } from "./password-register.js";
 
-export function loadRegisterUsernamePage(email) {
+export function loadRegisterUsernamePage() {
 
 	let usernameRegisterHTML = generateUsernamePartHTML();
 
-	loadContent(usernameRegisterHTML, "register-username", true);
+	loadContent(document.getElementById("app"), usernameRegisterHTML, "register-username", true, "Register Username", "", "", addEventListenerUsernameRegister);
 	
 	document.getElementById("app").innerHTML = generateUsernamePartHTML();
 
+	addEventListenerUsernameRegister();
+}
+
+export function addEventListenerUsernameRegister(email)
+{
 	let switchPageUsernameRegisterToLogin = document.getElementById("switchPageUsernameRegisterToLogin");
     if (switchPageUsernameRegisterToLogin) {
         switchPageUsernameRegisterToLogin.addEventListener("click", (event) => {
@@ -50,7 +55,7 @@ export function loadRegisterUsernamePage(email) {
 								usernameExist.id = "usernameExist";
 								usernameExist.classList.add("invalid-register");
 								usernameExist.textContent = 'This username already exists';
-								item.appendChild(emailExist);
+								item.appendChild(usernameExist);
 								let buttonSend = document.getElementById("buttonSend");
 								buttonSend.classList.remove('btn-success');
 								buttonSend.classList.add('btn-danger');
@@ -62,7 +67,10 @@ export function loadRegisterUsernamePage(email) {
 				})
 				.then((data) => {
 					if (!data.exists)
-						loadRegisterPasswordPage(email, username);
+					{
+						saveData("username", username);
+						loadRegisterPasswordPage();
+					}
 				})
 				.catch(error => console.error('Error:', error));
 			}
@@ -83,13 +91,6 @@ export function loadRegisterUsernamePage(email) {
 			}
 		});
 	}
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
-	});
 }
 
 function generateUsernamePartHTML() {

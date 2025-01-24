@@ -6,28 +6,42 @@ import { getUserInfo } from "./utils.js";
 import { loadContent,  } from "./utils.js";
 import { putStatsInfo } from "./utils.js";
 import { rgbToHex } from "./utils.js";
+import { eventListener } from "./game/eventListener.js";
 
 export async function loadPreparationTournamentGamePage(typeOfGame, modeGame)
 {
-	let userInfo = await getUserInfo();
-
-	let username1 = userInfo.username;
 	const preparationGameHTML = generatePreparationSoloTournamentPageHTML();
 
 	
 	addNavigatorEventListeners();
 
-	let courtColor = "0xCF5A30";
-	let colorPlayer1 = "#E23F22";
-	let heroPowerPlayer1 = "Invisible";
-	let sizeTournament = 32;
-	let superPower = "isSuperPower";
+	window.addEventListener('popstate', function(event) {
+		if (event.state && event.state.page) {
+			// Charger le contenu associé à la page
+			if (this.window.location.pathname === "/preparation-solo-tournament")
+				loadContent(this.document.getElementById("app"), event.state.page, '', false, "Preparation Tournament", translation, addNavigatorEventListeners, () => addEventListenerPreparationTournament(typeOfGame, modeGame));
+			}
+	});	
 
-	loadContent(preparationGameHTML, "preparation-solo-tournament", true);
+	loadContent(document.getElementById("app"), preparationGameHTML, "preparation-solo-tournament", true, 'Preparation Tournament', translation, addNavigatorEventListeners, () => addEventListenerPreparationTournament(typeOfGame, modeGame));
 
 	document.getElementById("app").innerHTML = preparationGameHTML;
 	translation();
 	addNavigatorEventListeners();
+
+	addEventListenerPreparationTournament(typeOfGame, modeGame)
+
+}
+
+export async function addEventListenerPreparationTournament(typeOfGame, modeGame)
+{
+	let userInfo = await getUserInfo();
+
+	let username1 = userInfo.username;
+	let courtColor = "0xCF5A30";
+	let colorPlayer1 = "#E23F22";
+	let sizeTournament = 32;
+	let superPower = "isSuperPower";
 
 	document.querySelectorAll('.color-button-player1').forEach(button => {
 		button.addEventListener('click', (event) => {

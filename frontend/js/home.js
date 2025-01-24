@@ -47,19 +47,16 @@ export async function loadHomePage()
 
 	let homeHTML = generateHomePageHTML(userInfo);
 
-	console.log(userInfo);
-	loadContent(homeHTML, "home", true);
+	loadContent(document.getElementById("app"), homeHTML, "home", true, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage);
 
 	document.getElementById("app").innerHTML = generateHomePageHTML(userInfo);
 	translation();
 	addNavigatorEventListeners();
 
-	addPagesEventListener();
-
-	history.pushState({ page: 'home' }, 'Home Page', '/home');
+	addEventListenerHomePage();
 }
 
-function addPagesEventListener()
+export function addEventListenerHomePage()
 {
 	let switchPageToProfilPage = document.getElementById("profil-button");
 	if (switchPageToProfilPage)
@@ -67,7 +64,6 @@ function addPagesEventListener()
 		switchPageToProfilPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadProfilePage();
-			history.pushState({ page: 'profile' }, 'Profile Page', '/profile');
 		});
 	}
 
@@ -77,7 +73,6 @@ function addPagesEventListener()
 		switchPageToStatsPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadStatsPage();
-			history.pushState({ page: 'stats' }, 'Stats Page', '/stats');
 		});
 	}
 	
@@ -88,15 +83,9 @@ function addPagesEventListener()
 			event.preventDefault();
 			let checkIsTour = await checkIsTournament();
 			if (checkIsTour)
-			{
 				loadContinueOrNewTournamentPage();
-				history.pushState({ page: 'continue-tournament' }, 'Continue tournament Page', '/continue-tournament');
-			}
 			else
-			{
 				loadPreparationTournamentGamePage("multiplayer", "tournament-multi-local");
-				history.pushState({ page: 'new-tournament' }, 'New tournament Page', '/new-tournament');
-			}
 		});
 	}
 
@@ -106,7 +95,6 @@ function addPagesEventListener()
 		switchPageToSimpleMatchPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerTwo");
-			history.pushState({ page: 'simple-match' }, 'Simple match Page', '/simple-match');
 		});
 	}
 
@@ -116,20 +104,9 @@ function addPagesEventListener()
 		switchPageToDoublesPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerFour");
-			history.pushState({ page: 'double-match' }, 'Double match Page', '/double-match');
 		});
 	}
 }
-
-
-window.addEventListener('popstate', function(event) {
-	if (event.state && event.state.page) {
-		// Charger le contenu associé à la page
-		loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-	}
-	else
-		loadContent()
-});
 
 function setupWebSocketListeners(socket, userInfo) {
     // WebSocket événement `onmessage`
@@ -159,7 +136,6 @@ function setupWebSocketListeners(socket, userInfo) {
         console.error("WebSocket error :", error);
     };
 }
-
 
 
 function generateBodyHomePageHTML(username, profile_photo)

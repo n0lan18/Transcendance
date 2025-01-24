@@ -1,19 +1,25 @@
-import { loadContent, getCookie } from "../utils.js";
+import { loadContent, getCookie, loadDataStorage } from "../utils.js";
 import { loadAuthentificationPage } from "../auth.js";
 
 let usernameForm;
 let emailForm;
 
-export function loadRegisterPasswordPage(email, username) {
-	usernameForm = username;
-	emailForm = email;
+export function loadRegisterPasswordPage() {
+
+	const username = loadDataStorage("username");
+	const email = loadDataStorage("email");
 
 	let passwordRegisterHTML = generatePasswordPartHTML();
 
-	loadContent(passwordRegisterHTML, "register-password", true);
+	loadContent(document.getElementById("app"), passwordRegisterHTML, "register-password", true, "Register Password", "", "", addEventListenerPasswordRegister);
 	
 	document.getElementById("app").innerHTML = generatePasswordPartHTML();
 
+	addEventListenerPasswordRegister(username, email);
+}
+
+export function addEventListenerPasswordRegister(username, email)
+{
 	let switchPageRegisterToLogin = document.getElementById("switchPagePasswordRegisterToLogin");
 	if (switchPageRegisterToLogin) {
 		switchPageRegisterToLogin.addEventListener("click", (event) => {
@@ -30,8 +36,8 @@ export function loadRegisterPasswordPage(email, username) {
 			event.preventDefault();
 			const password = document.getElementById("passwordRegister");
 			const data = {
-				username: usernameForm.value,
-                email: emailForm.value,
+				username: username,
+                email: email,
 				password: password.value,
 			}
 			console.log(data);
@@ -39,10 +45,7 @@ export function loadRegisterPasswordPage(email, username) {
 			const numberOrSpecialCharRegex = new RegExp("[0-9.#?!&]");
 			const minCharacterRegex = new RegExp("^.{10,}$");
 			if (letterRegex.test(password.value) && numberOrSpecialCharRegex.test(password.value) && minCharacterRegex.test(password.value))
-            {
-				console.log("SENDING DATA: ", data);
 				sendDataToDatabase(data);
-			}
 			else
 			{
 				if (!letterRegex.test(password.value))
@@ -93,13 +96,6 @@ export function loadRegisterPasswordPage(email, username) {
 			});
 		}
 	}
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
-	});
 }
 
 export function checkPasswordForm(regex, value, partForm)
@@ -107,7 +103,6 @@ export function checkPasswordForm(regex, value, partForm)
 	if (!partForm)
 		return ;
 	const item = partForm.querySelector('i');
-	console.log(item);
 	if (regex.test(value))
 	{
 		item.classList.remove('fa-circle');
@@ -129,7 +124,6 @@ export function errorPasswordForm(partForm)
 {
 	if (!partForm)
 		return;
-	console.log("RRRRR");
 	const item = partForm.querySelector('i');
 	item.classList.remove('fa-circle');
 	item.classList.add('fa-circle-xmark', 'invalid-register');

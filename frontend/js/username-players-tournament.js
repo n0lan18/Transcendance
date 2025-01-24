@@ -13,12 +13,26 @@ export async function loadUsernamePlayersTournament(username1, courtColor, sizeT
 
     addNavigatorEventListeners();
 
-    loadContent(usernamePlayersTournamentHTML, "preparation-username-tournament", true);
+    loadContent(document.getElementById("app"), usernamePlayersTournamentHTML, "preparation-username-tournament", true, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower));
 
 	document.getElementById("app").innerHTML = usernamePlayersTournamentHTML;
     translation();
 	addNavigatorEventListeners();
 
+    addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower);
+
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.page) {
+            // Charger le contenu associé à la page
+            if (this.window.location.pathname === "/preparation-username-tournament")
+                loadContent(document.getElementById("app"), event.state.page, '', false, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower));
+            }
+    });	
+
+}
+
+function addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower)
+{
     const images = [
         "../images/super1.png",
         "../images/super2.png",
