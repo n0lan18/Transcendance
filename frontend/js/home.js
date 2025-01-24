@@ -54,12 +54,20 @@ export async function loadHomePage()
 	translation();
 	addNavigatorEventListeners();
 
+	addPagesEventListener();
+
+	history.pushState({ page: 'home' }, 'Home Page', '/home');
+}
+
+function addPagesEventListener()
+{
 	let switchPageToProfilPage = document.getElementById("profil-button");
 	if (switchPageToProfilPage)
 	{
 		switchPageToProfilPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadProfilePage();
+			history.pushState({ page: 'profile' }, 'Profile Page', '/profile');
 		});
 	}
 
@@ -69,18 +77,10 @@ export async function loadHomePage()
 		switchPageToStatsPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadStatsPage();
-		});
-	}	
-
-	let switchPageToSoloPlayerPage = document.getElementById("solo-player-button");
-	if (switchPageToSoloPlayerPage)
-	{
-		switchPageToSoloPlayerPage.addEventListener('click', function (event) {
-			event.preventDefault();
-			loadSoloPlayerPageChoiceGame(userInfo);
+			history.pushState({ page: 'stats' }, 'Stats Page', '/stats');
 		});
 	}
-
+	
 	let switchPageToTournamentPage = document.getElementById("tournament-button");
 	if (switchPageToTournamentPage)
 	{
@@ -88,9 +88,15 @@ export async function loadHomePage()
 			event.preventDefault();
 			let checkIsTour = await checkIsTournament();
 			if (checkIsTour)
+			{
 				loadContinueOrNewTournamentPage();
+				history.pushState({ page: 'continue-tournament' }, 'Continue tournament Page', '/continue-tournament');
+			}
 			else
+			{
 				loadPreparationTournamentGamePage("multiplayer", "tournament-multi-local");
+				history.pushState({ page: 'new-tournament' }, 'New tournament Page', '/new-tournament');
+			}
 		});
 	}
 
@@ -100,6 +106,7 @@ export async function loadHomePage()
 		switchPageToSimpleMatchPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerTwo");
+			history.pushState({ page: 'simple-match' }, 'Simple match Page', '/simple-match');
 		});
 	}
 
@@ -109,25 +116,20 @@ export async function loadHomePage()
 		switchPageToDoublesPage.addEventListener('click', function (event) {
 			event.preventDefault();
 			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerFour");
+			history.pushState({ page: 'double-match' }, 'Double match Page', '/double-match');
 		});
 	}
-
-	let switchPageToOnlinePage = document.getElementById("online-button");
-	if (switchPageToOnlinePage)
-	{
-		switchPageToOnlinePage.addEventListener('click', function (event) {
-			event.preventDefault();
-			loadOnlinePage();
-		});
-	}
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
-	});
 }
+
+
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.page) {
+		// Charger le contenu associé à la page
+		loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
+	}
+	else
+		loadContent()
+});
 
 function setupWebSocketListeners(socket, userInfo) {
     // WebSocket événement `onmessage`

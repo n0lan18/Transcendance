@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from random import shuffle
+from rest_framework.exceptions import NotFound
 import re
 
 
@@ -219,6 +220,21 @@ class UpdateIsConnectView(APIView):
 			return Response({"message": "Profile isConnect updated successfully."}, status=status.HTTP_200_OK)
 		else:
 			return Response({"message": "isConnect is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+class GameStatsLocalByIdView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request, user_id):
+		# Vérifie si l'utilisateur avec cet ID existe
+		try:
+			user = User.objects.get(id=user_id)
+		except User.DoesNotExist:
+			raise NotFound("Utilisateur introuvable.")
+
+		# Récupère uniquement les statistiques de cet utilisateur
+		game_stats = GameStatsLocal.objects.filter(user=user)
+		serializer = GameStatsLocalSerializer(game_stats, many=True)
+		return Response(serializer.data)
 
 class GameStatsLocalListCreateView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -460,12 +476,14 @@ class CheckTournamentView(APIView):
 			}, status=status.HTTP_404_NOT_FOUND)
 
 class RemoveOnlineListView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def put(self, request, *args, **kwargs):
-        user = request.user
-        OnlinePlayers.objects.filter(user=user).delete()
-        return Response({'detail': 'Déconnexion réussie.'}, status=status.HTTP_200_OK)
+	permission_classes = [IsAuthenticated]
+	
+	def put(self, request, *args, **kwargs):
+		user = request.user
+		OnlinePlayers.objects.filter(user=user).delete()
+		user.isConnect = False
+		user.save()
+		return Response({'detail': 'Déconnexion réussie.'}, status=status.HTTP_200_OK)
 
 class ConnectedUsersView(APIView):
 	permission_classes = [IsAuthenticated]  # Accessible uniquement aux utilisateurs authentifiés

@@ -1,14 +1,22 @@
 import { generateNavigator } from "./nav.js";
-import { getStatsInfoAll } from "./utils.js";
+import { getStatsInfoAll, getStatsInfoAllById } from "./utils.js";
 import { loadContent } from "./utils.js";
 import { loadAuthentificationPage } from "./auth.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { translation } from "./translate.js";
 
-export async function loadStatsPage()
+export async function loadStatsPage(userStat)
 {
-	let userStatsInfoAll = await getStatsInfoAll();
+	let userStatsInfoAll;
+	if (userStat)
+	{
+		console.log("aaa")
+		userStatsInfoAll = await getStatsInfoAllById(userStat);
+	}
+	else
+		userStatsInfoAll = await getStatsInfoAll();
 
+	console.log(userStatsInfoAll)
 	let settingsHTML = generateStatsPageHTML(userStatsInfoAll);
 
 	loadContent(settingsHTML, "stats", true);

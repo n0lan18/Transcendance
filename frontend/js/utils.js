@@ -1,9 +1,10 @@
 import { loadAuthentificationPage } from "./auth.js";
+import { loadHomePage } from "./home.js";
 
 export function loadContent(page, url, addToHistory) {
 	$('#app').html(page);
 	if (addToHistory) {
-		history.pushState({ page: page }, '', `?page=${url}`);
+		history.pushState({ page: page }, '', `/${url}`);
 	}
 }
 
@@ -54,6 +55,52 @@ export async function getStatsInfoAll()
 		}
 
 		const response = await fetch('api/gamestats/', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				}
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			console.log(data);
+
+			const firstStat = data.length > 0 ? data[0] : null;
+			if (!firstStat)
+				console.log('No game stats available.');
+			return firstStat;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}
+}
+
+export async function getStatsInfoAllById(friend_id)
+{
+	try
+	{
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (!jwtToken) {
+			console.error('No token found in localStorage');
+			loadAuthentificationPage();
+			return null;
+		}
+
+		const response = await fetch(`api/gamestats-friend/${friend_id}/`, {
 				method: 'GET',
 				headers: {
 					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,

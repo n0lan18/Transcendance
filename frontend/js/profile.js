@@ -5,10 +5,10 @@ import { loadContent } from "./utils.js";
 import { errorPasswordForm, checkPasswordForm } from "./register/password-register.js";
 import { escapeHTML } from "./utils.js";
 import { getCookie } from "./utils.js";
+import { loadHomePage } from "./home.js";
 
 export async function loadProfilePage()
 {
-
 	let profileHTML = generateProfilePageHTML();
 
 	loadContent(profileHTML, "profile", true);
@@ -16,7 +16,13 @@ export async function loadProfilePage()
 	
 	translation();
 	addNavigatorEventListeners()
+	addButtonEventListener()
 
+//	history.pushState({ page: 'profile' }, 'Profile Page', '/profile');
+}
+
+function addButtonEventListener()
+{
 	let profileForm = document.getElementById('profileForm');
 	if (profileForm)
 	{
@@ -33,8 +39,6 @@ export async function loadProfilePage()
 			}
 		});
 	}
-
-
 
 	let passwordUpdateForm = document.getElementById("passwordForm");
 	if (passwordUpdateForm) {
@@ -76,21 +80,6 @@ export async function loadProfilePage()
 		});
 	}
 
-	let passwordField = document.getElementById("passwordUpdate");
-	if (passwordField) {
-		passwordField.addEventListener("input", () => {
-			let passwordValue = passwordField.value;
-			const letterRegex = /[a-zA-Z]/;
-			const numberOrSpecialCharRegex = /[0-9.#?!&]/;
-			const minCharacterRegex = /^.{10,}$/;
-
-			checkPasswordForm(letterRegex, passwordValue, document.getElementById("check-letter-password"));
-			checkPasswordForm(numberOrSpecialCharRegex, passwordValue, document.getElementById("check-num-or-special-character-password"));
-			checkPasswordForm(minCharacterRegex, passwordValue, document.getElementById("check-number-characters-password"));
-		});
-	}
-
-
 	const togglePasswordButton = document.getElementById("togglePassword");
 	const passwordInput = document.getElementById("passwordUpdate");
 	if (togglePasswordButton && passwordInput) {
@@ -105,6 +94,20 @@ export async function loadProfilePage()
 				toggleIcon.classList.remove("fa-eye");
 				toggleIcon.classList.add("fa-eye-slash");
 			}
+		});
+	}
+
+	let passwordField = document.getElementById("passwordUpdate");
+	if (passwordField) {
+		passwordField.addEventListener("input", () => {
+			let passwordValue = passwordField.value;
+			const letterRegex = /[a-zA-Z]/;
+			const numberOrSpecialCharRegex = /[0-9.#?!&]/;
+			const minCharacterRegex = /^.{10,}$/;
+
+			checkPasswordForm(letterRegex, passwordValue, document.getElementById("check-letter-password"));
+			checkPasswordForm(numberOrSpecialCharRegex, passwordValue, document.getElementById("check-num-or-special-character-password"));
+			checkPasswordForm(minCharacterRegex, passwordValue, document.getElementById("check-number-characters-password"));
 		});
 	}
 
@@ -140,7 +143,6 @@ export async function loadProfilePage()
 				}
 			}
 		});
-
 	}
 
 	let usernameUpdate = document.getElementById("usernameForm");
@@ -156,16 +158,17 @@ export async function loadProfilePage()
 			}
 			checkUsernameIfExist(data, username);
 		});
-
-	}	
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
-		}
-	});
+	}
 }
+
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.page) {
+		// Charger le contenu associé à la page
+		loadContent(event.state.page, '', false); // Pas besoin d'ajouter à l'historique à nouveau
+	} else {
+		loadHomePage();
+	}
+});
 
 async function updateImageToDatabase(data)
 {
