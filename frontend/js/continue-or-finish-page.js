@@ -20,6 +20,13 @@ export function loadContinueOrNewTournamentPage()
     addEventListenerContinueOrNewTournament();
 }
 
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/continue-or-new-tournament")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Continue Or New Tournament', translation, addNavigatorEventListeners, addEventListenerContinueOrNewTournament);
+	}
+});
+
 export async function addEventListenerContinueOrNewTournament()
 {
     const continueTournamentButton = document.getElementById("continue-tournament-button");

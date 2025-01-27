@@ -11,7 +11,7 @@ export function loadUsernamePlayersTournament()
 
     addNavigatorEventListeners();
 
-    loadContent(document.getElementById("app"), usernamePlayersTournamentHTML, "preparation-username-tournament", true, 'Preparation Username Tournament', translation, addNavigatorEventListeners, addEventListenerUsernamePlayersTournament());
+    loadContent(document.getElementById("app"), usernamePlayersTournamentHTML, "preparation-username-tournament", true, 'Preparation Username Tournament', translation, addNavigatorEventListeners, addEventListenerUsernamePlayersTournament);
 
 	document.getElementById("app").innerHTML = usernamePlayersTournamentHTML;
     translation();
@@ -21,7 +21,7 @@ export function loadUsernamePlayersTournament()
 window.addEventListener('popstate', async function(event) {
     if (event.state && event.state.page) {
         if (this.window.location.pathname === "/preparation-username-tournament")
-            loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament());
+            loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Preparation Username Tournament', translation, addNavigatorEventListeners, addEventListenerUsernamePlayersTournament);
     }
 });
 

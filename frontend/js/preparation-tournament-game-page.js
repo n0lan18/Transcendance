@@ -12,7 +12,7 @@ export async function loadPreparationTournamentGamePage()
 	
 	addNavigatorEventListeners();
 
-	loadContent(document.getElementById("app"), preparationGameHTML, "preparation-solo-tournament", true, 'Preparation Tournament', translation, addNavigatorEventListeners, () => addEventListenerPreparationTournament());
+	loadContent(document.getElementById("app"), preparationGameHTML, "preparation-solo-tournament", true, 'Preparation Tournament', translation, addNavigatorEventListeners, addEventListenerPreparationTournament);
 	document.getElementById("app").innerHTML = preparationGameHTML;
 	translation();
 	addNavigatorEventListeners();
@@ -23,7 +23,7 @@ export async function loadPreparationTournamentGamePage()
 window.addEventListener('popstate', async function(event) {
 	if (event.state && event.state.page) {
 		if (this.window.location.pathname === "/preparation-solo-tournament")
-			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Preparation Tournament", translation, addNavigatorEventListeners,  () => addEventListenerPreparationTournament());
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Preparation Tournament", translation, addNavigatorEventListeners,  addEventListenerPreparationTournament);
 	}
 });
 

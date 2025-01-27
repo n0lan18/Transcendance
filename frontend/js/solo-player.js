@@ -12,12 +12,13 @@ export async function loadSoloPlayerPage()
 	loadContent(document.getElementById('app'), soloPlayerHTML, 'game-page', true, "Game Page", translation, "",addEventListenerGamePage)
 
 	document.getElementById("app").innerHTML = soloPlayerHTML;
-	translation();
 }
 
 window.addEventListener('popstate', async function(event) {
 	if (event.state && event.state.page) {
-		if (!this.window.location.pathname === "/game-page")
+		if (this.window.location.pathname === "/game-page")
+			loadContent(document.getElementById('app'), event.state.page, '', false, "Game Page", translation, "",addEventListenerGamePage)
+		if (this.window.location.pathname != "/game-page")
 			game.stop();
 	}
 });
@@ -25,13 +26,17 @@ window.addEventListener('popstate', async function(event) {
 async function addEventListenerGamePage()
 {
 	const matchInfo = await getMatchInfo();
-	console.log(matchInfo)
 	let tournamentInfo;
 	if (matchInfo.modeGame == "tournament-multi-local")
 		tournamentInfo = await getTournamentInfo();
 	else
-		tournamentInfo = null;
-	console.log(tournamentInfo);
+	{
+		tournamentInfo = {
+			numberMatch: -1,
+			tabPlayers: [],
+			tabPlayersNewRound: [],
+		};
+	}
 	let pageGameContainer = document.getElementById("page-game-container");
 	if (isMobileDevice())
 		toggleFullScreen();

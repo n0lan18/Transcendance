@@ -1,12 +1,29 @@
 import { loadHomePage } from "../home.js";
 import { loadPreparationSimpleMatchGamePage } from "../preparation-simple-match-game-page.js";
 import { translation } from "../translate.js";
+import { getMatchInfo, loadContent } from "../utils.js";
 
-export async function loadFinishPage(winOrLostStr, modeGame)
+export async function loadFinishPage()
 {
-	document.getElementById("app").innerHTML = finishPageHTML(winOrLostStr, modeGame);
-	translation();
+	const finishPage = finishPageHTML();
 
+	loadContent(document.getElementById("app"), finishPage, "finish-page-single-match", true, 'Finish Page Single match', translation, "", addEventListenerFinishPageSimpleMatch);
+	document.getElementById("app").innerHTML = finishPage;
+
+	translation();
+	addEventListenerFinishPageSimpleMatch();
+}
+
+window.addEventListener('popstate', async function(event) {
+
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/finish-page-single-match")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Finish Page Single match', translation, "", addEventListenerFinishPageSimpleMatch);
+	}
+});
+
+function addEventListenerFinishPageSimpleMatch()
+{
 	const homeButtonFinishPage = document.getElementById("home-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {
 		event.preventDefault();
@@ -14,23 +31,30 @@ export async function loadFinishPage(winOrLostStr, modeGame)
 	});
 
 	const retryButtonFinishPage = document.getElementById("retry-button-end-party");
-	retryButtonFinishPage.addEventListener('click', function (event) {
+	retryButtonFinishPage.addEventListener('click', async function (event) {
 		event.preventDefault();
-		if (modeGame == "multiPlayerTwo")
+		const matchInfo = await getMatchInfo();
+		if (matchInfo.modeGame == "multiPlayerTwo")
 			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerTwo");
-		else if (modeGame == "multiPlayerFour")
+		else if (matchInfo.modeGame == "multiPlayerFour")
 			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerFour");
-		else
-			loadPreparationSimpleMatchGamePage("simple-match", "soloPlayer");
 	});
 }
 
-export function finishPageHTML(winOrLostStr)
+export function finishPageHTML()
 {
+	let GameStr;
+	const lang = localStorage.getItem('language') || 'en';
+	if (lang == "en")
+		GameStr = `Congratulations ! The match is finished`
+	else if (lang == "es")
+		GameStr = `¡Felicitaciones! ¡El partido ha terminado!`
+	else if (lang == "fr")
+		GameStr = `Felicitations ! Le match est termine`
 	return `
 		<div class="finish-page" id="finish-page">
 			<h1 data-translate-key="finish"></h1>
-			<h2>${winOrLostStr}</h2>
+			<h2>${GameStr}</h2>
 			<div class="button-finish-page">
 				<button id="home-button-end-party" class="solo-player-simple-match-button">
 					<i class="fa-solid fa-house home-button-finish-page" style="font-size: 100px; color: white"></i>

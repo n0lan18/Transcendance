@@ -224,28 +224,141 @@ class UpdateIsConnectView(APIView):
 			return Response({"message": "isConnect is required."}, status=status.HTTP_400_BAD_REQUEST)
 
 class GameStatsLocalByIdView(APIView):
-	permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-	def get(self, request, user_id):
+    def get(self, request, user_id):
 		# Vérifie si l'utilisateur avec cet ID existe
-		try:
-			user = User.objects.get(id=user_id)
-		except User.DoesNotExist:
-			raise NotFound("Utilisateur introuvable.")
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise NotFound("Utilisateur introuvable.")
 
 		# Récupère uniquement les statistiques de cet utilisateur
-		game_stats = GameStatsLocal.objects.filter(user=user)
-		serializer = GameStatsLocalSerializer(game_stats, many=True)
-		return Response(serializer.data)
+        game_stats = GameStatsLocal.objects.filter(user=user)
+        serializer = GameStatsLocalSerializer(game_stats, many=True)
+        return Response(serializer.data)
+
+class GameStatsLocalListUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        valid_resultats = {"D", "V"}
+        valid_tournament_stages = {32, 16, 8, 4, 2}
+		
+        print(request.user)
+        game_stat = get_object_or_404(GameStatsLocal, user=request.user)
+        data = request.data
+
+        # Vérification et mise à jour du meilleur résultat du tournoi
+        if "bestResultTournament" in data:
+            best_result_tournament = data["bestResultTournament"]
+            if best_result_tournament in valid_tournament_stages:
+                if best_result_tournament is None or best_result_tournament < game_stat.bestResultTournament:
+                    game_stat.bestResultTournament = best_result_tournament
+            else:
+                return Response(
+                    {"error": f"Invalid tournament stage value for {best_result_tournament}. Valid values are 32, 16, 8, 4, 2."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Mise à jour des victoires par match
+        if "numberVictoryMatchTournament" in data:
+            if isinstance(data["numberVictoryMatchTournament"], int) and data["numberVictoryMatchTournament"] in {0, 1}:
+                game_stat.numberVictoryMatchTournament += data["numberVictoryMatchTournament"]
+            else:
+                return Response(
+                    {"error": f"Invalid numberVictoryMatchTournament value: {data['numberVictoryMatchTournament']}."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Mise à jour des victoires en tournoi
+        if "numberVictoryTournament" in data:
+            if isinstance(data["numberVictoryTournament"], int) and data["numberVictoryTournament"] in {0, 1}:
+                game_stat.numberVictoryTournament += data["numberVictoryTournament"]
+            else:
+                return Response(
+                    {"error": f"Invalid numberVictoryTournament value: {data['numberVictoryTournament']}."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Mise à jour des matchs en tournoi
+        if "numberMatchTournament" in data:
+            if isinstance(data["numberMatchTournament"], int) and data["numberMatchTournament"] in {0, 1}:
+                game_stat.numberMatchTournament += data["numberMatchTournament"]
+            else:
+                return Response(
+                    {"error": f"Invalid numberMatchTournament value: {data['numberMatchTournament']}."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Mise à jour des buts gagnés
+        if "numberGoalsWin" in data:
+            if isinstance(data["numberGoalsWin"], int) and 0 <= data["numberGoalsWin"] <= 5:
+                game_stat.numberGoalsWin += data["numberGoalsWin"]
+            else:
+                return Response(
+                    {"error": f"Invalid numberGoalsWin value: {data['numberGoalsWin']}. Expected a number between 0 and 5."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Mise à jour des buts encaissés
+        if "numberGoalLose" in data:
+            if isinstance(data["numberGoalLose"], int) and 0 <= data["numberGoalLose"] <= 5:
+                game_stat.numberGoalLose += data["numberGoalLose"]
+            else:
+                return Response(
+                    {"error": f"Invalid numberGoalLose value: {data['numberGoalLose']}. Expected a number between 0 and 5."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Mise à jour des résultats (D ou V)
+        if "resultats" in data:
+            if data["resultats"] in valid_resultats:
+                if not isinstance(game_stat.resultats, list):
+                    return Response(
+                        {"error": f"Invalid resultats field in game_stat. Expected a list, found {type(game_stat.resultats).__name__}."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+                game_stat.resultats.append(data["resultats"])
+                while len(game_stat.resultats) > 5:
+                    game_stat.resultats.pop(0)
+            else:
+                return Response(
+                    {"error": f"Invalid resultats value: {data['resultats']}. Valid values are 'D' or 'V'."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Mise à jour des scores
+        if "scores" in data:
+            regex = r'^(0|[1-5])-(0|[1-5])$'
+            if not re.match(regex, str(data["scores"])):
+                return Response(
+                    {"error": f"Invalid scores value: {data['scores']}. Expected format is 'number1-number2' where both numbers are between 0 and 5."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            if not isinstance(game_stat.scores, list):
+                return Response(
+                    {"error": f"Invalid scores field in game_stat. Expected a list, found {type(game_stat.scores).__name__}."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            game_stat.scores.append(data["scores"])
+            while len(game_stat.scores) > 5:
+                game_stat.scores.pop(0)
+
+        # Sauvegarde des modifications
+        game_stat.save()
+        return Response({"message": "Game statistics updated successfully."}, status=status.HTTP_200_OK)
+
 
 class GameStatsLocalListCreateView(APIView):
-	permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-	def get(self, request):
+    def get(self, request):
 		# Récupère uniquement les statistiques de l'utilisateur connecté
-		game_stats = GameStatsLocal.objects.filter(user=request.user)
-		serializer = GameStatsLocalSerializer(game_stats, many=True)
-		return Response(serializer.data)
+        game_stats = GameStatsLocal.objects.filter(user=request.user)
+        serializer = GameStatsLocalSerializer(game_stats, many=True)
+        return Response(serializer.data)
+	
 
 class GameStatsLocalDetailView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -483,7 +596,7 @@ class MatchInfoView(APIView):
 		user = request.user
 		
 		try:
-			match_user = MatchUser.objects.get(user=user)
+			match_user = MatchUser.objects.filter(user=user)
 			match_user.delete()
 		except MatchUser.DoesNotExist:
 			print(f"No existing MatchUser for {user}, creating a new one.")
@@ -514,7 +627,7 @@ class MatchInfoView(APIView):
 		new_match_user.superPower = superPower
 		new_match_user.courtColor = courtColor
 		new_match_user.save()
-		return Response({"message": "Tournament create successfull."}, status=status.HTTP_200_OK)
+		return Response({"message": "MatchUser create successfull."}, status=status.HTTP_200_OK)
 	
 class NewRoundTournamentView(APIView):
 	permission_classes = [IsAuthenticated]

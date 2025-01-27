@@ -1,35 +1,34 @@
-import { loadPresentationSoloPlayerPage } from "../presentation-match-solo-tournament.js";
 import { translation } from "../translate.js";
-import { insertWinnerInTabNewRound, loadContent, putStatsInfo, replaceContent } from "../utils.js";
-import { getUserInfo } from "../utils.js";
+import { getMatchInfo, getTournamentInfo, loadContent, replaceContent } from "../utils.js";
 import { loadTournamentPresentation } from "../tournament-presentation.js";
 
-export async function loadFinishPageTournamentWin(numberPlayers,typeOfGame, modeGame)
+export async function loadFinishPageTournamentWin()
 {	
-	const finishPage = finishPageHTML(numberPlayers);
+	const tournamentInfo = await getTournamentInfo();
+	const finishPage = finishPageHTML(tournamentInfo.numberPlayers);
 
-	loadContent(document.getElementById('app'), finishPage, 'finish-page-tournament', true, 'Finish Page Tournament', translation, "", () => addEventListenerFinishPageTournament(typeOfGame, modeGame));
+	loadContent(document.getElementById('app'), finishPage, 'finish-page-tournament', true, 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament);
 	
-	document.getElementById("app").innerHTML = finishPageHTML(numberPlayers);
+	document.getElementById("app").innerHTML = finishPageHTML(tournamentInfo.numberPlayers);
 	translation();
 
-	addEventListenerFinishPageTournament(typeOfGame, modeGame);
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page)
-		{
-			if (window.location.pathname === "/solo-page" || window.location.pathname === "/presentation-solo-tournament")
-				replaceContent(document.getElementById('app'), finishPage, 'finish-page-tournament', 'Finish Page Tournament', translation, "", () => addEventListenerFinishPageTournament(typeOfGame, modeGame))
-		}
-	});
+	addEventListenerFinishPageTournament();
 }
 
-function addEventListenerFinishPageTournament(typeOfGame, modeGame)
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.page)
+	{
+		if (window.location.pathname === "/solo-page" || window.location.pathname === "/presentation-solo-tournament")
+			replaceContent(document.getElementById('app'), finishPage, 'finish-page-tournament', 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament)
+	}
+});
+
+function addEventListenerFinishPageTournament()
 {
 	const homeButtonFinishPage = document.getElementById("continue-button-end-party");
-	homeButtonFinishPage.addEventListener('click', function (event) {
+	homeButtonFinishPage.addEventListener('click', async function (event) {
 		event.preventDefault();
-		loadTournamentPresentation(typeOfGame, modeGame)
+		loadTournamentPresentation()
 	});
 }
 

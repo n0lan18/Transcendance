@@ -1,10 +1,9 @@
-import { getUserInfo } from "./utils.js";
+import { getUserInfo, putMatchInfo, putStatsInfoById } from "./utils.js";
 import { loadContent } from "./utils.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
 import { generateNavigator } from "./nav.js";
 import { escapeHTML } from "./utils.js";
-import { isValidUsername } from "./utils.js";
 import { rgbToHex } from "./utils.js";
 import { putStatsInfo } from "./utils.js";
 import { translation } from "./translate.js";
@@ -28,13 +27,12 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 	let username1 = userInfo.username;
 	let preparationGameHTML = generateSoloPlayerPageHTML(username1);
 
-	loadContent(document.getElementById("app"), preparationGameHTML, `${pathnameUrl}`, true, `${namePage}`, translation, addNavigatorEventListeners, addEventListenerPreparationGame(typeOfGame, modeGame));
+	loadContent(document.getElementById("app"), preparationGameHTML, `${pathnameUrl}`, true, `${namePage}`, translation, addNavigatorEventListeners, () => addEventListenerPreparationGame(typeOfGame, modeGame));
 
 	document.getElementById("app").innerHTML = preparationGameHTML;
 	await translation();
 
 	addNavigatorEventListeners();
-	addEventListenerPreparationGame(typeOfGame, modeGame);
 }
 
 window.addEventListener('popstate', function(event) {
@@ -147,15 +145,15 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			else
 			{
 				if (heroPowerPlayer1 == "Invisible")
-					await putStatsInfo(9, {heroInvisible: 1})
+					await putStatsInfoById(9, {heroInvisible: 1})
 				else if (heroPowerPlayer1 == "Duplication")
-					await putStatsInfo(10, {heroDuplication: 1})
+					await putStatsInfoById(10, {heroDuplication: 1})
 				else if (heroPowerPlayer1 == "Super strength")
-					await putStatsInfo(11, {heroSuperstrength: 1})
+					await putStatsInfoById(11, {heroSuperstrength: 1})
 				else if (heroPowerPlayer1 == "Time laps")
-					await putStatsInfo(12, {heroTimelaps: 1})
-				
-				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, -1, modeGame, superPower);
+					await putStatsInfoById(12, {heroTimelaps: 1})
+				await putMatchInfo(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, 2, modeGame, superPower)
+				loadSoloPlayerPage();
 			}
 		});
 	}

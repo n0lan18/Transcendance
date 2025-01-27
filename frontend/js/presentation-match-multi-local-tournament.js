@@ -11,7 +11,7 @@ export async function loadPresentationMultiLocalPlayerPage(numberMatch, tab, tab
 	console.log(dataTournament)
 	const bodyPresentationHTML = generateBodyPresentationPageHTML(matchInfo.username1, matchInfo.username2, dataTournament.sizeTournament, matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2)
 
-	loadContent(document.getElementById("app"), bodyPresentationHTML , "tournament-match-presentation", true, 'Tournament Match Presentation Page', translation, "", addEventListenerPresentationSoloTournament());
+	loadContent(document.getElementById("app"), bodyPresentationHTML , "tournament-match-presentation", true, 'Tournament Match Presentation Page', translation, "", addEventListenerPresentationSoloTournament);
 
 	document.getElementById("app").innerHTML = bodyPresentationHTML;
 	translation();
@@ -20,7 +20,7 @@ export async function loadPresentationMultiLocalPlayerPage(numberMatch, tab, tab
 window.addEventListener('popstate', async function(event) {
 	if (event.state && event.state.page) {
 		if (this.window.location.pathname === "/tournament-match-presentation")
-			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Match Presentation Page', translation, "", addEventListenerPresentationSoloTournament());
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Match Presentation Page', translation, "", addEventListenerPresentationSoloTournament);
 	}
 });
 

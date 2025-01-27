@@ -45,19 +45,12 @@ export async function loadHomePage()
 	let homeHTML = generateHomePageHTML(userInfo);
 
 	loadContent(document.getElementById("app"), homeHTML, "home", true, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage);
-
-	addEventListenerHomePage();
 }
 
 window.addEventListener('popstate', async function(event) {
-	let userInfo = await getUserInfo();
-	let homeHTML = generateHomePageHTML(userInfo);
-
 	if (event.state && event.state.page) {
 		if (this.window.location.pathname === "/home")
 			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage);
-		if (this.window.location.pathname === "/game-page")
-			replaceContent(this.document.getElementById("app"), homeHTML, 'home', false, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage)
 	}
 });
 

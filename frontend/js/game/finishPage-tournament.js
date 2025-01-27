@@ -1,31 +1,23 @@
 import { loadHomePage } from "../home.js";
 import { loadPreparationTournamentGamePage } from "../preparation-tournament-game-page.js";
-import { addRoute } from "../router.js";
 import { translation } from "../translate.js";
 import { loadContent, removeTournament } from "../utils.js";
 
 
-export async function loadFinishPageTournament(username1, username2, scoreLeftPlayer, scoreRigthPlayer)
+export async function loadFinishPageTournament()
 {
-	addRoute('/finish-page-tournament-win', { loadFunction: () => loadFinishPageTournament(username1, username2, scoreLeftPlayer, scoreRigthPlayer)})
-	let finishPage
-	if (scoreLeftPlayer > scoreRigthPlayer)
-		finishPage = finishPageHTML(username1);
-	else
-		finishPage = finishPageHTML(username2);
+	let finishPage = finishPageHTML();
 
 	loadContent(document.getElementById("app"), finishPage, 'finish-page-tournament-win', true, "Finish Page Tournament Win", translation, "", addEventListenerFinishPageTournament);
 
 	document.getElementById("app").innerHTML = finishPage;
 	translation();
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page)
-		{
-			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Finish Page Tournament Win", translation, "", addEventListenerFinishPageTournament);
-		}
-	});
 }
+
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.page)
+		loadContent(this.document.getElementById("app"), event.state.page, '', false, "Finish Page Tournament Win", translation, "", addEventListenerFinishPageTournament);
+});
 
 async function addEventListenerFinishPageTournament()
 {
@@ -44,16 +36,16 @@ async function addEventListenerFinishPageTournament()
 	});
 }
 
-function finishPageHTML(sideWin)
+function finishPageHTML()
 {
 	let GameStr;
 	const lang = localStorage.getItem('language') || 'en';
 	if (lang == "en")
-		GameStr = `Congratulations ! ${sideWin} won the tournament`
+		GameStr = `Congratulations ! The tournament is finished`
 	else if (lang == "es")
-		GameStr = `${sidewin} ganado el torneo`
+		GameStr = `¡Felicitaciones! ¡El torneo ha terminado!`
 	else if (lang == "fr")
-		GameStr = `${sideWin} gagne le tournoi`
+		GameStr = `Felicitations ! Le tournoi est termine`
 
 	return `
 		<div class="finish-page" id="finish-page">

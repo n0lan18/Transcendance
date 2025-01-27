@@ -26,6 +26,8 @@ export function replaceContent(appDiv, page, url, namePage, translate, eventList
 		eventListenerNavigator();
 	if (typeof eventListenerPage === "function")
 		eventListenerPage();
+	if (funcfunc === "function")
+		funcfunc();
 	history.replaceState({ page: page }, namePage, `/${url}`);
 }
 
@@ -191,10 +193,67 @@ export async function getStatsInfo(pk)
 	} catch (error) {
 		console.error('Error:', error);
 		return null;
+	}
+}
+
+export async function putStatsInfo(numberSimpleMatch, resultats, numberVictorySimpleMatch, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, numberVictoryTournament, bestResultTournament)
+{
+	const data = {
+		numberSimpleMatch:  numberSimpleMatch,
+		resultats: resultats,
+		numberVictorySimpleMatch: numberVictorySimpleMatch,
+		numberGoalsWin: numberGoalsWin,
+		numberGoalLose: numberGoalLose,
+		scores: scores,
+		numberMatchTournament: numberMatchTournament,
+		numberVictoryMatchTournament: numberVictoryMatchTournament,
+		numberVictoryTournament: numberVictoryTournament,
+		bestResultTournament: bestResultTournament,
+	}
+	console.log(data);
+	try
+	{
+		const response = await fetch(`api/gamestats-update-list/`, {
+				method: 'PUT',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			});
+		
+		if (response.ok) {
+			let updatedData = await response.json();
+			console.log("Updated Data:", JSON.stringify(updatedData, null, 2));
+			return updatedData;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await response.json();
+                console.error('Erreur détaillée:', errorData);
+            } else {
+                const errorText = await response.text();
+                console.error('Erreur non-JSON:', errorText);
+            }
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
 	}	
 }
 
-export async function putStatsInfo(pk, data)
+export async function putStatsInfoById(pk, data)
 {
 	console.log(data);
 	try
@@ -1083,97 +1142,113 @@ export function loadDataStorage(data) {
 	return null
 }
 
-export async function InfoDataMatchTournament(username1, username2, scoreLeftPlayer, scoreRightPlayer, tabNewRound)
+export async function InfoDataMatchTournament(username1, username2, numberPlayer, scoreLeftPlayer, scoreRightPlayer, tabNewRound)
 {
 	await insertWinnerInTabNewRound(tabNewRound);
 	let userInfo = await getUserInfo();
-	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer});
-	await putStatsInfo(6, {numberMatchTournament: 1});
+	let scores = scoreLeftPlayer + "-" + scoreRightPlayer;
+	let numberMatchTournament = 1;
+	let resultats = "D";
+	let numberVictoryMatchTournament = 0
+	let numberGoalLose;
+	let numberGoalsWin;
+	if (userInfo.username != username1 && userInfo.username != username2)
+		return ;
 	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRightPlayer) || (userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
 	{
-		await putStatsInfo(2, {resultats: "V"})
-		await putStatsInfo(7, {numberVictoryMatchTournament: 1});
+		resultats = "V";
+		numberVictoryMatchTournament = 1;
 		if ((userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+			numberGoalsWin = scoreRightPlayer;
+			numberGoalLose = scoreLeftPlayer;
 		}
 		else
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+			numberGoalsWin = scoreLeftPlayer;
+			numberGoalLose = scoreRightPlayer;
 		}
 	}
 	else
 	{
-		await putStatsInfo(2, {resultats: "D"})
 		if (scoreRightPlayer > scoreLeftPlayer)
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+			numberGoalsWin = scoreLeftPlayer;
+			numberGoalLose = scoreRightPlayer;
 		}
 		else
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+			numberGoalsWin = scoreRightPlayer;
+			numberGoalLose = scoreLeftPlayer;
 		}
 	}
+	await putStatsInfo(0, resultats, 0, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, 0, numberPlayer);
 }
 
 export async function InfoDataMatchTournamentFinale(username1, username2, numberPlayer, scoreLeftPlayer, scoreRigthPlayer)
 {
 	let userInfo = await getUserInfo();
-	await putStatsInfo(6, {numberMatchTournament: 1});
+	let numberVictoryMatchTournament = 0;
+	let numberVictoryTournament = 0;
+	let resultats;
+	let numberGoalsWin;
+	let numberGoalLose;
+
+	let numberMatchTournament = 1;
+	if (userInfo.username != username1 && userInfo.username2 != username2)
+		return ;
 	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRigthPlayer) || (userInfo.username == username2 && scoreRigthPlayer > scoreLeftPlayer))
 	{
-		await putStatsInfo(7, {numberVictoryMatchTournament: 1})
-		await putStatsInfo(8, {numberVictoryTournament: 1})
-		await putStatsInfo(2, {resultats: "V"})
+		numberVictoryMatchTournament = 1;
+		numberVictoryTournament = 1;
+		resultats = "V";
 		if (scoreLeftPlayer > scoreRigthPlayer)
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
+			numberGoalsWin = scoreLeftPlayer;
+			numberGoalLose = scoreRightPlayer;
 		}
 		else
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+			numberGoalsWin = scoreRightPlayer;
+			numberGoalLose = scoreLeftPlayer;
 		}
 	}
 	else
 	{
-		await putStatsInfo(2, {resultats: "D"})
+		resultats = "D";
 		if (scoreLeftPlayer > scoreRigthPlayer)
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+			numberGoalsWin = scoreRightPlayer;
+			numberGoalLose = scoreLeftPlayer;
 		}
 		else
 		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
+			numberGoalsWin = scoreLeftPlayer;
+			numberGoalLose = scoreRightPlayer;
 		}
 	}
 	if (numberPlayer == 1)
 		numberPlayer = 2;
-	await putStatsInfo(15, {bestResultTournament: numberPlayer})
-	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRigthPlayer})
+	let bestResultTournament = numberPlayer;
+	let scores = scoreLeftPlayer + "-" + scoreRigthPlayer;
+	await putStatsInfo(0, resultats, 0, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, numberVictoryTournament, bestResultTournament);
 }
 
 export async function InfoDataSimpleMatch(scoreLeftPlayer, scoreRightPlayer, isWin, modeGame)
 {
 	if (modeGame == "multiPlayerTwo")
 	{
-		await putStatsInfo(3, {numberSimpleMatch: 1});
+		let numberSimpleMatch = 1;
+		let resultats = "D";
+		let numberVictorySimpleMatch = 0;
 		if (isWin == true)
 		{
-			await putStatsInfo(2, {resultats: "V"})
-			await putStatsInfo(4, {numberVictorySimpleMatch: 1})
+			resultats = "V";
+			numberVictorySimpleMatch = 1;
 		}
-		else
-			await putStatsInfo(2, {resultats: "D"})
-		await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-		await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
-		await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer})
+		let numberGoalsWin = scoreLeftPlayer;
+		let numberGoalLose = scoreRightPlayer
+		let scores = scoreLeftPlayer + "-" + scoreRightPlayer
+		await putStatsInfo(numberSimpleMatch, resultats, numberVictorySimpleMatch, numberGoalsWin, numberGoalLose, scores, 0, 0, 0, 32)
 	}
 }

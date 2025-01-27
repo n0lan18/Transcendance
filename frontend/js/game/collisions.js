@@ -110,9 +110,7 @@ export async function handleCollisions(Game) {
 		{
 			Game.ballVelocity.x = 0;
 			Game.ballVelocity.y = 0;
-			let winOrLostStr;
 			let isWin;
-			const lang = localStorage.getItem('language') || 'en';
 			if (scores.leftPlayerScore >= 5)
 			{
 				if (Game.modeGame == "tournament-multi-local")
@@ -120,12 +118,6 @@ export async function handleCollisions(Game) {
 					const user = Game.tab.find(row => row.includes(Game.username1));
 					Game.tabNewRound.push(user);
 				}
-				if (lang == "en")
-					winOrLostStr = `Congratulations! ${Game.username1} you've won!`;
-				else if (lang == "es")
-					winOrLostStr = `¡Felicidades! ${Game.username1} ¡Has ganado!`;
-				else if (lang == "fr")
-					winOrLostStr = `Felicitations! ${Game.username1} tu as gagne!`;
 				isWin = true;
 			}
 			else
@@ -135,12 +127,6 @@ export async function handleCollisions(Game) {
 					const user = Game.tab.find(row => row.includes(Game.username2));
 					Game.tabNewRound.push(user);
 				}
-				if (lang == "en")
-					winOrLostStr = `Congratulations! ${Game.username2} you've won!`;
-				else if (lang == "es")
-					winOrLostStr = `¡Felicidades! ${Game.username2} ¡Has ganado!`;
-				else if (lang == "fr")
-					winOrLostStr = `Felicitations! ${Game.username2} tu as gagne!`;
 				isWin = false;
 			}
 			if (Game.modeGame == "tournament-multi-local")
@@ -152,14 +138,14 @@ export async function handleCollisions(Game) {
 				}
 				else
 				{
-					InfoDataMatchTournament(Game.username1, Game.username2, scores.leftPlayerScore, scores.rightPlayerScore, Game.tabNewRound)
-					loadFinishPageTournamentWin(Game.numberPlayers, Game.typeOfGame, Game.modeGame);
+					InfoDataMatchTournament(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.tabNewRound)
+					loadFinishPageTournamentWin();
 				}
 			}
 			else
 			{
 				InfoDataSimpleMatch(scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.modeGame)
-				loadFinishPage(winOrLostStr, Game.modeGame);
+				loadFinishPage();
 			}
 		}
 		else

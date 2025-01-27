@@ -18,6 +18,8 @@ import { addRoute, loadRoute } from "./router.js";
 import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
 import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
 import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
+import { loadFinishPageTournament } from "./game/finishPage-tournament.js";
+import { loadFinishPageTournamentWin } from "./game/finishPage-tournament-win.js";
 
 
 
@@ -49,6 +51,8 @@ document.addEventListener('DOMContentLoaded', async () =>
             }
         });
         addRoute("/register-email", { loadFunction: loadRegisterEmailPage });
+        addRoute('/finish-page-tournament-win', { loadFunction: loadFinishPageTournament});
+        addRoute('/finish-page-tournament', { loadFunction: loadFinishPageTournamentWin});
 
         if (jwtToken)
             loadRoute(window.location.pathname);

@@ -31,7 +31,6 @@ export class Game {
         this.emptySizePowerBar = emptySizePowerBar();
         this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
         this.modeGame = modeGame;
-        console.log("mode game " + this.modeGame)
         this.scoreContainer = document.getElementById("board-score");
         this.gamePaused = true;
         this.animationFrameId = null;
@@ -71,15 +70,12 @@ export class Game {
         this.username1 = username1;
         this.username2 = username2;
         this.typeOfGame = typeOfGame;
-        console.log("type of game " + typeOfGame)
         this.numberPlayers = numberPlayers;
         this.colorCourt = colorCourt;
         this.colorPlayer1 = colorPlayer1;
         this.numberMatch = numberMatch
         this.tab = tab;
-        console.log(this.tab);
         this.tabNewRound = tabNewRound;
-        console.log(this.tabNewRound);
         this.stopGame = false;
         this.init(colorPlayer1, colorPlayer2, colorCourt);
     }
@@ -87,8 +83,6 @@ export class Game {
     init(colorPlayer1, colorPlayer2, colorCourt) {
         this.renderer.setSize(this.dimensions.width, this.dimensions.height);
         this.container.appendChild(this.renderer.domElement);
-        
-        console.log("FULL SIZE POWER BAR: " + this.fullSizePowerBar)
 
         addGround(this, colorCourt);
         this.leftWall = createWall(this, 0, 31, { x: -25, y: 0, z: -(1 / 2) }, 1);
