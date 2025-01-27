@@ -1,7 +1,12 @@
 import { loadAuthentificationPage } from "./auth.js";
+import { finishPageHTML } from "./game/finishPage.js";
 import { loadHomePage } from "./home.js";
+import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
+import { loadTournamentPresentation } from "./tournament-presentation.js";
+import { translation } from "./translate.js";
 
 export function loadContent(appDiv, page, url, addToHistory, namePage, translate, eventListenerNavigator, eventListenerPage) {
+	console.log("KAKAKAKA")
 	appDiv.innerHTML = page;
 	if (typeof translate === "function")
 		translate();
@@ -12,6 +17,17 @@ export function loadContent(appDiv, page, url, addToHistory, namePage, translate
 	if (addToHistory) {
 		history.pushState({ page: page }, namePage, `/${url}`);
 	}
+}
+
+export function replaceContent(appDiv, page, url, namePage, translate, eventListenerNavigator, eventListenerPage) {
+	appDiv.innerHTML = page;
+	if (typeof translate === "function")
+		translate();
+	if (typeof eventListenerNavigator === "function")
+		eventListenerNavigator();
+	if (typeof eventListenerPage === "function")
+		eventListenerPage();
+	history.replaceState({ page: page }, namePage, `/${url}`);
 }
 
 export async function getUserInfo()
@@ -758,16 +774,25 @@ export function rgbToHex(rgbString) {
 export function fullSizePowerBar()
 {
 	const containerProgressBar = document.getElementById("progress-bar-left-container");
-	let sizeContainerProgressBar = window.getComputedStyle(containerProgressBar).width;
-	return parseInt(sizeContainerProgressBar);
+	let sizeContainerProgressBar;
+	if (containerProgressBar)
+	{
+		sizeContainerProgressBar = window.getComputedStyle(containerProgressBar).width;
+		return parseInt(sizeContainerProgressBar);
+	}
+	return null;
 }
 
 export function emptySizePowerBar()
 {
 	const containerProgressBar = document.getElementById("progress-bar-left-container");
-	let emptySizeBar = parseInt(window.getComputedStyle(containerProgressBar).width);
-	let emptySizeValue = emptySizeBar * 0.60;
-	return parseInt(emptySizeValue);
+	if (containerProgressBar)
+	{
+		let emptySizeBar = parseInt(window.getComputedStyle(containerProgressBar).width);
+		let emptySizeValue = emptySizeBar * 0.60;
+		return parseInt(emptySizeValue);
+	}
+	return null;
 }
 
 export function sizeOfStep(fullSizePowerBar, emptySizePowerBar)
@@ -818,4 +843,99 @@ export function loadDataStorage(data) {
 		return formData.data;
 	}
 	return null
+}
+
+export async function InfoDataMatchTournament(username1, username2, scoreLeftPlayer, scoreRightPlayer, tabNewRound)
+{
+	await insertWinnerInTabNewRound(tabNewRound);
+	let userInfo = await getUserInfo();
+	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer});
+	await putStatsInfo(6, {numberMatchTournament: 1});
+	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRightPlayer) || (userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
+	{
+		await putStatsInfo(2, {resultats: "V"})
+		await putStatsInfo(7, {numberVictoryMatchTournament: 1});
+		if ((userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
+		else
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+		}
+	}
+	else
+	{
+		await putStatsInfo(2, {resultats: "D"})
+		if (scoreRightPlayer > scoreLeftPlayer)
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+		}
+		else
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
+	}
+}
+
+export async function InfoDataMatchTournamentFinale(username1, username2, numberPlayer, scoreLeftPlayer, scoreRigthPlayer)
+{
+	let userInfo = await getUserInfo();
+	await putStatsInfo(6, {numberMatchTournament: 1});
+	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRigthPlayer) || (userInfo.username == username2 && scoreRigthPlayer > scoreLeftPlayer))
+	{
+		await putStatsInfo(7, {numberVictoryMatchTournament: 1})
+		await putStatsInfo(8, {numberVictoryTournament: 1})
+		await putStatsInfo(2, {resultats: "V"})
+		if (scoreLeftPlayer > scoreRigthPlayer)
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
+		}
+		else
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
+	}
+	else
+	{
+		await putStatsInfo(2, {resultats: "D"})
+		if (scoreLeftPlayer > scoreRigthPlayer)
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
+		}
+		else
+		{
+			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
+		}
+	}
+	if (numberPlayer == 1)
+		numberPlayer = 2;
+	await putStatsInfo(15, {bestResultTournament: numberPlayer})
+	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRigthPlayer})
+}
+
+export async function InfoDataSimpleMatch(scoreLeftPlayer, scoreRightPlayer, isWin, modeGame)
+{
+	if (modeGame == "multiPlayerTwo")
+	{
+		await putStatsInfo(3, {numberSimpleMatch: 1});
+		if (isWin == true)
+		{
+			await putStatsInfo(2, {resultats: "V"})
+			await putStatsInfo(4, {numberVictorySimpleMatch: 1})
+		}
+		else
+			await putStatsInfo(2, {resultats: "D"})
+		await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
+		await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
+		await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer})
+	}
 }

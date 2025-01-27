@@ -2,6 +2,7 @@
 
 export function startCountdown(Game) {
 	cancelAnimationFrame(Game.animationFrameId);
+    Game.animationFrameId = null;
     // Conteneur du décompte à afficher sur l'écran
 	const backgrondCountdownContainer = document.createElement("div");
 	backgrondCountdownContainer.id = "background-countdown";
@@ -26,8 +27,11 @@ export function startCountdown(Game) {
 	countdownContainer.style.zIndex = "20";
 
 	const container = document.getElementById("game-container");
-	container.appendChild(backgrondCountdownContainer);
-    container.appendChild(countdownContainer);
+    if (container)
+    {
+	    container.appendChild(backgrondCountdownContainer);
+        container.appendChild(countdownContainer);
+    }
 
     let countdown = 3; // Départ du décompte
 

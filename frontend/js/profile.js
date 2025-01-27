@@ -5,7 +5,6 @@ import { loadContent } from "./utils.js";
 import { errorPasswordForm, checkPasswordForm } from "./register/password-register.js";
 import { escapeHTML } from "./utils.js";
 import { getCookie } from "./utils.js";
-import { loadHomePage } from "./home.js";
 
 export async function loadProfilePage()
 {
@@ -16,8 +15,15 @@ export async function loadProfilePage()
 	
 	translation();
 	addNavigatorEventListeners()
-	addButtonEventListener()
+	addEventListenerProfile()
 }
+
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/profile")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Profile Page", translation, addNavigatorEventListeners, addEventListenerProfile)
+	}
+});
 
 export function addEventListenerProfile()
 {

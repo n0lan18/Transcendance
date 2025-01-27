@@ -1,9 +1,11 @@
 import { loadHomePage } from "./home.js";
 import { getCookie, loadContent } from "./utils.js";
 import { loadRegisterEmailPage } from "./register/email-register.js"
+import { addRoute } from "./router.js";
 
 export function loadAuthentificationPage()
 {
+	addRoute('/login', { loadFunction: loadAuthentificationPage });
 	history.replaceState({}, '', window.location.href);
 		
 	let authHTML = generateAuthentificationHTML();

@@ -11,6 +11,37 @@ import { translation } from "./translate.js";
 
 export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 {
+	let pathnameUrl;
+	if (modeGame == "multiPlayerTwo")
+	{
+		pathnameUrl = "preparation-simple-game";
+		namePage = "Preparation simple game";
+	}
+	else if (modeGame == "multiPlayerFour")
+	{
+		pathnameUrl = "preparation-double-game";
+		namePage = "Preparation double game";		
+	}
+	let preparationGameHTML = generateSoloPlayerPageHTML(username1);
+
+	loadContent(document.getElementById("app"), preparationGameHTML, `${pathnameUrl}`, true, `${namePage}`, translation, addNavigatorEventListeners, addEventListenerPreparationGame);
+
+	document.getElementById("app").innerHTML = preparationGameHTML;
+	await translation();
+
+	addNavigatorEventListeners();
+	addEventListenerPreparationGame(typeOfGame, modeGame);
+}
+
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/preparation-double-game")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, `${namePage}`, translation, addNavigatorEventListeners, addEventListenerPreparationGame)
+	}
+});
+
+export async function addEventListenerPreparationGame(typeOfGame, modeGame)
+{
 	let userInfo = await getUserInfo();
 
 	let username1 = userInfo.username;
@@ -19,18 +50,9 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 	let colorPlayer2 = "#3BB323";
 	let heroPowerPlayer1 = "Invisible";
 	let heroPowerPlayer2 = "Super strength";
-	let preparationGameHTML = generateSoloPlayerPageHTML(username1);
 	let superPower = "isSuperPower";
 
-	loadContent(preparationGameHTML, "preparation-game", true);
-
-	document.getElementById("app").innerHTML = preparationGameHTML;
-	await translation();
-
-	addNavigatorEventListeners();
-
 	const username2 = document.querySelector("[data-translate-key='simpleMatchUsername2']").textContent;
-
 
 	document.querySelectorAll('.color-button-player1').forEach(button => {
 		button.addEventListener('click', (event) => {
@@ -346,7 +368,6 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 			}
 		})
 	})
-
 }
 
 function generateBodyPreparationGamePageHTML(username)

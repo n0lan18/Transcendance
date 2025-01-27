@@ -1,5 +1,5 @@
 import { getScores, incrementLeftScore, incrementRightScore } from "./score.js";
-import { putStatsInfo, sizeOfAdvance } from "../utils.js";
+import { InfoDataMatchTournamentFinale, InfoDataSimpleMatch, InfoDataMatchTournament, sizeOfAdvance } from "../utils.js";
 import { startCountdown } from "./countdown.js";
 import { loadFinishPage } from "./finishPage.js";
 import { loadFinishPageTournament } from "./finishPage-tournament.js";
@@ -83,6 +83,8 @@ export async function handleCollisions(Game) {
 	// Réinitialisation si la balle sort des limites latérales
 	if (Game.ball.position.x > 25 || Game.ball.position.x < -25) {
 		Game.gamePaused = true;
+		cancelAnimationFrame(Game.animationFrameId);
+		Game.animationFrameId = null
 		Game.scene.remove(Game.ballReplica);
 		Game.scene.remove(Game.trailReplica);
 		let xBall = 0;
@@ -141,24 +143,24 @@ export async function handleCollisions(Game) {
 					winOrLostStr = `Felicitations! ${Game.username2} tu as gagne!`;
 				isWin = false;
 			}
-			if (Game.modeGame == "tournament")
-			{
-				if (Game.numberPlayers == 1 && scores.leftPlayerScore >= 5)
-					loadFinishPageTournament("win", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
-				else if (scores.leftPlayerScore >= 5)
-					loadFinishPageTournamentWin(Game.username1, Game.colorPlayer1, Game.heroPowerPlayer1, Game.typeOfGame, Game.mode,Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.superPower, Game.tab);
-				else
-					loadFinishPageTournament("lose", Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
-			}
-			else if (Game.modeGame == "tournament-multi-local")
+			if (Game.modeGame == "tournament-multi-local")
 			{
 				if (Game.numberPlayers == 2)
-					loadFinishPageTournament(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
+				{
+					InfoDataMatchTournamentFinale(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
+					loadFinishPageTournament(Game.username1, Game.username2, scores.leftPlayerScore, scores.rightPlayerScore);
+				}
 				else
-					loadFinishPageTournamentWin(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.typeOfGame, Game.modeGame, Game.tabNewRound);
+				{
+					InfoDataMatchTournament(Game.username1, Game.username2, scores.leftPlayerScore, scores.rightPlayerScore, Game.tabNewRound)
+					loadFinishPageTournamentWin(Game.numberPlayers, Game.typeOfGame, Game.modeGame);
+				}
 			}
 			else
-				loadFinishPage(winOrLostStr, scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.typeOfGame, Game.modeGame);
+			{
+				InfoDataSimpleMatch(scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.modeGame)
+				loadFinishPage(winOrLostStr, Game.modeGame);
+			}
 		}
 		else
 			startCountdown(Game);
@@ -193,8 +195,13 @@ function paddleMiniCollision(paddle, direction, Game)
 			impactPoint = impactPoint * -1;
 		let normalizedImpact = impactPoint / (paddle.geometry.parameters.height / 2);
 		Game.ballVelocity.x = -Game.ballVelocity.x;
-		let widthLeft = parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width);
-		let widthRight = parseInt(window.getComputedStyle(Game.containerProgressBarRight).width);
+		let widthLeft;
+		let widthRight;
+		if (Game.containerProgressBarLeft && Game.containerProgressBarRight)
+		{
+			widthLeft = parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width);
+			widthRight = parseInt(window.getComputedStyle(Game.containerProgressBarRight).width);
+		}
 		let defensePoint = 0;
 		if (Game.ballVelocity.x < 30)
 			defensePoint = Game.sizeOfStep / 2;
@@ -289,8 +296,13 @@ function paddleCollision(paddle, direction, Game)
 		impactPoint = impactPoint * -1;
 	let normalizedImpact = impactPoint / (paddle.geometry.parameters.height / 2);
 	Game.ballVelocity.x = -Game.ballVelocity.x;
-	let widthLeft = parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width);
-	let widthRight = parseInt(window.getComputedStyle(Game.containerProgressBarRight).width);
+	let widthLeft;
+	let widthRight
+	if (Game.containerProgressBarLeft && Game.containerProgressBarRight)
+	{
+		widthLeft = parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width);
+		widthRight = parseInt(window.getComputedStyle(Game.containerProgressBarRight).width);
+	}
 	let defensePoint = 0;
 	if (Game.ballVelocity.x < 30)
 		defensePoint = Game.sizeOfStep / 2;
@@ -372,27 +384,30 @@ function changeColorIfBarIsFull(Game)
 	const gameBreakerLeft = document.getElementById("power-container-left");
 	const gameBreakerSmartphone = document.getElementById("special-shot-button");
 	const gameBreakerRight = document.getElementById("power-container-right");
-	if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
+	if (gameBreakerLeft && gameBreakerSmartphone && gameBreakerRight)
 	{
-		gameBreakerSmartphone.style.color = "white";
-		gameBreakerLeft.style.color = "white";
-		Game.containerProgressBarLeft.style.backgroundColor = "red";
-	}
-	else
-	{
-		Game.containerProgressBarLeft.style.backgroundColor = "green";
-		gameBreakerLeft.style.color = "grey";
-		gameBreakerSmartphone.style.color = "grey";
-	}
-	if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
-	{
-		Game.containerProgressBarRight.style.backgroundColor = "red";
-		gameBreakerRight.style.color = "white";
-	}
-	else
-	{
-		Game.containerProgressBarRight.style.backgroundColor = "green";
-		gameBreakerRight.style.color = "grey";
+		if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
+		{
+			gameBreakerSmartphone.style.color = "white";
+			gameBreakerLeft.style.color = "white";
+			Game.containerProgressBarLeft.style.backgroundColor = "red";
+		}
+		else
+		{
+			Game.containerProgressBarLeft.style.backgroundColor = "green";
+			gameBreakerLeft.style.color = "grey";
+			gameBreakerSmartphone.style.color = "grey";
+		}
+		if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
+		{
+			Game.containerProgressBarRight.style.backgroundColor = "red";
+			gameBreakerRight.style.color = "white";
+		}
+		else
+		{
+			Game.containerProgressBarRight.style.backgroundColor = "green";
+			gameBreakerRight.style.color = "grey";
+		}
 	}
 }
 

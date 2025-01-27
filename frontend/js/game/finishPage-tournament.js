@@ -1,57 +1,34 @@
 import { loadHomePage } from "../home.js";
 import { loadPreparationTournamentGamePage } from "../preparation-tournament-game-page.js";
+import { addRoute } from "../router.js";
 import { translation } from "../translate.js";
-import { putStatsInfo } from "../utils.js";
-import { getUserInfo } from "../utils.js";
-import { removeTournament } from "../utils.js";
+import { loadContent, removeTournament } from "../utils.js";
 
 
-export async function loadFinishPageTournament(username1, username2, numberPlayer, scoreLeftPlayer, scoreRigthPlayer)
+export async function loadFinishPageTournament(username1, username2, scoreLeftPlayer, scoreRigthPlayer)
 {
-	let userInfo = await getUserInfo();
-	await putStatsInfo(6, {numberMatchTournament: 1});
-	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRigthPlayer) || (userInfo.username == username2 && scoreRigthPlayer > scoreLeftPlayer))
-	{
-		await putStatsInfo(7, {numberVictoryMatchTournament: 1})
-		await putStatsInfo(8, {numberVictoryTournament: 1})
-		await putStatsInfo(2, {resultats: "V"})
-		if (scoreLeftPlayer > scoreRigthPlayer)
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
-		}
-		else
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
-		}
-	}
-	else
-	{
-		await putStatsInfo(2, {resultats: "D"})
-		if (scoreLeftPlayer > scoreRigthPlayer)
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
-		}
-		else
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRigthPlayer})
-		}
-	}
-	if (numberPlayer == 1)
-		numberPlayer = 2;
-	await putStatsInfo(15, {bestResultTournament: numberPlayer})
-	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRigthPlayer})
+	addRoute('/finish-page-tournament-win', { loadFunction: () => loadFinishPageTournament(username1, username2, scoreLeftPlayer, scoreRigthPlayer)})
 	let finishPage
 	if (scoreLeftPlayer > scoreRigthPlayer)
 		finishPage = finishPageHTML(username1);
 	else
 		finishPage = finishPageHTML(username2);
+
+	loadContent(document.getElementById("app"), finishPage, 'finish-page-tournament-win', true, "Finish Page Tournament Win", translation, "", addEventListenerFinishPageTournament);
+
 	document.getElementById("app").innerHTML = finishPage;
 	translation();
 
+	window.addEventListener('popstate', function(event) {
+		if (event.state && event.state.page)
+		{
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Finish Page Tournament Win", translation, "", addEventListenerFinishPageTournament);
+		}
+	});
+}
+
+async function addEventListenerFinishPageTournament()
+{
 	await removeTournament();
 
 	const homeButtonFinishPage = document.getElementById("home-button-end-party");

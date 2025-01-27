@@ -1,25 +1,10 @@
 import { loadHomePage } from "../home.js";
 import { loadPreparationSimpleMatchGamePage } from "../preparation-simple-match-game-page.js";
 import { translation } from "../translate.js";
-import { putStatsInfo } from "../utils.js";
 
-export async function loadFinishPage(winOrLostStr, scoreLeftPlayer, scoreRightPlayer, isWin, typeOfGame, modeGame)
+export async function loadFinishPage(winOrLostStr, modeGame)
 {
-	if (modeGame == "multiPlayerTwo")
-	{
-		await putStatsInfo(3, {numberSimpleMatch: 1});
-		if (isWin == true)
-		{
-			await putStatsInfo(2, {resultats: "V"})
-			await putStatsInfo(4, {numberVictorySimpleMatch: 1})
-		}
-		else
-			await putStatsInfo(2, {resultats: "D"})
-		await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-		await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
-		await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer})
-	}
-	document.getElementById("app").innerHTML = finishPageHTML(winOrLostStr);
+	document.getElementById("app").innerHTML = finishPageHTML(winOrLostStr, modeGame);
 	translation();
 
 	const homeButtonFinishPage = document.getElementById("home-button-end-party");
@@ -40,7 +25,7 @@ export async function loadFinishPage(winOrLostStr, scoreLeftPlayer, scoreRightPl
 	});
 }
 
-function finishPageHTML(winOrLostStr)
+export function finishPageHTML(winOrLostStr)
 {
 	return `
 		<div class="finish-page" id="finish-page">

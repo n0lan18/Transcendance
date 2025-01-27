@@ -7,37 +7,24 @@ import { loadContent,  } from "./utils.js";
 import { putStatsInfo } from "./utils.js";
 import { rgbToHex } from "./utils.js";
 import { eventListener } from "./game/eventListener.js";
+import { addRoute } from "./router.js";
 
-export async function loadPreparationTournamentGamePage(typeOfGame, modeGame)
+export async function loadPreparationTournamentGamePage()
 {
 	const preparationGameHTML = generatePreparationSoloTournamentPageHTML();
-
 	
 	addNavigatorEventListeners();
 
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			if (this.window.location.pathname === "/preparation-solo-tournament")
-				loadContent(this.document.getElementById("app"), event.state.page, '', false, "Preparation Tournament", translation, addNavigatorEventListeners, () => addEventListenerPreparationTournament(typeOfGame, modeGame));
-			}
-	});	
-
-	loadContent(document.getElementById("app"), preparationGameHTML, "preparation-solo-tournament", true, 'Preparation Tournament', translation, addNavigatorEventListeners, () => addEventListenerPreparationTournament(typeOfGame, modeGame));
-
+	loadContent(document.getElementById("app"), preparationGameHTML, "preparation-solo-tournament", true, 'Preparation Tournament', translation, addNavigatorEventListeners, () => addEventListenerPreparationTournament());
 	document.getElementById("app").innerHTML = preparationGameHTML;
 	translation();
 	addNavigatorEventListeners();
 
-	addEventListenerPreparationTournament(typeOfGame, modeGame)
-
+	addEventListenerPreparationTournament()
 }
 
-export async function addEventListenerPreparationTournament(typeOfGame, modeGame)
+export async function addEventListenerPreparationTournament()
 {
-	let userInfo = await getUserInfo();
-
-	let username1 = userInfo.username;
 	let courtColor = "0xCF5A30";
 	let colorPlayer1 = "#E23F22";
 	let sizeTournament = 32;
@@ -116,7 +103,7 @@ export async function addEventListenerPreparationTournament(typeOfGame, modeGame
 				}
 			}
 			else
-				loadUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower);
+				loadUsernamePlayersTournament(courtColor, sizeTournament, superPower);
 		});
 	}
 

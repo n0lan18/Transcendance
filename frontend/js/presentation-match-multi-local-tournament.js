@@ -2,7 +2,18 @@ import { loadContent } from "./utils.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
 import { translation } from "./translate.js";
 
+
 export async function loadPresentationMultiLocalPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, numberPlayers, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound)
+{
+	const bodyPresentation = generateBodyPresentationPageHTML(username1, username2, numberPlayers, heroPowerPlayer1, heroPowerPlayer2)
+
+	document.getElementById("app").innerHTML = bodyPresentation;
+	translation();
+
+	addEventListenerPresentationSoloTournament(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound)
+}
+
+function addEventListenerPresentationSoloTournament(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound)
 {
 	let imageHeroPlayer1;
 	switch (heroPowerPlayer1)
@@ -37,13 +48,6 @@ export async function loadPresentationMultiLocalPlayerPage(username1, username2,
 			imageHeroPlayer2 = "../images/super4.png";
 			break ;
 	}
-
-	const bodyPresentation = generateBodyPresentationPageHTML(username1, username2, numberPlayers, heroPowerPlayer1, heroPowerPlayer2)
-
-	loadContent(bodyPresentation, "presentation-solo-tournament", true);
-
-	document.getElementById("app").innerHTML = bodyPresentation;
-	translation();
 
 	const imagePlayer1 = document.getElementById("superhero-image");
 	imagePlayer1.src = imageHeroPlayer1;

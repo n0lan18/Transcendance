@@ -59,31 +59,34 @@ export function changeLanguage(lang)
 
 export function reorderLanguages(selectedLang) {
     const languageSelect = document.getElementById("language-select");
+    if (languageSelect)
+    {
 
-    // Options dans l'ordre souhaité
-    const languages = [
-        { value: "en", label: "EN" },
-        { value: "fr", label: "FR" },
-        { value: "es", label: "ES" },
-    ];
+        // Options dans l'ordre souhaité
+        const languages = [
+            { value: "en", label: "EN" },
+            { value: "fr", label: "FR" },
+            { value: "es", label: "ES" },
+        ];
 
-    // Trie en plaçant la langue sélectionnée en premier
-    const sortedLanguages = [
-        languages.find(lang => lang.value === selectedLang),
-        ...languages.filter(lang => lang.value !== selectedLang)
-    ];
+        // Trie en plaçant la langue sélectionnée en premier
+        const sortedLanguages = [
+            languages.find(lang => lang.value === selectedLang),
+            ...languages.filter(lang => lang.value !== selectedLang)
+        ];
 
-    // Efface les options existantes
-    languageSelect.innerHTML = "";
+        // Efface les options existantes
+        languageSelect.innerHTML = "";
 
-    // Ajoute les options dans le nouvel ordre
-    sortedLanguages.forEach(lang => {
-        const option = document.createElement("option");
-        option.value = lang.value;
-        option.textContent = lang.label;
-        languageSelect.appendChild(option);
-    });
+        // Ajoute les options dans le nouvel ordre
+        sortedLanguages.forEach(lang => {
+            const option = document.createElement("option");
+            option.value = lang.value;
+            option.textContent = lang.label;
+            languageSelect.appendChild(option);
+        });
 
-    // Sélectionne la langue choisie
-    languageSelect.value = selectedLang;
+        // Sélectionne la langue choisie
+        languageSelect.value = selectedLang;
+    }
 }

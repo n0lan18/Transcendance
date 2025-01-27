@@ -13,15 +13,7 @@ export async function loadStatsPage(userStat)
 	else
 		userStatsInfoAll = await getStatsInfoAll();
 
-	let settingsHTML = generateStatsPageHTML(userStatsInfoAll);
-
-	window.addEventListener('popstate', function(event) {
-		if (event.state && event.state.page) {
-			// Charger le contenu associé à la page
-			if (this.window.location.pathname === "/stats")
-				loadContent(this.document.getElementById("app"), event.state.page, '', false, "Stats Page", translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
-			}
-	});	
+	let settingsHTML = generateStatsPageHTML(userStatsInfoAll);	
 
 	loadContent(document.getElementById('app'), settingsHTML, "stats", true, 'Stats Page', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
 	
@@ -33,6 +25,20 @@ export async function loadStatsPage(userStat)
 	addEventListenerStats(userStatsInfoAll);
 	addLastMatchesAndResultats(userStatsInfoAll);
 }
+
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/stats")
+		{
+			let userStatsInfoAll;
+			if (event.state.userStat)
+				userStatsInfoAll = await getStatsInfoAllById(event.state.userStat);
+			else
+				userStatsInfoAll = await getStatsInfoAll();
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Stats Page", translation, addNavigatorEventListeners,  () => addEventListenerStats(userStatsInfoAll));
+		}
+	}
+});
 
 export function  addEventListenerStats(userStatsInfoAll)
 {

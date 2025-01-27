@@ -1,40 +1,59 @@
-import { generateAuthentificationHTML } from "./auth.js";
-import { generateRegisterHTML } from "./register.js";
+import { loadAuthentificationPage } from "./auth.js";
+import { loadContinueOrNewTournamentPage } from "./continue-or-finish-page.js";
+import { loadHomePage } from "./home.js";
+import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
+import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
+import { loadProfilePage } from "./profile.js";
+import { loadRegisterEmailPage } from "./register/email-register.js";
+import { loadTournamentPresentation } from "./tournament-presentation.js";
+import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
+import { loadContent } from "./utils.js";
 
-export function navigate(page)
-{
-	const app = document.getElementById("app");
-	switch (page)
-	{
-		case 'register':
-			generateRegisterHTML(app);
-			break ;
-		case 'login':
-			generateAuthentificationHTML(app);
-			break ;
-		default:
-			app.innerHTML = `<h1>404 - Page Not Found</h1>`;
-			break ;
+
+const routes = {
+	"/": loadHomePage,
+    "/login": loadAuthentificationPage,
+    "/home": loadHomePage,
+    "/profile": loadProfilePage,
+	"/continue-or-new-tournament": loadContinueOrNewTournamentPage,
+	"/tournament-presentation": loadTournamentPresentation,
+	"/preparation-solo-tournament": loadPreparationTournamentGamePage,
+	"/preparation-username-tournament": 
+	() => {
+		const courtColor = "0xCF5A30"; // Exemple de valeur dynamique
+		const sizeTournament = 32; // Exemple de valeur dynamique
+		const superPower = "isSuperPower"; // Exemple de valeur dynamique
+		loadUsernamePlayersTournament(courtColor, sizeTournament, superPower);
+	},
+	"/preparation-game": loadPreparationSimpleMatchGamePage,
+    "/register-email": loadRegisterEmailPage,
+  };
+
+// Fonction pour ajouter de nouvelles routes
+export function addRoute(path, routeConfig) {
+	console.log("Ajout de la route:", path);
+	
+	// Ajouter la route dans l'objet 'routes' si elle n'existe pas déjà
+	if (!routes[path]) {
+	  routes[path] = routeConfig.loadFunction;
 	}
 }
 
-export function setupNavigation()
-{
-	document.addEventListener('click', (event) => {
-		if (event.target.tagName === 'A' && event.target.dataset.page)
-		{
-			event.preventDefault();
-			const page = event.target.dataset.page;
-			navigate(event.state.page);
-			history.pushState({page}, "", `#{page}`);
-		}
-	});
+// Fonction unique pour charger les routes
+export function loadRoute(pathname) {
+	const route = routes[pathname];  // Chercher la route dans l'objet 'routes'
+	console.log(routes)
+	console.log(pathname);
+	if (route) {
+		route();  // Appeler la fonction de la route correspondante
+	} else {
+		console.error(`Unknown route: ${pathname}`);
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (jwtToken)
+			loadHomePage();
+		else
+			loadAuthentificationPage();  // Charger une page par défaut en cas d'erreur
+	}
+  }
 
-	window.addEventListener('popstate', (event) => {
-		if (event.state && event.state.page) {
-			navigate(event.state.page);
-		} else {
-			navigate('login');
-		}
-	});
-}
+export { routes };

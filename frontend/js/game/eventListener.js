@@ -27,10 +27,7 @@ function orientationChange(Game)
 			Game.animationFrameId = null;
 		}
 		else
-		{
-			if (!Game.animationFrameId)
-				Game.start();
-		}
+			Game.start();
 	});
 }
 
@@ -75,6 +72,7 @@ function pauseGame(Game)
 			if (Game.gamePaused)
 			{
 				cancelAnimationFrame(Game.animationFrameId);
+				Game.animationFrameId = null;
 				pausePage(Game);
 			}
 			else
@@ -84,7 +82,8 @@ function pauseGame(Game)
 				const pauseContainer = document.getElementById("countdown");
 				if (backgrondCountdownContainer)
 					backgrondCountdownContainer.remove();
-				pauseContainer.remove();
+				if (pauseContainer)
+					pauseContainer.remove();
 				startCountdown(Game);
 				Game.start();
 			}
@@ -164,7 +163,10 @@ function pauseButtonSmartphone(Game)
 		{
 			Game.gamePaused = !Game.gamePaused;
 			if (Game.gamePaused)
+			{
 				cancelAnimationFrame(Game.animationFrameId);
+				Game.animationFrameId = null;
+			}
 			else
 				Game.start();
 		}

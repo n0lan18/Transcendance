@@ -1,49 +1,31 @@
 import { loadPresentationSoloPlayerPage } from "../presentation-match-solo-tournament.js";
 import { translation } from "../translate.js";
-import { insertWinnerInTabNewRound, putStatsInfo } from "../utils.js";
+import { insertWinnerInTabNewRound, loadContent, putStatsInfo, replaceContent } from "../utils.js";
 import { getUserInfo } from "../utils.js";
 import { loadTournamentPresentation } from "../tournament-presentation.js";
 
-export async function loadFinishPageTournamentWin(username1, username2, numberPlayers, scoreLeftPlayer, scoreRightPlayer, typeOfGame, modeGame, tabNewRound)
-{
-	await insertWinnerInTabNewRound(tabNewRound);
-	let userInfo = await getUserInfo();
-	await putStatsInfo(1, {scores: scoreLeftPlayer + "-" + scoreRightPlayer});
-	await putStatsInfo(6, {numberMatchTournament: 1});
-	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRightPlayer) || (userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
-	{
-		await putStatsInfo(2, {resultats: "V"})
-		await putStatsInfo(7, {numberVictoryMatchTournament: 1});
-		if ((userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
-		}
-		else
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
-		}
-	}
-	else
-	{
-		await putStatsInfo(2, {resultats: "D"})
-		if (scoreRightPlayer > scoreLeftPlayer)
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreLeftPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreRightPlayer})
-		}
-		else
-		{
-			await putStatsInfo(13, {numberGoalsWin: scoreRightPlayer})
-			await putStatsInfo(14, {numberGoalLose: scoreLeftPlayer})
-		}
-	}
+export async function loadFinishPageTournamentWin(numberPlayers,typeOfGame, modeGame)
+{	
+	const finishPage = finishPageHTML(numberPlayers);
+
+	loadContent(document.getElementById('app'), finishPage, 'finish-page-tournament', true, 'Finish Page Tournament', translation, "", () => addEventListenerFinishPageTournament(typeOfGame, modeGame));
 	
 	document.getElementById("app").innerHTML = finishPageHTML(numberPlayers);
 	translation();
 
+	addEventListenerFinishPageTournament(typeOfGame, modeGame);
 
+	window.addEventListener('popstate', function(event) {
+		if (event.state && event.state.page)
+		{
+			if (window.location.pathname === "/solo-page" || window.location.pathname === "/presentation-solo-tournament")
+				replaceContent(document.getElementById('app'), finishPage, 'finish-page-tournament', 'Finish Page Tournament', translation, "", () => addEventListenerFinishPageTournament(typeOfGame, modeGame))
+		}
+	});
+}
+
+function addEventListenerFinishPageTournament(typeOfGame, modeGame)
+{
 	const homeButtonFinishPage = document.getElementById("continue-button-end-party");
 	homeButtonFinishPage.addEventListener('click', function (event) {
 		event.preventDefault();

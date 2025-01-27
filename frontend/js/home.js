@@ -11,6 +11,7 @@ import { translation } from "./translate.js";
 import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
 import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
 import { loadContinueOrNewTournamentPage } from "./continue-or-finish-page.js";
+import { addRoute } from "./router.js";
 
 
 let globalSocket = null;
@@ -56,6 +57,16 @@ export async function loadHomePage()
 	addEventListenerHomePage();
 }
 
+window.addEventListener('popstate', function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/home")
+		{
+			console.log("PAGE HOME")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage);
+		}
+	}
+});
+
 export function addEventListenerHomePage()
 {
 	let switchPageToProfilPage = document.getElementById("profil-button");
@@ -85,7 +96,7 @@ export function addEventListenerHomePage()
 			if (checkIsTour)
 				loadContinueOrNewTournamentPage();
 			else
-				loadPreparationTournamentGamePage("multiplayer", "tournament-multi-local");
+				loadPreparationTournamentGamePage();
 		});
 	}
 

@@ -4,8 +4,9 @@ import { translation } from "./translate.js";
 import { generateNavigator } from "./nav.js";
 import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi-local-tournament.js";
 import { putTournamentInfoNewRound } from "./utils.js";
+import { addRoute } from "./router.js";
 
-export async function loadTournamentPresentation(typeOfGame, modeGame)
+export async function loadTournamentPresentation()
 {
 	let dataTournament = await getTournamentInfo();
 	if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
@@ -17,7 +18,7 @@ export async function loadTournamentPresentation(typeOfGame, modeGame)
 	console.log(dataTournament.tabPlayersNewRound)
 	const tournamentPresentationHTML = generateTournamentPresentation();
 
-    loadContent(document.getElementById("app"), tournamentPresentationHTML, "tournament-presentation", true, 'Tournament Presentation Page', translation, addNavigatorEventListeners, );
+    loadContent(document.getElementById("app"), tournamentPresentationHTML, "tournament-presentation", true, 'Tournament Presentation Page', translation, addNavigatorEventListeners, () => createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound));
 
 	document.getElementById("app").innerHTML = tournamentPresentationHTML;
     translation();
@@ -42,11 +43,11 @@ export async function loadTournamentPresentation(typeOfGame, modeGame)
 		levelTournament.textContent = level;
 		tabPresentation.appendChild(levelTournament);
 	}
-	createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, typeOfGame, modeGame, dataTournament.numberMatch, dataTournament.tabPlayersNewRound);
+	createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound);
 
 }
 
-function createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, modeGame, numberMatch, tabNewRound)
+function createTableau(sizeTournament, tab, courtColor, superPower, numberMatch, tabNewRound)
 {
 	const tabPresentation = document.getElementById("tab-presentation-tournament-round");
 	if (tabPresentation)
@@ -85,7 +86,7 @@ function createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, 
 			divMatch.appendChild(hr);
 			divMatch.appendChild(playerTab2);
 			divTableau.appendChild(divMatch);
-			checkUsername(tab, i, divMatch, courtColor, sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tabNewRound);
+			checkUsername(tab, i, divMatch, courtColor, sizeTournament, superPower, numberMatch, tabNewRound);
 
 			const buttonMatch = document.getElementById(`match${i + 1}`);
 			if (buttonMatch)
@@ -107,7 +108,7 @@ function createTableau(sizeTournament, tab, courtColor, superPower, typeOfGame, 
 	}
 }
 
-function checkUsername(tab, inc, div, courtColor, sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tabNewRound)
+function checkUsername(tab, inc, div, courtColor, sizeTournament, superPower, numberMatch, tabNewRound)
 {
 	let usernameFound
 	if (tabNewRound && tabNewRound.length > 0)
@@ -138,7 +139,7 @@ function checkUsername(tab, inc, div, courtColor, sizeTournament, typeOfGame, mo
 	if (!usernameFound)
 	{
 		div.addEventListener(('click'), function() {
-			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc + 1][1], sizeTournament, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound);
+			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc + 1][1], sizeTournament, "multiplayer", "tournament-multi-local", superPower, numberMatch, tab, tabNewRound);
 		});
 	}
 }

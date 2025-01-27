@@ -12,10 +12,14 @@ export function addNavigatorEventListeners()
 	switchPageToFriends()
 	reorderLanguages(lang);
 
-	document.getElementById('language-select').addEventListener('change', (event) => {
-		changeLanguage(event.target.value);
-		translation(event.target.value)
-	});
+	const languageSelect = document.getElementById('language-select');
+	if (languageSelect)
+	{
+		languageSelect.addEventListener('change', (event) => {
+			changeLanguage(event.target.value);
+			translation(event.target.value)
+		});
+	}
 }
 
 function switchPageToHome()

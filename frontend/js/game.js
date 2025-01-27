@@ -34,7 +34,7 @@ export class Game {
         console.log("mode game " + this.modeGame)
         this.scoreContainer = document.getElementById("board-score");
         this.gamePaused = true;
-        this.animationFrameId;
+        this.animationFrameId = null;
         this.scene = new THREE.Scene();
         this.renderer = new THREE.WebGLRenderer( {antialias: true });
         this.renderer.shadowMap.enabled = true;
@@ -79,6 +79,7 @@ export class Game {
         this.tab = tab;
         this.tabNewRound = tabNewRound;
         console.log(this.tabNewRound);
+        this.stopGame = false;
         this.init(colorPlayer1, colorPlayer2, colorCourt);
     }
 
@@ -223,10 +224,22 @@ export class Game {
 
     start()
     {
-        const animate = () => {
-            this.animationFrameId = requestAnimationFrame(animate);
-            this.update();
-        };
-        animate();
+        if (!this.animationFrameId)
+        {
+            const animate = () => {
+                this.animationFrameId = requestAnimationFrame(animate);
+                this.update();
+            };
+            animate();
+        }
+    }
+
+    stop()
+    {
+        if (this.animationFrameId)
+        {
+            cancelAnimationFrame(this.animationFrameId); // Arrêter l'animation
+            this.animationFrameId = null;
+        }
     }
 }

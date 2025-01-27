@@ -1,15 +1,22 @@
-import { isMobileDevice, loadContent, putStatsInfo } from "./utils.js";
+import { isMobileDevice, loadContent, putStatsInfo, replaceContent } from "./utils.js";
 import { Game } from "./game.js";
 import { translation } from "./translate.js";
+
+let game;
 
 export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound)
 {
 	console.log(modeGame);
 	let soloPlayerHTML = generateGamePageHTML(username1, username2);
 
-	loadContent(soloPlayerHTML, "solo-player", true);
 	document.getElementById("app").innerHTML = soloPlayerHTML;
 	translation();
+
+	addEventListenerGamePage(modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
+}
+
+function addEventListenerGamePage(modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound)
+{
 	let pageGameContainer = document.getElementById("page-game-container");
 	if (isMobileDevice())
 		toggleFullScreen();
@@ -22,9 +29,11 @@ export async function loadSoloPlayerPage(username1, username2, courtColor, color
 	}
 	if (pageGameContainer)
 	{
-		const game = new Game("game-container", modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
+		game = new Game("game-container", modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
 		game.start();
 	}
+
+
 }
 
 function toggleFullScreen() {

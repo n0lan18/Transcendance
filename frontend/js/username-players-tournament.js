@@ -1,37 +1,39 @@
 import { generateNavigator } from "./nav.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { escapeHTML, isValidUsername, loadContent, putTournamentInfo } from "./utils.js";
+import { escapeHTML, getUserInfo, loadContent, putTournamentInfo } from "./utils.js";
 import { translation } from "./translate.js";
 import { rgbToHex } from "./utils.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
+import { addRoute } from "./router.js";
 
 let tabNewRound = [];
 
-export async function loadUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower)
+export async function loadUsernamePlayersTournament(courtColor, sizeTournament, superPower)
 {
+    let userInfo = await getUserInfo();
+	let username1 = userInfo.username;
+    if (!courtColor)
+        courtColor = "0xCF5A30";
+    if (!sizeTournament)
+        sizeTournament = 32;
+    if (!superPower)
+        superPower = "isSuperPower"
+    
     const usernamePlayersTournamentHTML = generateUsernamePlayersTournament();
 
     addNavigatorEventListeners();
 
-    loadContent(document.getElementById("app"), usernamePlayersTournamentHTML, "preparation-username-tournament", true, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower));
+    loadContent(document.getElementById("app"), usernamePlayersTournamentHTML, "preparation-username-tournament", true, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, superPower));
 
 	document.getElementById("app").innerHTML = usernamePlayersTournamentHTML;
     translation();
 	addNavigatorEventListeners();
 
-    addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower);
-
-    window.addEventListener('popstate', function(event) {
-        if (event.state && event.state.page) {
-            // Charger le contenu associé à la page
-            if (this.window.location.pathname === "/preparation-username-tournament")
-                loadContent(document.getElementById("app"), event.state.page, '', false, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower));
-            }
-    });	
+    addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, superPower);
 
 }
 
-function addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, typeOfGame, modeGame, superPower)
+function addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, superPower)
 {
     const images = [
         "../images/super1.png",
@@ -103,7 +105,7 @@ function addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTo
     const buttonSendEvent = async function(event) {
         event.preventDefault();
         await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
-        loadTournamentPresentation(typeOfGame, modeGame);
+        loadTournamentPresentation();
     }
 
     const addLinesPlayers = document.getElementById("username-players-line");
@@ -282,7 +284,7 @@ function addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTo
                 tab[i][2] = stringsColorPlayer[Math.floor(Math.random() * stringsColorPlayer.length)];
             }
             await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
-            loadTournamentPresentation(typeOfGame, modeGame);
+            loadTournamentPresentation();
         });
     }
 }
