@@ -1,10 +1,9 @@
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { decodeStrToHex, getTournamentInfo, loadContent } from "./utils.js";
+import { decodeStrToHex, getTournamentInfo, loadContent, putMatchInfo } from "./utils.js";
 import { translation } from "./translate.js";
 import { generateNavigator } from "./nav.js";
 import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi-local-tournament.js";
 import { putTournamentInfoNewRound } from "./utils.js";
-import { addRoute } from "./router.js";
 
 export async function loadTournamentPresentation()
 {
@@ -14,10 +13,8 @@ export async function loadTournamentPresentation()
 		await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
 		dataTournament = await getTournamentInfo();
 	}
-	console.log(dataTournament.tabPlayers)
-	console.log(dataTournament.tabPlayersNewRound)
 	const tournamentPresentationHTML = generateTournamentPresentation();
-
+	console.log(dataTournament);
     loadContent(document.getElementById("app"), tournamentPresentationHTML, "tournament-presentation", true, 'Tournament Presentation Page', translation, addNavigatorEventListeners, () => createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound));
 
 	document.getElementById("app").innerHTML = tournamentPresentationHTML;
@@ -46,6 +43,21 @@ export async function loadTournamentPresentation()
 	createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound);
 
 }
+
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/tournament-presentation")
+		{
+			let dataTournament = await getTournamentInfo();
+			if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
+			{
+				await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+				dataTournament = await getTournamentInfo();
+			}
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Presentation Page', translation, addNavigatorEventListeners, () => createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound));
+		}
+	}
+});
 
 function createTableau(sizeTournament, tab, courtColor, superPower, numberMatch, tabNewRound)
 {
@@ -138,8 +150,9 @@ function checkUsername(tab, inc, div, courtColor, sizeTournament, superPower, nu
 		usernameFound = false;
 	if (!usernameFound)
 	{
-		div.addEventListener(('click'), function() {
-			loadPresentationMultiLocalPlayerPage(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc + 1][1], sizeTournament, "multiplayer", "tournament-multi-local", superPower, numberMatch, tab, tabNewRound);
+		div.addEventListener(('click'), async function() {
+			await putMatchInfo(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc + 1][1], "multiplayer", sizeTournament, "tournament-multi-local", superPower);
+			loadPresentationMultiLocalPlayerPage();
 		});
 	}
 }

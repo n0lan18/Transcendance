@@ -7,9 +7,6 @@ import { loadStatsPage } from "./stats.js";
 
 export async function loadFriendsPage()
 {
-	let userInfo = await getUserInfo();
-	console.log(userInfo)
-	let userConnected = await connectedUsersList();
 	let friendsHTML = generateFriendsPageHTML();
 	loadContent(document.getElementById("app"), friendsHTML, "friends", true, 'Friends Page', translation, addNavigatorEventListeners, );
 	document.getElementById("app").innerHTML = generateFriendsPageHTML();
@@ -51,12 +48,14 @@ export async function loadFriendsPage()
 			`;
 		};
 
-
 	addEventListenerFriendsPage(friendsTemplate, usersTemplate);
 }
 
-export function addEventListenerFriendsPage(friendsTemplate, usersTemplate)
-{
+export async function addEventListenerFriendsPage(friendsTemplate, usersTemplate)
+{	
+	let userInfo = await getUserInfo();
+	console.log(userInfo)
+	let userConnected = await connectedUsersList();
 	const friendsButton = document.getElementById("friends-online-button");
 	if (friendsButton)
 	{

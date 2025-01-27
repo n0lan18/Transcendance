@@ -12,6 +12,7 @@ import { translation } from "./translate.js";
 export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 {
 	let pathnameUrl;
+	let namePage
 	if (modeGame == "multiPlayerTwo")
 	{
 		pathnameUrl = "preparation-simple-game";
@@ -22,9 +23,12 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 		pathnameUrl = "preparation-double-game";
 		namePage = "Preparation double game";		
 	}
+	let userInfo = await getUserInfo();
+
+	let username1 = userInfo.username;
 	let preparationGameHTML = generateSoloPlayerPageHTML(username1);
 
-	loadContent(document.getElementById("app"), preparationGameHTML, `${pathnameUrl}`, true, `${namePage}`, translation, addNavigatorEventListeners, addEventListenerPreparationGame);
+	loadContent(document.getElementById("app"), preparationGameHTML, `${pathnameUrl}`, true, `${namePage}`, translation, addNavigatorEventListeners, addEventListenerPreparationGame(typeOfGame, modeGame));
 
 	document.getElementById("app").innerHTML = preparationGameHTML;
 	await translation();
@@ -36,7 +40,17 @@ export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
 window.addEventListener('popstate', function(event) {
 	if (event.state && event.state.page) {
 		if (this.window.location.pathname === "/preparation-double-game")
-			loadContent(this.document.getElementById("app"), event.state.page, '', false, `${namePage}`, translation, addNavigatorEventListeners, addEventListenerPreparationGame)
+		{
+			let typeOfGame = "multiplayer";
+			let modeGame = "preparation-double-game"
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, `Preparation double game`, translation, addNavigatorEventListeners, () => addEventListenerPreparationGame(typeOfGame, modeGame))
+		}
+		if (this.window.location.pathname === "/preparation-simple-game")
+		{
+			let typeOfGame = "multiplayer";
+			let modeGame = "preparation-simple-game"
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, `Preparation simple game`, translation, addNavigatorEventListeners, () => addEventListenerPreparationGame(typeOfGame, modeGame))			
+		}
 	}
 });
 
@@ -140,6 +154,7 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 					await putStatsInfo(11, {heroSuperstrength: 1})
 				else if (heroPowerPlayer1 == "Time laps")
 					await putStatsInfo(12, {heroTimelaps: 1})
+				
 				loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, -1, modeGame, superPower);
 			}
 		});

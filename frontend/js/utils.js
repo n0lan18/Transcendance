@@ -6,7 +6,6 @@ import { loadTournamentPresentation } from "./tournament-presentation.js";
 import { translation } from "./translate.js";
 
 export function loadContent(appDiv, page, url, addToHistory, namePage, translate, eventListenerNavigator, eventListenerPage) {
-	console.log("KAKAKAKA")
 	appDiv.innerHTML = page;
 	if (typeof translate === "function")
 		translate();
@@ -342,6 +341,238 @@ export async function putTournamentInfoNewRound(sizeTournament, numberMatchPlaye
 	}
 }
 
+export async function putTournamentInfoBasic(courtColor, sizeTournament, superPower)
+{
+	const data = {
+		courtColor: courtColor,
+		sizeTournament: sizeTournament,
+		superPower: superPower,
+	};
+	console.log(data);
+	try
+	{
+		const response = await fetch(`api/create-tournament-basic/`, {
+			method: 'PUT',
+			headers: {
+				'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		})
+		if (response.ok) {
+			let updatedData = await response.json();
+			console.log("Updated Data:", JSON.stringify(updatedData));
+			return updatedData;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch tournament info:', response.statusText);
+			const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await response.json();
+                console.error('Erreur détaillée:', errorData);
+            } else {
+                const errorText = await response.text();
+                console.error('Erreur non-JSON:', errorText);
+            }
+			return null;
+		}
+	}
+	catch (error) {
+		console.error('Error:', error);
+		return null;
+	}	
+}
+
+export async function getTournamentBasicInfo()
+{
+	try
+	{
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (!jwtToken) {
+			console.error('No token found in localStorage');
+			loadAuthentificationPage();
+			return null;
+		}
+
+		const response = await fetch('api/create-tournament-basic/', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				}
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			return (data);
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}
+}
+
+export async function getTournamentInfoBasic()
+{
+	try
+	{
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (!jwtToken) {
+			console.error('No token found in localStorage');
+			loadAuthentificationPage();
+			return null;
+		}
+
+		const response = await fetch('api/create-tournament-basic/', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				}
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			return (data);
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}
+}
+
+export async function putMatchInfo(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower)
+{
+	const data = {
+		username1: username1,
+		username2: username2,
+		colorPlayer1: colorPlayer1,
+		colorPlayer2: colorPlayer2,
+		heroPowerPlayer1: heroPowerPlayer1,
+		heroPowerPlayer2: heroPowerPlayer2,
+		typeOfGame: typeOfGame,
+		numberPlayers: numberPlayers,
+		modeGame: modeGame,
+		superPower: superPower,
+		courtColor: courtColor,
+	};
+	console.log(data);
+	try
+	{
+		const response = await fetch(`api/match-user-info/`, {
+			method: 'PUT',
+			headers: {
+				'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		})
+		if (response.ok) {
+			let updatedData = await response.json();
+			console.log("Updated Data:", JSON.stringify(updatedData));
+			return updatedData;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch tournament info:', response.statusText);
+			const contentType = response.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const errorData = await response.json();
+                console.error('Erreur détaillée:', errorData);
+            } else {
+                const errorText = await response.text();
+                console.error('Erreur non-JSON:', errorText);
+            }
+			return null;
+		}
+	}
+	catch (error) {
+		console.error('Error:', error);
+		return null;
+	}	
+}
+
+export async function getMatchInfo()
+{
+	try
+	{
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (!jwtToken) {
+			console.error('No token found in localStorage');
+			loadAuthentificationPage();
+			return null;
+		}
+
+		const response = await fetch('api/match-user-info/', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				}
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			return (data);
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}
+}
+
+
 export async function removeTournament()
 {
 	try
@@ -490,6 +721,13 @@ export async function checkIsTournament()
 			let valueData = await response.json();
 			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
+		}
+		else if (response.status === 400)
+		{
+			let valueData = await response.json();
+			console.log("value Data:", JSON.stringify(valueData));
+			console.log(valueData)
+			return null;
 		}
 		else if (response.status === 401)
 		{

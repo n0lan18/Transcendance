@@ -46,6 +46,8 @@ from myapp.views import ConnectedFriendsView
 from myapp.views import AddFriendView
 from myapp.views import RemoveFriendView
 from myapp.views import GameStatsLocalByIdView
+from myapp.views import CreateTournamentBasicView
+from myapp.views import MatchInfoView
 
 urlpatterns = [ 
     path('api/admin/', admin.site.urls),
@@ -66,6 +68,7 @@ urlpatterns = [
     path('api/update-isconnect/', UpdateIsConnectView.as_view(), name='update-isconnect'),
     path('api/friends/<str:action>/<int:friend_id>/', Friends.as_view(), name='friends_action'),
     path('api/create-tournament/', CreateTournamentView.as_view(), name='create-tournament'),
+    path('api/create-tournament-basic/', CreateTournamentBasicView.as_view(), name='create-tournament-basic'),
     path('api/new-round-tournament/', NewRoundTournamentView.as_view(), name='new-round-tournament'),
     path('api/remove-tournament/', RemoveTournamentView.as_view(), name='remove-tournament'),
     path('api/insert-winner-in-tab/', InsertWinnerInTabNewRoundView.as_view(), name='insert-winner-in-tab'),
@@ -76,6 +79,7 @@ urlpatterns = [
     path('api/add-friend/', AddFriendView.as_view(), name='add-friend'),
     path('api/remove-friend/', RemoveFriendView.as_view(), name='remove-friend'),
     path('api/gamestats-friend/<int:user_id>/', GameStatsLocalByIdView.as_view(), name='gamestats-by-id'),
+    path('api/match-user-info/', MatchInfoView.as_view(), name='match-userinfo'),
 ]
 
 if settings.DEBUG:

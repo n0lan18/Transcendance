@@ -77,6 +77,7 @@ export class Game {
         this.colorPlayer1 = colorPlayer1;
         this.numberMatch = numberMatch
         this.tab = tab;
+        console.log(this.tab);
         this.tabNewRound = tabNewRound;
         console.log(this.tabNewRound);
         this.stopGame = false;

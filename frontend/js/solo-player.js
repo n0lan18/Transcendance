@@ -1,26 +1,41 @@
-import { isMobileDevice, loadContent, putStatsInfo, replaceContent } from "./utils.js";
+import { decodeStrToHex, getMatchInfo, getTournamentInfo, isMobileDevice, loadContent} from "./utils.js";
 import { Game } from "./game.js";
 import { translation } from "./translate.js";
 
 let game;
 
-export async function loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound)
+export async function loadSoloPlayerPage()
 {
-	console.log(modeGame);
-	let soloPlayerHTML = generateGamePageHTML(username1, username2);
+	const matchInfo = await getMatchInfo();
+	let soloPlayerHTML = generateGamePageHTML(matchInfo.username1, matchInfo.username2);
+
+	loadContent(document.getElementById('app'), soloPlayerHTML, 'game-page', true, "Game Page", translation, "",addEventListenerGamePage)
 
 	document.getElementById("app").innerHTML = soloPlayerHTML;
 	translation();
-
-	addEventListenerGamePage(modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
 }
 
-function addEventListenerGamePage(modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound)
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (!this.window.location.pathname === "/game-page")
+			game.stop();
+	}
+});
+
+async function addEventListenerGamePage()
 {
+	const matchInfo = await getMatchInfo();
+	console.log(matchInfo)
+	let tournamentInfo;
+	if (matchInfo.modeGame == "tournament-multi-local")
+		tournamentInfo = await getTournamentInfo();
+	else
+		tournamentInfo = null;
+	console.log(tournamentInfo);
 	let pageGameContainer = document.getElementById("page-game-container");
 	if (isMobileDevice())
 		toggleFullScreen();
-	if (superPower == "isNotSuperPower")
+	if (matchInfo.superPower == "isNotSuperPower")
 	{
 		let progressBar = document.getElementById("progress-bar-container");
 		let powerContainer = document.getElementById("power-container");
@@ -29,11 +44,9 @@ function addEventListenerGamePage(modeGame, colorPlayer1, colorPlayer2, courtCol
 	}
 	if (pageGameContainer)
 	{
-		game = new Game("game-container", modeGame, colorPlayer1, colorPlayer2, courtColor, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound);
+		game = new Game("game-container", matchInfo.modeGame, matchInfo.colorPlayer1, matchInfo.colorPlayer2, decodeStrToHex(matchInfo.courtColor), matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2, matchInfo.username1, matchInfo.username2, matchInfo.typeOfGame, matchInfo.numberPlayers, matchInfo.superPower, tournamentInfo.numberMatch, tournamentInfo.tabPlayers, tournamentInfo.tabPlayersNewRound);
 		game.start();
 	}
-
-
 }
 
 function toggleFullScreen() {

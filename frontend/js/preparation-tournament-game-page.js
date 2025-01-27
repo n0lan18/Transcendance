@@ -2,12 +2,9 @@ import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { generateNavigator } from "./nav.js";
 import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
 import { translation } from "./translate.js";
-import { getUserInfo } from "./utils.js";
+import { putTournamentInfoBasic } from "./utils.js";
 import { loadContent,  } from "./utils.js";
-import { putStatsInfo } from "./utils.js";
 import { rgbToHex } from "./utils.js";
-import { eventListener } from "./game/eventListener.js";
-import { addRoute } from "./router.js";
 
 export async function loadPreparationTournamentGamePage()
 {
@@ -22,6 +19,13 @@ export async function loadPreparationTournamentGamePage()
 
 	addEventListenerPreparationTournament()
 }
+
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/preparation-solo-tournament")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Preparation Tournament", translation, addNavigatorEventListeners,  () => addEventListenerPreparationTournament());
+	}
+});
 
 export async function addEventListenerPreparationTournament()
 {
@@ -103,7 +107,10 @@ export async function addEventListenerPreparationTournament()
 				}
 			}
 			else
-				loadUsernamePlayersTournament(courtColor, sizeTournament, superPower);
+			{
+				await putTournamentInfoBasic(courtColor, sizeTournament, superPower);
+				loadUsernamePlayersTournament();
+			}
 		});
 	}
 

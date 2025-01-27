@@ -20,6 +20,8 @@ from .serializers import FriendSerializer
 from .models import TournamentUser
 from .serializers import TournamentSerializer
 from .models import OnlinePlayers
+from .models import MatchUser
+from .serializers import MatchSerializer
 
 class RegisterView(APIView):
 	permission_classes = [AllowAny]
@@ -421,6 +423,99 @@ class CreateTournamentView(APIView):
 		new_tournament_user.save()
 		return Response({"message": "Tournament create successfull."}, status=status.HTTP_200_OK)
 	
+class CreateTournamentBasicView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request):
+		print('request user', request.user)
+		
+		tournament_user = TournamentUser.objects.get(user=request.user)
+		if (tournament_user):
+			serialized = TournamentSerializer(tournament_user)
+			print(serialized.data)
+			return Response(serialized.data)
+		else:
+			return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+	def put(self, request):
+		print(request.data)
+
+		user = request.user
+		
+		try:
+			tournament_user = TournamentUser.objects.get(user=user)
+			tournament_user.delete()
+		except TournamentUser.DoesNotExist:
+			print(f"No existing TournamentUser for {user}, creating a new one.")
+
+		new_tournament_user = TournamentUser.objects.create(user=user)
+
+		courtColor = request.data.get('courtColor')
+		sizeTournament = request.data.get('sizeTournament')
+		superPower = request.data.get('superPower')
+		
+		new_tournament_user.courtColor = courtColor
+		new_tournament_user.sizeTournament = sizeTournament
+		new_tournament_user.superPower = superPower
+
+		new_tournament_user.save()
+		return Response({"message": "Tournament create successfull."}, status=status.HTTP_200_OK)
+	
+class MatchInfoView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request):
+		print('request user', request.user)
+		
+		match_user = MatchUser.objects.get(user=request.user)
+		if (match_user):
+			serialized = MatchSerializer(match_user)
+			print(serialized.data)
+			return Response(serialized.data)
+		else:
+			return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+	def put(self, request):
+		print(request.data)
+
+		user = request.user
+		
+		try:
+			match_user = MatchUser.objects.get(user=user)
+			match_user.delete()
+		except MatchUser.DoesNotExist:
+			print(f"No existing MatchUser for {user}, creating a new one.")
+
+		new_match_user = MatchUser.objects.create(user=user)
+
+		username1 = request.data.get('username1')
+		username2 = request.data.get('username2')
+		colorPlayer1 = request.data.get('colorPlayer1')
+		colorPlayer2 = request.data.get('colorPlayer2')
+		heroPowerPlayer1 = request.data.get('heroPowerPlayer1')
+		heroPowerPlayer2 = request.data.get('heroPowerPlayer2')
+		typeOfGame = request.data.get('typeOfGame')
+		numberPlayers = request.data.get('numberPlayers')
+		modeGame = request.data.get('modeGame')
+		superPower = request.data.get('superPower')
+		courtColor = request.data.get('courtColor')
+		
+		new_match_user.username1 = username1
+		new_match_user.username2 = username2
+		new_match_user.colorPlayer1 = colorPlayer1
+		new_match_user.colorPlayer2 = colorPlayer2
+		new_match_user.heroPowerPlayer1 = heroPowerPlayer1
+		new_match_user.heroPowerPlayer2 = heroPowerPlayer2
+		new_match_user.typeOfGame = typeOfGame
+		new_match_user.numberPlayers = numberPlayers
+		new_match_user.modeGame = modeGame
+		new_match_user.superPower = superPower
+		new_match_user.courtColor = courtColor
+		new_match_user.save()
+		return Response({"message": "Tournament create successfull."}, status=status.HTTP_200_OK)
+	
 class NewRoundTournamentView(APIView):
 	permission_classes = [IsAuthenticated]
 
@@ -465,6 +560,11 @@ class CheckTournamentView(APIView):
 		user = request.user
 		try:
 			tournament_user = TournamentUser.objects.get(user=user)
+			if not tournament_user.tabPlayers:
+				return Response({
+                    "message": "No Tournament found."
+                }, status=status.HTTP_400_BAD_REQUEST)
+			
 			return Response({
 				"message": "Tournament exists.",
 				"tournament": str(tournament_user)

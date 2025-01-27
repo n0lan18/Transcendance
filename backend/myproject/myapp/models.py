@@ -55,6 +55,20 @@ class TournamentUser(models.Model):
     superPower = models.CharField(max_length=20, default="isSuperPower")
 
 class OnlinePlayers(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # L'utilisateur connecté
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     connected_at = models.DateTimeField(default=now)
+
+class MatchUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="match_user")
+    username1 = models.CharField(max_length=20, default="Player1")
+    username2 = models.CharField(max_length=20, default="Player2")
+    colorPlayer1 = models.CharField(max_length=8, default="#E23F22")
+    colorPlayer2 = models.CharField(max_length=8, default="#3BB323")
+    heroPowerPlayer1 = models.CharField(max_length=20, default="Invisible")
+    heroPowerPlayer2 = models.CharField(max_length=20, default="Super strength")
+    typeOfGame = models.CharField(max_length=20, default="multiplayer")
+    numberPlayers = models.IntegerField(default=0)
+    modeGame = models.CharField(max_length=40, default="multiPlayerTwo")
+    superPower = models.CharField(max_length=20, default="isSuperPower")
+    courtColor = models.CharField(max_length=8, default="0xCF5A30")
     

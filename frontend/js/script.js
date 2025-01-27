@@ -17,6 +17,7 @@ import { loadRegisterEmailPage } from "./register/email-register.js";
 import { addRoute, loadRoute } from "./router.js";
 import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
 import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
+import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
 
 
 
@@ -32,15 +33,7 @@ document.addEventListener('DOMContentLoaded', async () =>
         addRoute("/continue-or-new-tournament", { loadFunction: loadContinueOrNewTournamentPage });
         addRoute("/tournament-presentation", { loadFunction: loadTournamentPresentation});
         addRoute("/preparation-solo-tournament", { loadFunction: loadPreparationTournamentGamePage });
-        addRoute('/preparation-username-tournament', { 
-            loadFunction: () => {
-                const courtColor = "0xCF5A30"; // Exemple de valeur dynamique
-                const sizeTournament = 32; // Exemple de valeur dynamique
-                const superPower = "isSuperPower"; // Exemple de valeur dynamique
-
-                loadUsernamePlayersTournament(courtColor, sizeTournament, superPower);
-            }
-        });
+        addRoute('/preparation-username-tournament', { loadFunction: loadUsernamePlayersTournament });
         addRoute('/preparation-simple-game', { 
             loadFunction: () => {
                 const typeOfGame = "multiplayer";

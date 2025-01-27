@@ -1,22 +1,35 @@
-import { loadContent } from "./utils.js";
+import { getMatchInfo, getTournamentInfo, loadContent, putMatchInfo } from "./utils.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
 import { translation } from "./translate.js";
 
 
-export async function loadPresentationMultiLocalPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, numberPlayers, typeOfGame, modeGame, superPower, numberMatch, tab, tabNewRound)
+export async function loadPresentationMultiLocalPlayerPage(numberMatch, tab, tabNewRound)
 {
-	const bodyPresentation = generateBodyPresentationPageHTML(username1, username2, numberPlayers, heroPowerPlayer1, heroPowerPlayer2)
+	const dataTournament = await getTournamentInfo();
+	const matchInfo = await getMatchInfo();
+	console.log(matchInfo);
+	console.log(dataTournament)
+	const bodyPresentationHTML = generateBodyPresentationPageHTML(matchInfo.username1, matchInfo.username2, dataTournament.sizeTournament, matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2)
 
-	document.getElementById("app").innerHTML = bodyPresentation;
+	loadContent(document.getElementById("app"), bodyPresentationHTML , "tournament-match-presentation", true, 'Tournament Match Presentation Page', translation, "", addEventListenerPresentationSoloTournament());
+
+	document.getElementById("app").innerHTML = bodyPresentationHTML;
 	translation();
-
-	addEventListenerPresentationSoloTournament(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound)
 }
 
-function addEventListenerPresentationSoloTournament(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound)
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/tournament-match-presentation")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Match Presentation Page', translation, "", addEventListenerPresentationSoloTournament());
+	}
+});
+
+async function addEventListenerPresentationSoloTournament()
 {
+	const matchInfo = await getMatchInfo();
+	console.log(matchInfo)
 	let imageHeroPlayer1;
-	switch (heroPowerPlayer1)
+	switch (matchInfo.heroPowerPlayer1)
 	{
 		case "Invisible" :
 			imageHeroPlayer1 = "../images/super1.png";
@@ -33,7 +46,7 @@ function addEventListenerPresentationSoloTournament(username1, username2, courtC
 	}
 
 	let imageHeroPlayer2;
-	switch (heroPowerPlayer2)
+	switch (matchInfo.heroPowerPlayer2)
 	{
 		case "Invisible" :
 			imageHeroPlayer2 = "../images/super1.png";
@@ -55,7 +68,7 @@ function addEventListenerPresentationSoloTournament(username1, username2, courtC
 	const imagePlayer2 = document.getElementById("superhero-image2");
 	imagePlayer2.src = imageHeroPlayer2;
 
-	if (superPower == "isNotSuperPower")
+	if (matchInfo.superPower == "isNotSuperPower")
 	{
 		let superHeroImage1 = document.getElementById("superhero-image");
 		let superHeroImage2 = document.getElementById("superhero-image2");
@@ -68,9 +81,9 @@ function addEventListenerPresentationSoloTournament(username1, username2, courtC
 	}
 
 	const buttonStart = document.getElementById("send-preparation-game-button");
-	buttonStart.addEventListener('click', function (event) {
+	buttonStart.addEventListener('click', async function (event) {
 		event.preventDefault();
-		loadSoloPlayerPage(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, numberPlayers, modeGame, superPower, numberMatch, tab, tabNewRound);
+		loadSoloPlayerPage();
 	});
 }
 

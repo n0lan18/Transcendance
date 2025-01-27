@@ -13,9 +13,9 @@ export async function loadStatsPage(userStat)
 	else
 		userStatsInfoAll = await getStatsInfoAll();
 
-	let settingsHTML = generateStatsPageHTML(userStatsInfoAll);	
+	let statsHTML = generateStatsPageHTML(userStatsInfoAll);	
 
-	loadContent(document.getElementById('app'), settingsHTML, "stats", true, 'Stats Page', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
+	loadContent(document.getElementById('app'), statsHTML, "stats", true, 'Stats Page', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
 	
 	document.getElementById("app").innerHTML = generateStatsPageHTML(userStatsInfoAll);
 	translation();
@@ -23,7 +23,6 @@ export async function loadStatsPage(userStat)
 	addNavigatorEventListeners()
 
 	addEventListenerStats(userStatsInfoAll);
-	addLastMatchesAndResultats(userStatsInfoAll);
 }
 
 window.addEventListener('popstate', async function(event) {
@@ -106,6 +105,8 @@ export function  addEventListenerStats(userStatsInfoAll)
 			myDonutChart2.resize();
 		}
 	});
+
+	addLastMatchesAndResultats(userStatsInfoAll);
 }
 
 function addGraphics(data1, data2, label1, label2, ctx)

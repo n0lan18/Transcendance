@@ -1,40 +1,40 @@
 import { generateNavigator } from "./nav.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { escapeHTML, getUserInfo, loadContent, putTournamentInfo } from "./utils.js";
+import { escapeHTML, getTournamentBasicInfo, getUserInfo, loadContent, putTournamentInfo } from "./utils.js";
 import { translation } from "./translate.js";
 import { rgbToHex } from "./utils.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
-import { addRoute } from "./router.js";
 
-let tabNewRound = [];
-
-export async function loadUsernamePlayersTournament(courtColor, sizeTournament, superPower)
-{
-    let userInfo = await getUserInfo();
-	let username1 = userInfo.username;
-    if (!courtColor)
-        courtColor = "0xCF5A30";
-    if (!sizeTournament)
-        sizeTournament = 32;
-    if (!superPower)
-        superPower = "isSuperPower"
-    
+export function loadUsernamePlayersTournament()
+{  
     const usernamePlayersTournamentHTML = generateUsernamePlayersTournament();
 
     addNavigatorEventListeners();
 
-    loadContent(document.getElementById("app"), usernamePlayersTournamentHTML, "preparation-username-tournament", true, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, superPower));
+    loadContent(document.getElementById("app"), usernamePlayersTournamentHTML, "preparation-username-tournament", true, 'Preparation Username Tournament', translation, addNavigatorEventListeners, addEventListenerUsernamePlayersTournament());
 
 	document.getElementById("app").innerHTML = usernamePlayersTournamentHTML;
     translation();
 	addNavigatorEventListeners();
-
-    addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, superPower);
-
 }
 
-function addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTournament, superPower)
+window.addEventListener('popstate', async function(event) {
+    if (event.state && event.state.page) {
+        if (this.window.location.pathname === "/preparation-username-tournament")
+            loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Preparation Username Tournament', translation, addNavigatorEventListeners, () => addEventListenerUsernamePlayersTournament());
+    }
+});
+
+async function addEventListenerUsernamePlayersTournament()
 {
+    let userInfo = await getUserInfo();
+    let tournamentBasicInfo = await getTournamentBasicInfo()
+    console.log(tournamentBasicInfo)
+	let username1 = userInfo.username;
+    let courtColor = tournamentBasicInfo.courtColor;
+    let sizeTournament = tournamentBasicInfo.sizeTournament;
+    let superPower = tournamentBasicInfo.superPower;
+
     const images = [
         "../images/super1.png",
         "../images/super2.png",
@@ -276,7 +276,7 @@ function addEventListenerUsernamePlayersTournament(username1, courtColor, sizeTo
         buttonStartRandom.addEventListener( ('click'), async function (event) {
             event.preventDefault();
             const stringsHeroPowerPlayer = ["Invisible", "Duplication", "Super strength", "Time laps", "Invisible", "Duplication", "Super strength", "Time laps", "Invisible", "Duplication", "Super strength", "Time laps"];
-            const stringsColorPlayer = ["#E23F22", "#3BB323", "#32689A", "#EEDC1B", "#1BD5EE", "#9A1BEE", "#FD5DBDB", "#5FEC8A"];
+            const stringsColorPlayer = ["#E23F22", "#3BB323", "#32689A", "#EEDC1B", "#1BD5EE", "#9A1BEE", "#FD5DBD", "#5FEC8A"];
             for (let i = 0; i < sizeTournament; i++)
             {
                 if (superPower === "isSuperPower")

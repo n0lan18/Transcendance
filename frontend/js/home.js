@@ -1,17 +1,13 @@
-import { checkIsTournament, loadContent } from "./utils.js";
+import { checkIsTournament, loadContent, replaceContent } from "./utils.js";
 import { generateNavigator } from "./nav.js";
 import { getUserInfo } from "./utils.js";
 import { loadProfilePage } from "./profile.js";
-import { loadSoloPlayerPageChoiceGame } from "./solo-player-page.js";
 import { loadStatsPage } from "./stats.js";
-import { loadMultiPlayerPageChoiceGame } from "./multiplayer.js";
-import { loadOnlinePage } from "./online.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { translation } from "./translate.js";
 import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
 import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
 import { loadContinueOrNewTournamentPage } from "./continue-or-finish-page.js";
-import { addRoute } from "./router.js";
 
 
 let globalSocket = null;
@@ -50,20 +46,18 @@ export async function loadHomePage()
 
 	loadContent(document.getElementById("app"), homeHTML, "home", true, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage);
 
-	document.getElementById("app").innerHTML = generateHomePageHTML(userInfo);
-	translation();
-	addNavigatorEventListeners();
-
 	addEventListenerHomePage();
 }
 
-window.addEventListener('popstate', function(event) {
+window.addEventListener('popstate', async function(event) {
+	let userInfo = await getUserInfo();
+	let homeHTML = generateHomePageHTML(userInfo);
+
 	if (event.state && event.state.page) {
 		if (this.window.location.pathname === "/home")
-		{
-			console.log("PAGE HOME")
 			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage);
-		}
+		if (this.window.location.pathname === "/game-page")
+			replaceContent(this.document.getElementById("app"), homeHTML, 'home', false, 'Home Page', translation, addNavigatorEventListeners, addEventListenerHomePage)
 	}
 });
 
