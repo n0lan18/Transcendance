@@ -4,7 +4,6 @@ import { generateNavigator } from "./nav.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
 import { translation } from "./translate.js";
-import { addRoute } from "./router.js";
 
 
 export function loadContinueOrNewTournamentPage()

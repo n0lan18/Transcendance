@@ -20,12 +20,8 @@ export function eventListener(Game)
 function orientationChange(Game)
 {
 	window.addEventListener('orientationchange', () => {
-		Game.gamePaused = !Game.gamePaused;
-		if (Game.gamePaused)
-		{
-			cancelAnimationFrame(Game.animationFrameId);
-			Game.animationFrameId = null;
-		}
+		if (Game.gameState == 'running')
+			Game.pause();
 		else
 			Game.start();
 	});
@@ -36,7 +32,7 @@ function fullScreenEvent(Game)
 	document.addEventListener("fullscreenchange", () => {
 		if (!document.fullscreenElement)
 		{
-			Game.gamePaused = true;
+			Game.pause();
 			fullScreen(Game);
 		}
 	});
@@ -68,24 +64,24 @@ function pauseGame(Game)
 	window.addEventListener('keydown', (event) => {
 		if (event.key === 'Shift')
 		{
-			Game.gamePaused = !Game.gamePaused;
-			if (Game.gamePaused)
+			console.log(Game.gameState)
+			if (Game.gameState === "countdown") return;
+			if (Game.gameState !== "paused" )
 			{
-				cancelAnimationFrame(Game.animationFrameId);
-				Game.animationFrameId = null;
+				Game.pause()
 				pausePage(Game);
 			}
 			else
 			{
-				Game.gamePaused = !Game.gamePaused;
-				const backgrondCountdownContainer = document.getElementById("background-pause");
+				console.log("PIPIPI")
+				Game.gameState = "countdown";
+				const backgroundPauseCountdownContainer = document.getElementById("background-pause");
 				const pauseContainer = document.getElementById("countdown");
-				if (backgrondCountdownContainer)
-					backgrondCountdownContainer.remove();
+				if (backgroundPauseCountdownContainer)
+					backgroundPauseCountdownContainer.remove();
 				if (pauseContainer)
 					pauseContainer.remove();
 				startCountdown(Game);
-				Game.start();
 			}
 		}
 		else
@@ -161,12 +157,8 @@ function pauseButtonSmartphone(Game)
 	window.addEventListener('touchstart', (event) => {
 		if (event.target.id === "pause-button")
 		{
-			Game.gamePaused = !Game.gamePaused;
-			if (Game.gamePaused)
-			{
-				cancelAnimationFrame(Game.animationFrameId);
-				Game.animationFrameId = null;
-			}
+			if (Game.gameState === "paused")
+				Game.pause();
 			else
 				Game.start();
 		}

@@ -16,7 +16,8 @@ export async function loadFinishPageTournament()
 
 window.addEventListener('popstate', function(event) {
 	if (event.state && event.state.page)
-		loadContent(this.document.getElementById("app"), event.state.page, '', false, "Finish Page Tournament Win", translation, "", addEventListenerFinishPageTournament);
+		if (this.window.location.pathname === "/finish-page-tournament-win")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Finish Page Tournament Win", translation, "", addEventListenerFinishPageTournament);
 });
 
 async function addEventListenerFinishPageTournament()

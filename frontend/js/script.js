@@ -54,39 +54,9 @@ document.addEventListener('DOMContentLoaded', async () =>
         addRoute('/finish-page-tournament-win', { loadFunction: loadFinishPageTournament});
         addRoute('/finish-page-tournament', { loadFunction: loadFinishPageTournamentWin});
 
+
         if (jwtToken)
             loadRoute(window.location.pathname);
         else
             loadRoute('/login');
-
-/*        window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.page) {
-            {
-                console.log("PAGE ROUUUUTEW")
-                loadRoute(window.location.pathname);
-            }
-            } else {
-                console.error("No state found in history");
-            }
-        });
-
-        window.addEventListener('popstate', function(event) {
-            if (event.state && event.state.page) {
-                // Charger le contenu associé à la page
-                if (this.window.location.pathname === "/login")
-                    loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Authentification Page', "", "", addEventListenerAuthPage);
-                else if (this.window.location.pathname === "/register-email")
-                    loadContent(this.document.getElementById("app"), event.state.page, '', false, "Register Email", "", "", addEventListenerEmailRegister);
-                else if (this.window.location.pathname === "/register-username")
-                    loadContent(this.document.getElementById("app"), event.state.page, '', false, "Register Username", "", "", addEventListenerUsernameRegister);
-                else if (this.window.location.pathname === "/register-password")
-                    loadContent(this.document.getElementById("app"), event.state.page, '', false, "Register Password", "", "", addEventListenerPasswordRegister);
-                else if (this.window.location.pathname === "/continue-or-new-tournament")
-                    loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Continue Or New Tournament', translation, addNavigatorEventListeners, addEventListenerContinueOrNewTournament)
-                else if (this.window.location.pathname === "/tournament-presentation")
-                    loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Presentation', translation, addNavigatorEventListeners, loadTournamentPresentation)
-                else if (this.window.location.pathname === "/preparation-solo-tournament")
-                    loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Preparation Tournament', translation, addNavigatorEventListeners, addEventListenerPreparationTournament);
-            }
-        });
-*/});
+});

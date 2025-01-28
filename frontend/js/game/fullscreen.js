@@ -2,7 +2,6 @@ import { startCountdown } from "./countdown.js";
 
 
 export function fullScreen(Game) {
-	cancelAnimationFrame(Game.animationFrameId);
     // Conteneur du décompte à afficher sur l'écran
 	const backgrondCountdownContainer = document.createElement("div");
 	backgrondCountdownContainer.id = "background-countdown";
@@ -40,7 +39,6 @@ export function fullScreen(Game) {
 		messageFullscreen.remove();
 		backgrondCountdownContainer.remove();
 
-		Game.gamePaused = false;
 		Game.start();
 	});
 
@@ -53,7 +51,6 @@ export function fullScreen(Game) {
 			});
 			backgrondCountdownContainer.remove();
 			messageFullscreen.remove();
-			Game.gamePaused = false;
 			Game.start();
 		}
 	});

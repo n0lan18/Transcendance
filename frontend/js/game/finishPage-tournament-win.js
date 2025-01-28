@@ -1,15 +1,16 @@
 import { translation } from "../translate.js";
-import { getMatchInfo, getTournamentInfo, loadContent, replaceContent } from "../utils.js";
+import { getTournamentInfo, loadContent } from "../utils.js";
 import { loadTournamentPresentation } from "../tournament-presentation.js";
 
 export async function loadFinishPageTournamentWin()
 {	
 	const tournamentInfo = await getTournamentInfo();
-	const finishPage = finishPageHTML(tournamentInfo.numberPlayers);
+	console.log(tournamentInfo)
+	const finishPage = finishPageHTML(tournamentInfo.sizeTournament);
 
 	loadContent(document.getElementById('app'), finishPage, 'finish-page-tournament', true, 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament);
 	
-	document.getElementById("app").innerHTML = finishPageHTML(tournamentInfo.numberPlayers);
+	document.getElementById("app").innerHTML = finishPageHTML(tournamentInfo.sizeTournament);
 	translation();
 
 	addEventListenerFinishPageTournament();
@@ -18,8 +19,8 @@ export async function loadFinishPageTournamentWin()
 window.addEventListener('popstate', function(event) {
 	if (event.state && event.state.page)
 	{
-		if (window.location.pathname === "/solo-page" || window.location.pathname === "/presentation-solo-tournament")
-			replaceContent(document.getElementById('app'), finishPage, 'finish-page-tournament', 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament)
+		if (window.location.pathname === "/finish-page-tournament")
+			loadContent(document.getElementById('app'), event.state.page, '', false, 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament)
 	}
 });
 

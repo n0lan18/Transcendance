@@ -3,8 +3,6 @@
 export function pausePage(Game) {
 	let pauseStr = "Pause";
 
-	cancelAnimationFrame(Game.animationFrameId);
-	Game.animationFrameId = null;
     // Conteneur du décompte à afficher sur l'écran
 	const backgroundPauseContainer = document.createElement("div");
 	backgroundPauseContainer.id = "background-pause";

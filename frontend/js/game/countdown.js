@@ -1,8 +1,9 @@
 
 
 export function startCountdown(Game) {
-	cancelAnimationFrame(Game.animationFrameId);
-    Game.animationFrameId = null;
+    if (Game.gameState === "running") return;
+
+    Game.gameState = "countdown";
     // Conteneur du décompte à afficher sur l'écran
 	const backgrondCountdownContainer = document.createElement("div");
 	backgrondCountdownContainer.id = "background-countdown";
@@ -47,7 +48,6 @@ export function startCountdown(Game) {
             setTimeout(() => {
 				backgrondCountdownContainer.remove();
                 countdownContainer.remove(); // Retire le conteneur de décompte
-				Game.gamePaused = false;
 				Game.start();
             }, 500); // Attend un peu avant de commencer pour que "Go!" reste visible
 		}

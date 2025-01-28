@@ -4,7 +4,6 @@ import { startCountdown } from "./countdown.js";
 import { loadFinishPage } from "./finishPage.js";
 import { loadFinishPageTournament } from "./finishPage-tournament.js";
 import { loadFinishPageTournamentWin } from "./finishPage-tournament-win.js";
-import { loadTournamentPresentation } from "../tournament-presentation.js";
 
 export async function handleCollisions(Game) {
 	if (Game.ball.position.y > 13.5 || Game.ball.position.y < -13.5) {
@@ -82,9 +81,7 @@ export async function handleCollisions(Game) {
 
 	// Réinitialisation si la balle sort des limites latérales
 	if (Game.ball.position.x > 25 || Game.ball.position.x < -25) {
-		Game.gamePaused = true;
-		cancelAnimationFrame(Game.animationFrameId);
-		Game.animationFrameId = null
+		Game.pause();
 		Game.scene.remove(Game.ballReplica);
 		Game.scene.remove(Game.trailReplica);
 		let xBall = 0;
@@ -134,7 +131,7 @@ export async function handleCollisions(Game) {
 				if (Game.numberPlayers == 2)
 				{
 					InfoDataMatchTournamentFinale(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore);
-					loadFinishPageTournament(Game.username1, Game.username2, scores.leftPlayerScore, scores.rightPlayerScore);
+					loadFinishPageTournament();
 				}
 				else
 				{

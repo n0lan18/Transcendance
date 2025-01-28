@@ -1,4 +1,4 @@
-import { getMatchInfo, getTournamentInfo, loadContent, putMatchInfo } from "./utils.js";
+import { getMatchInfo, getTournamentInfo, loadContent } from "./utils.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
 import { translation } from "./translate.js";
 
@@ -83,7 +83,7 @@ async function addEventListenerPresentationSoloTournament()
 	const buttonStart = document.getElementById("send-preparation-game-button");
 	buttonStart.addEventListener('click', async function (event) {
 		event.preventDefault();
-		loadSoloPlayerPage();
+		loadSoloPlayerPage("game-page-tournament", "Game Page Tournament");
 	});
 }
 

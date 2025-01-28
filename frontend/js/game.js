@@ -23,36 +23,31 @@ import { GLTFLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders
 
 export class Game {
     constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound) {
-        this.container = document.getElementById(containerId);
+        this.container = null;
         this.superPower = superPower;
-        this.containerProgressBarLeft = document.getElementById("progress-bar-left");
-        this.containerProgressBarRight = document.getElementById("progress-bar-right");
-        this.fullSizePowerBar = fullSizePowerBar();
-        this.emptySizePowerBar = emptySizePowerBar();
-        this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
+        this.containerProgressBarLeft = null;
+        this.containerProgressBarRight = null;
+        this.fullSizePowerBar = null;
+        this.emptySizePowerBar = null;
+        this.sizeOfStep = null;
         this.modeGame = modeGame;
-        this.scoreContainer = document.getElementById("board-score");
-        this.gamePaused = true;
+        this.scoreContainer = null;
         this.animationFrameId = null;
         this.scene = new THREE.Scene();
-        this.renderer = new THREE.WebGLRenderer( {antialias: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.shadowMap.enabled = true;
-		this.dimensions = this.getGameContainerDimensions();
+        this.dimensions = { width: 0, height: 0 };
         this.width = 50;
         this.height = 30;
-        this.camera = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000);
-        this.camera.position.set(0, -23 , 15);
-        this.camera.lookAt(0, 0, 0);
-        this.camera.position.z = 20;
+        this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
         this.activeCamera = this.camera;
-        this.camera2;
-		this.ballVelocity = { x: 0.1, y: 0.02 };
+        this.camera2 = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        this.ballVelocity = { x: 0.1, y: 0.02 };
         this.paddleSpeed = 0.2;
         this.wallThickness = 1;
         this.wallHeight = 4;
         this.moveInterval = null;
         this.keys = {};
-        this.ballInvisible;
         this.changeCamera = 0;
         this.numberPaddelCollision = 0;
         this.trailParticles = [];
@@ -61,11 +56,11 @@ export class Game {
         this.heroPowerPlayer2 = heroPowerPlayer2;
         this.powerPlayer1 = "inactive";
         this.powerPlayer2 = "inactive";
-        this.trail;
-        this.trailReplica;
-        this.directionPower;
+        this.trail = null;
+        this.trailReplica = null;
+        this.directionPower = "";
         this.originalBallVelocityX = 0;
-        this.ballReplica;
+        this.ballReplica = null;
         this.ballVelocityReplica = { x: 0.1, y: 0.1 };
         this.username1 = username1;
         this.username2 = username2;
@@ -73,17 +68,65 @@ export class Game {
         this.numberPlayers = numberPlayers;
         this.colorCourt = colorCourt;
         this.colorPlayer1 = colorPlayer1;
-        this.numberMatch = numberMatch
+        this.numberMatch = numberMatch;
         this.tab = tab;
         this.tabNewRound = tabNewRound;
-        this.stopGame = false;
-        this.init(colorPlayer1, colorPlayer2, colorCourt);
+        this.gameState = "paused";
+        this.init(colorPlayer1, colorPlayer2, colorCourt, superPower, containerId, modeGame, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, numberMatch, tab, tabNewRound);
     }
 
-    init(colorPlayer1, colorPlayer2, colorCourt) {
+    init(colorPlayer1, colorPlayer2, colorCourt, superPower, containerId, modeGame, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, numberMatch, tab, tabNewRound) {
+        this.container = document.getElementById(containerId);
+        this.superPower = superPower;
+        this.containerProgressBarLeft = document.getElementById("progress-bar-left");
+        this.containerProgressBarRight = document.getElementById("progress-bar-right");
+        this.fullSizePowerBar = fullSizePowerBar();
+        this.emptySizePowerBar = emptySizePowerBar();
+        this.modeGame = modeGame;
+        this.scoreContainer = document.getElementById("board-score");
+        this.animationFrameId = null;
+        this.scene = new THREE.Scene();
+        this.renderer = new THREE.WebGLRenderer( {antialias: true });
+        this.renderer.shadowMap.enabled = true;
+        this.dimensions = this.getGameContainerDimensions();
+        this.width = 50;
+        this.height = 30;
+        this.camera = new THREE.PerspectiveCamera(75, this.dimensions.width / this.dimensions.height, 0.1, 1000);
+        this.camera.position.set(0, -23 , 15);
+        this.camera.lookAt(0, 0, 0);
+        this.camera.position.z = 20;
+        this.activeCamera = this.camera;
+        this.ballVelocity = { x: 0.1, y: 0.02 };
+        this.paddleSpeed = 0.2;
+        this.wallThickness = 1;
+        this.wallHeight = 4;
+        this.moveInterval = null;
+        this.keys = {};
+        this.changeCamera = 0;
+        this.numberPaddelCollision = 0;
+        this.trailParticles = [];
+        this.test = 0;
+        this.heroPowerPlayer1 = heroPowerPlayer1;
+        this.heroPowerPlayer2 = heroPowerPlayer2;
+        this.powerPlayer1 = "inactive";
+        this.powerPlayer2 = "inactive";
+        this.originalBallVelocityX = 0;
+        this.ballVelocityReplica = { x: 0.1, y: 0.1 };
+        this.username1 = username1;
+        this.username2 = username2;
+        this.typeOfGame = typeOfGame;
+        this.numberPlayers = numberPlayers;
+        this.colorCourt = colorCourt;
+        this.colorPlayer1 = colorPlayer1;
+        this.numberMatch = numberMatch;
+        this.tab = tab;
+        this.tabNewRound = tabNewRound;
+        this.gameState = "paused";
+
+
         this.renderer.setSize(this.dimensions.width, this.dimensions.height);
         this.container.appendChild(this.renderer.domElement);
-
+        this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
         addGround(this, colorCourt);
         this.leftWall = createWall(this, 0, 31, { x: -25, y: 0, z: -(1 / 2) }, 1);
         this.rightWall = createWall(this, 0, 31, { x: 25, y: 0, z: -(1 / 2) }, 1);
@@ -132,8 +175,7 @@ export class Game {
     }
 
     update() {
-        if (!this.gamePaused)
-        {
+        console.log(this.gameState)
             if (this.superPower == "isSuperPower")
             {
                 this.fullSizePowerBar = fullSizePowerBar();
@@ -184,7 +226,6 @@ export class Game {
                 this.ballReplica.position.x += this.ballVelocityReplica.x;
                 this.ballReplica.position.y += this.ballVelocityReplica.y;
             }
-        }
         // Gestion des collisions
         handleCollisions(this);
         updateBallTrail(this);
@@ -217,24 +258,154 @@ export class Game {
         }
     }
 
-    start()
-    {
-        if (!this.animationFrameId)
-        {
-            const animate = () => {
-                this.animationFrameId = requestAnimationFrame(animate);
-                this.update();
-            };
-            animate();
+    start() {
+        if (this.gameState === "running") {
+            console.warn("Game is already running!");
+            return;
+        }
+    
+        this.gameState = "running";
+        console.log("Game is running.");
+    
+        const animate = () => {
+            if (this.gameState === "stopped") {
+                return; // Arrête l'animation si le jeu est mis en pause ou arrêté
+            }
+            this.animationFrameId = requestAnimationFrame(animate);
+            this.update();
+        };
+    
+        animate();
+    }
+
+    stop() {
+        if (this.gameState === "stopped") {
+            console.warn("Game is already stopped!");
+            return;
+        }
+    
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+        this.gameState = "stopped";
+    
+        console.log("Game has been stopped.");
+    }
+
+    pause() {
+        if (this.gameState !== "running") {
+            console.warn("Game is not running, cannot pause!");
+            return;
+        }
+    
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+        this.gameState = "paused";
+    
+        console.log("Game is paused.");
+    }
+
+    destroy() {
+    // 1. Arrêter les animations
+    if (this.animationFrameId !== null) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+    }
+
+    // 2. Supprimer les objets de la scène
+    while (this.scene.children.length > 0) {
+        const object = this.scene.children[0];
+        if (object.geometry) object.geometry.dispose(); // Libérer la géométrie
+        if (object.material) {
+            if (Array.isArray(object.material)) {
+                object.material.forEach(mat => {
+                    if (mat.map) { // Gestion des textures immuables
+                        if (mat.map instanceof THREE.Texture) {
+                            mat.map.dispose();
+                        }
+                    }
+                    mat.dispose(); // Libérer le matériau
+                });
+            } else {
+                if (object.material.map && object.material.map instanceof THREE.Texture)
+                        object.material.map.dispose();
+                object.material.dispose();
+            }
+        }
+        this.scene.remove(object);
+    }
+
+    // 3. Supprimer les particules ou effets spécifiques
+    if (this.trailParticles) {
+        this.trailParticles.forEach(particle => {
+            if (particle.geometry) particle.geometry.dispose();
+            if (particle.material) {
+                if (particle.material.map) {
+                    if (particle.material.map instanceof THREE.Texture) {
+                        particle.material.map.dispose();
+                    }
+                }
+                particle.material.dispose();
+            }
+        });
+        this.trailParticles = [];
+    }
+    if (this.trail) {
+        this.scene.remove(this.trail);
+        if (this.trail.geometry) this.trail.geometry.dispose();
+        if (this.trail.material) {
+            if (this.trail.material.map) {
+                if (this.trail.material.map instanceof THREE.Texture) {
+                    this.trail.material.map.dispose();
+                }
+            }
+            this.trail.material.dispose();
+        }
+    }
+    if (this.trailReplica) {
+        this.scene.remove(this.trailReplica);
+        if (this.trailReplica.geometry) this.trailReplica.geometry.dispose();
+        if (this.trailReplica.material) {
+            if (this.trailReplica.material.map) {
+                if (this.trailReplica.material.map instanceof THREE.Texture) {
+                    this.trailReplica.material.map.dispose();
+                }
+            }
+            this.trailReplica.material.dispose();
         }
     }
 
-    stop()
-    {
-        if (this.animationFrameId)
-        {
-            cancelAnimationFrame(this.animationFrameId); // Arrêter l'animation
-            this.animationFrameId = null;
-        }
+    // 4. Libérer le renderer
+    if (this.renderer) {
+        this.renderer.dispose();
     }
+
+    if (this.container && this.renderer.domElement) {
+        this.container.removeChild(this.renderer.domElement);
+    }
+
+    // 5. Supprimer les écouteurs d'événements
+    if (this.moveInterval) {
+        clearInterval(this.moveInterval);
+        this.moveInterval = null;
+    }
+
+    // 6. Nettoyer les caméras
+    this.camera;
+    this.camera2;
+    this.activeCamera;
+
+    // 7. Réinitialiser les propriétés liées au jeu
+    this.ballVelocity = {};
+    this.keys = {};
+    this.directionPower = "";
+    this.ballReplica = null;
+
+    // 8. Supprimer les références du DOM
+    this.container = null;
+    this.containerProgressBarLeft = null;
+    this.containerProgressBarRight = null;
+    this.scoreContainer = null;
+
+    console.log("Le jeu a été détruit et toutes les ressources ont été nettoyées.");
+}
 }

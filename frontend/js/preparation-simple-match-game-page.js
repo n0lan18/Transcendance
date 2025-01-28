@@ -1,11 +1,10 @@
-import { getUserInfo, putMatchInfo, putStatsInfoById } from "./utils.js";
+import { getMatchInfo, getUserInfo, putMatchInfo, putStatsInfoById } from "./utils.js";
 import { loadContent } from "./utils.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { loadSoloPlayerPage } from "./solo-player.js";
 import { generateNavigator } from "./nav.js";
 import { escapeHTML } from "./utils.js";
 import { rgbToHex } from "./utils.js";
-import { putStatsInfo } from "./utils.js";
 import { translation } from "./translate.js";
 
 export async function loadPreparationSimpleMatchGamePage(typeOfGame, modeGame)
@@ -40,13 +39,13 @@ window.addEventListener('popstate', function(event) {
 		if (this.window.location.pathname === "/preparation-double-game")
 		{
 			let typeOfGame = "multiplayer";
-			let modeGame = "preparation-double-game"
+			let modeGame = "multiPlayerFour"
 			loadContent(this.document.getElementById("app"), event.state.page, '', false, `Preparation double game`, translation, addNavigatorEventListeners, () => addEventListenerPreparationGame(typeOfGame, modeGame))
 		}
 		if (this.window.location.pathname === "/preparation-simple-game")
 		{
 			let typeOfGame = "multiplayer";
-			let modeGame = "preparation-simple-game"
+			let modeGame = "multiPlayerTwo"
 			loadContent(this.document.getElementById("app"), event.state.page, '', false, `Preparation simple game`, translation, addNavigatorEventListeners, () => addEventListenerPreparationGame(typeOfGame, modeGame))			
 		}
 	}
@@ -126,7 +125,7 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 	let sendPreparationGameButton = document.getElementById("send-preparation-game-button");
 	if (sendPreparationGameButton)
 	{
-		sendPreparationGameButton.addEventListener('click', async function (event) {
+		sendPreparationGameButton.addEventListener('click', async function () {
 			if (courtColor === undefined)
 			{
 				const environnementPreparationContainer = document.getElementById("environnement-preparation-container");
@@ -153,7 +152,20 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 				else if (heroPowerPlayer1 == "Time laps")
 					await putStatsInfoById(12, {heroTimelaps: 1})
 				await putMatchInfo(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, 2, modeGame, superPower)
-				loadSoloPlayerPage();
+				let pathnameUrl;
+				let namePage;
+				console.log(modeGame)
+				if (modeGame == "multiPlayerTwo")
+				{
+					pathnameUrl = "game-page-simple-match";
+					namePage = "Game Page Simple Match";
+				}
+				else if (modeGame == "multiPlayerFour")
+				{
+					pathnameUrl = "game-page-double-match";
+					namePage = "Game Page Double Match";		
+				}
+				loadSoloPlayerPage(pathnameUrl, namePage);
 			}
 		});
 	}
