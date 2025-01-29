@@ -81,9 +81,8 @@ export async function handleCollisions(Game) {
 
 	// Réinitialisation si la balle sort des limites latérales
 	if (Game.ball.position.x > 25 || Game.ball.position.x < -25) {
-		Game.pause();
 		Game.scene.remove(Game.ballReplica);
-		Game.scene.remove(Game.trailReplica);
+		Game.scene.remove(Game.trail);
 		let xBall = 0;
 		if (Game.ball.position.x > 25)
 		{
@@ -103,6 +102,7 @@ export async function handleCollisions(Game) {
 		}
 		changeColorIfBarIsFull(Game);
 		let scores = getScores(Game);
+		Game.pause();
 		if (scores.leftPlayerScore >= 5 || scores.rightPlayerScore >= 5)
 		{
 			Game.ballVelocity.x = 0;

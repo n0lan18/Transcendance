@@ -1,16 +1,8 @@
 
-import { addEventListenerAuthPage, loadAuthentificationPage } from "./auth.js";
-import { generateAuthentificationHTML } from "./auth.js";
-import { addEventListenerHomePage, loadHomePage } from "./home.js";
-import { loadContent } from "./utils.js";
-import { translation } from "./translate.js";
-import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { addEventListenerEmailRegister } from "./register/email-register.js"
-import { addEventListenerUsernameRegister, loadRegisterUsernamePage } from "./register/username-register.js"
-import { addEventListenerPasswordRegister, loadRegisterPasswordPage } from "./register/password-register.js"
-import { addEventListenerProfile } from "./profile.js"
-import { addEventListenerStats, loadStatsPage } from "./stats.js";
-import { addEventListenerContinueOrNewTournament, loadContinueOrNewTournamentPage } from "./continue-or-finish-page.js";
+import { loadAuthentificationPage } from "./auth.js";
+import { loadHomePage } from "./home.js";
+import { loadStatsPage } from "./stats.js";
+import { loadContinueOrNewTournamentPage } from "./continue-or-finish-page.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
 import { loadProfilePage } from "./profile.js";
 import { loadRegisterEmailPage } from "./register/email-register.js";
@@ -20,8 +12,7 @@ import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-g
 import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
 import { loadFinishPageTournament } from "./game/finishPage-tournament.js";
 import { loadFinishPageTournamentWin } from "./game/finishPage-tournament-win.js";
-
-
+import { loadFriendsPage } from "./friends.js";
 
 document.addEventListener('DOMContentLoaded', async () => 
     {
@@ -31,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () =>
         addRoute("/login", { loadFunction: loadAuthentificationPage });
         addRoute("/home", { loadFunction: loadHomePage });
         addRoute("/profile", { loadFunction: loadProfilePage });
-        addRoute("/stats", { loadFunction: loadStatsPage });
+        addRoute("/stats-perso", { loadFunction: loadStatsPage });
         addRoute("/continue-or-new-tournament", { loadFunction: loadContinueOrNewTournamentPage });
         addRoute("/tournament-presentation", { loadFunction: loadTournamentPresentation});
         addRoute("/preparation-solo-tournament", { loadFunction: loadPreparationTournamentGamePage });
@@ -53,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () =>
         addRoute("/register-email", { loadFunction: loadRegisterEmailPage });
         addRoute('/finish-page-tournament-win', { loadFunction: loadFinishPageTournament});
         addRoute('/finish-page-tournament', { loadFunction: loadFinishPageTournamentWin});
+        addRoute('/friends', { loadFunction: loadFriendsPage });
 
 
         if (jwtToken)

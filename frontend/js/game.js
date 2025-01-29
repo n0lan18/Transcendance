@@ -20,6 +20,7 @@ import { superStrength } from './game/characters/superStrenght.js';
 import { duplication } from './game/characters/duplication.js';
 import { startCountdown } from './game/countdown.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
+import { cleanupScene } from './game/remove-game.js';
 
 export class Game {
     constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound) {
@@ -123,7 +124,6 @@ export class Game {
         this.tabNewRound = tabNewRound;
         this.gameState = "paused";
 
-
         this.renderer.setSize(this.dimensions.width, this.dimensions.height);
         this.container.appendChild(this.renderer.domElement);
         this.sizeOfStep = sizeOfStep(this.fullSizePowerBar ,this.emptySizePowerBar);
@@ -157,6 +157,28 @@ export class Game {
                 model.rotation.z = 0;
                 model.rotation.x = 1.585;
                 self.scene.add(model);
+
+                self.cleanupModel = function () {
+                    model.traverse(function (node) {
+                        if (node.isMesh) {
+                            if (node.geometry) {
+                                node.geometry.dispose();
+                            }
+                            if (node.material) {
+                                if (Array.isArray(node.material)) {
+                                    node.material.forEach(mat => {
+                                        if (mat.map) mat.map.dispose();
+                                        mat.dispose();
+                                    });
+                                } else {
+                                    if (node.material.map) node.material.map.dispose();
+                                    node.material.dispose();
+                                }
+                            }
+                        }
+                    });
+                    self.scene.remove(model);
+                };
         });
 
         if (isMobileDevice())
@@ -175,7 +197,12 @@ export class Game {
     }
 
     update() {
-        console.log(this.gameState)
+        if (this.gameState == "pause")
+        {
+            if (this.animationFrameId)
+                cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
             if (this.superPower == "isSuperPower")
             {
                 this.fullSizePowerBar = fullSizePowerBar();
@@ -258,14 +285,29 @@ export class Game {
         }
     }
 
+    launch() {
+        this.gameState = "pause";
+
+        const animate = () => {
+            this.animationFrameId = requestAnimationFrame(animate);
+            this.update();
+            return;
+        };
+
+        animate();
+    }
+
     start() {
         if (this.gameState === "running") {
             console.warn("Game is already running!");
             return;
         }
     
-        this.gameState = "running";
-        console.log("Game is running.");
+        if (this.gameState !== "stopped")
+        {
+            this.gameState = "running";
+            console.log("Game is running.");
+        }
     
         const animate = () => {
             if (this.gameState === "stopped") {
@@ -292,6 +334,7 @@ export class Game {
     }
 
     pause() {
+        if (this.gameState === "stopped") return ;
         if (this.gameState !== "running") {
             console.warn("Game is not running, cannot pause!");
             return;
@@ -305,107 +348,58 @@ export class Game {
     }
 
     destroy() {
-    // 1. Arrêter les animations
-    if (this.animationFrameId !== null) {
+        // 1. Arrêter les animations
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
-    }
+        this.gameState = "stopped";
 
-    // 2. Supprimer les objets de la scène
-    while (this.scene.children.length > 0) {
-        const object = this.scene.children[0];
-        if (object.geometry) object.geometry.dispose(); // Libérer la géométrie
-        if (object.material) {
-            if (Array.isArray(object.material)) {
-                object.material.forEach(mat => {
-                    if (mat.map) { // Gestion des textures immuables
-                        if (mat.map instanceof THREE.Texture) {
-                            mat.map.dispose();
-                        }
-                    }
-                    mat.dispose(); // Libérer le matériau
-                });
-            } else {
-                if (object.material.map && object.material.map instanceof THREE.Texture)
-                        object.material.map.dispose();
-                object.material.dispose();
-            }
+        console.log("Game has been stopped.");
+
+        cleanupScene(this.scene)
+
+        if (this.scene.background && this.scene.background.isCubeTexture) {
+            this.scene.background.dispose();
+            this.scene.background = null;
         }
-        this.scene.remove(object);
-    }
 
-    // 3. Supprimer les particules ou effets spécifiques
-    if (this.trailParticles) {
-        this.trailParticles.forEach(particle => {
-            if (particle.geometry) particle.geometry.dispose();
-            if (particle.material) {
-                if (particle.material.map) {
-                    if (particle.material.map instanceof THREE.Texture) {
-                        particle.material.map.dispose();
-                    }
-                }
-                particle.material.dispose();
+        // Nettoyer les lumières
+        this.scene.traverse((node) => {
+            if (node.isLight && node.shadow && node.shadow.map) {
+                node.shadow.map.dispose();
             }
         });
-        this.trailParticles = [];
-    }
-    if (this.trail) {
-        this.scene.remove(this.trail);
-        if (this.trail.geometry) this.trail.geometry.dispose();
-        if (this.trail.material) {
-            if (this.trail.material.map) {
-                if (this.trail.material.map instanceof THREE.Texture) {
-                    this.trail.material.map.dispose();
-                }
-            }
-            this.trail.material.dispose();
+
+        if (this.cleanupModel) {
+            this.cleanupModel();
+            this.cleanupModel = null;
         }
-    }
-    if (this.trailReplica) {
-        this.scene.remove(this.trailReplica);
-        if (this.trailReplica.geometry) this.trailReplica.geometry.dispose();
-        if (this.trailReplica.material) {
-            if (this.trailReplica.material.map) {
-                if (this.trailReplica.material.map instanceof THREE.Texture) {
-                    this.trailReplica.material.map.dispose();
-                }
-            }
-            this.trailReplica.material.dispose();
+
+        // 5. Supprimer les écouteurs d'événements
+        if (this.moveInterval) {
+            clearInterval(this.moveInterval);
+            this.moveInterval = null;
         }
+
+        // 6. Nettoyer les caméras
+        this.camera;
+        this.camera2;
+        this.activeCamera;
+
+        // 7. Réinitialiser les propriétés liées au jeu
+        this.ballVelocity = {};
+        this.keys = {};
+        this.directionPower = "";
+        this.ballReplica = null;
+        this.dimensions = { width: 0, height: 0 };
+
+        // 8. Supprimer les références du DOM
+        if (this.containerProgressBarLeft)
+            this.containerProgressBarLeft.remove();
+        if (this.containerProgressBarRight)
+            this.containerProgressBarRight.remove();
+        if (this.scoreContainer)
+            this.scoreContainer.remove();
+
+        console.log("Le jeu a été détruit et toutes les ressources ont été nettoyées.");
     }
-
-    // 4. Libérer le renderer
-    if (this.renderer) {
-        this.renderer.dispose();
-    }
-
-    if (this.container && this.renderer.domElement) {
-        this.container.removeChild(this.renderer.domElement);
-    }
-
-    // 5. Supprimer les écouteurs d'événements
-    if (this.moveInterval) {
-        clearInterval(this.moveInterval);
-        this.moveInterval = null;
-    }
-
-    // 6. Nettoyer les caméras
-    this.camera;
-    this.camera2;
-    this.activeCamera;
-
-    // 7. Réinitialiser les propriétés liées au jeu
-    this.ballVelocity = {};
-    this.keys = {};
-    this.directionPower = "";
-    this.ballReplica = null;
-
-    // 8. Supprimer les références du DOM
-    this.container = null;
-    this.containerProgressBarLeft = null;
-    this.containerProgressBarRight = null;
-    this.scoreContainer = null;
-
-    console.log("Le jeu a été détruit et toutes les ressources ont été nettoyées.");
-}
 }

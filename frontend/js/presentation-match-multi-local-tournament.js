@@ -3,7 +3,7 @@ import { loadSoloPlayerPage } from "./solo-player.js";
 import { translation } from "./translate.js";
 
 
-export async function loadPresentationMultiLocalPlayerPage(numberMatch, tab, tabNewRound)
+export async function loadPresentationMultiLocalPlayerPage()
 {
 	const dataTournament = await getTournamentInfo();
 	const matchInfo = await getMatchInfo();

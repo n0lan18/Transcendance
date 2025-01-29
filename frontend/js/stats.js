@@ -1,12 +1,12 @@
 import { generateNavigator } from "./nav.js";
 import { getStatsInfoAll, getStatsInfoAllById } from "./utils.js";
 import { loadContent } from "./utils.js";
-import { loadAuthentificationPage } from "./auth.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { translation } from "./translate.js";
 
 export async function loadStatsPage(userStat)
 {
+	console.log(userStat)
 	let userStatsInfoAll;
 	if (userStat)
 		userStatsInfoAll = await getStatsInfoAllById(userStat);
@@ -15,8 +15,10 @@ export async function loadStatsPage(userStat)
 
 	let statsHTML = generateStatsPageHTML(userStatsInfoAll);	
 
-	loadContent(document.getElementById('app'), statsHTML, "stats", true, 'Stats Page', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
-	
+	if (userStat)
+		loadContent(document.getElementById('app'), statsHTML, "stats-friend", true, 'Stats Page Friend', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
+	else
+		loadContent(document.getElementById('app'), statsHTML, "stats-perso", true, 'Stats Page Perso', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
 	document.getElementById("app").innerHTML = generateStatsPageHTML(userStatsInfoAll);
 	translation();
 
@@ -27,14 +29,15 @@ export async function loadStatsPage(userStat)
 
 window.addEventListener('popstate', async function(event) {
 	if (event.state && event.state.page) {
-		if (this.window.location.pathname === "/stats")
+		if (this.window.location.pathname === "/stats-perso")
 		{
-			let userStatsInfoAll;
-			if (event.state.userStat)
-				userStatsInfoAll = await getStatsInfoAllById(event.state.userStat);
-			else
-				userStatsInfoAll = await getStatsInfoAll();
-			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Stats Page", translation, addNavigatorEventListeners,  () => addEventListenerStats(userStatsInfoAll));
+			let userStatsInfoAll = await getStatsInfoAll();
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Stats Page Perso", translation, addNavigatorEventListeners,  () => addEventListenerStats(userStatsInfoAll));
+		}
+		if (this.window.location.pathname === "/stats-friend")
+		{
+			let userStatsInfoAll = await getStatsInfoAllById(this.window.idStat);
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, "Stats Page Perso", translation, addNavigatorEventListeners,  () => addEventListenerStats(userStatsInfoAll));
 		}
 	}
 });

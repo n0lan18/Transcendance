@@ -1,9 +1,4 @@
 import { loadAuthentificationPage } from "./auth.js";
-import { finishPageHTML } from "./game/finishPage.js";
-import { loadHomePage } from "./home.js";
-import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
-import { loadTournamentPresentation } from "./tournament-presentation.js";
-import { translation } from "./translate.js";
 
 export function loadContent(appDiv, page, url, addToHistory, namePage, translate, eventListenerNavigator, eventListenerPage) {
 	appDiv.innerHTML = page;
@@ -21,13 +16,20 @@ export function loadContent(appDiv, page, url, addToHistory, namePage, translate
 export function replaceContent(appDiv, page, url, namePage, translate, eventListenerNavigator, eventListenerPage) {
 	appDiv.innerHTML = page;
 	if (typeof translate === "function")
+	{
+		console.log("Translate");
 		translate();
+	}
 	if (typeof eventListenerNavigator === "function")
+	{
+		console.log("NAV EVENT")
 		eventListenerNavigator();
+	}
 	if (typeof eventListenerPage === "function")
+	{
+		console.log("EVENT PAGE")
 		eventListenerPage();
-	if (funcfunc === "function")
-		funcfunc();
+	}
 	history.replaceState({ page: page }, namePage, `/${url}`);
 }
 
@@ -1185,7 +1187,7 @@ export async function InfoDataMatchTournament(username1, username2, numberPlayer
 	await putStatsInfo(0, resultats, 0, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, 0, numberPlayer);
 }
 
-export async function InfoDataMatchTournamentFinale(username1, username2, numberPlayer, scoreLeftPlayer, scoreRigthPlayer)
+export async function InfoDataMatchTournamentFinale(username1, username2, numberPlayer, scoreLeftPlayer, scoreRightPlayer)
 {
 	let userInfo = await getUserInfo();
 	let numberVictoryMatchTournament = 0;
@@ -1197,12 +1199,12 @@ export async function InfoDataMatchTournamentFinale(username1, username2, number
 	let numberMatchTournament = 1;
 	if (userInfo.username != username1 && userInfo.username2 != username2)
 		return ;
-	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRigthPlayer) || (userInfo.username == username2 && scoreRigthPlayer > scoreLeftPlayer))
+	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRightPlayer) || (userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
 	{
 		numberVictoryMatchTournament = 1;
 		numberVictoryTournament = 1;
 		resultats = "V";
-		if (scoreLeftPlayer > scoreRigthPlayer)
+		if (scoreLeftPlayer > scoreRightPlayer)
 		{
 			numberGoalsWin = scoreLeftPlayer;
 			numberGoalLose = scoreRightPlayer;
@@ -1216,7 +1218,7 @@ export async function InfoDataMatchTournamentFinale(username1, username2, number
 	else
 	{
 		resultats = "D";
-		if (scoreLeftPlayer > scoreRigthPlayer)
+		if (scoreLeftPlayer > scoreRightPlayer)
 		{
 			numberGoalsWin = scoreRightPlayer;
 			numberGoalLose = scoreLeftPlayer;
@@ -1230,7 +1232,7 @@ export async function InfoDataMatchTournamentFinale(username1, username2, number
 	if (numberPlayer == 1)
 		numberPlayer = 2;
 	let bestResultTournament = numberPlayer;
-	let scores = scoreLeftPlayer + "-" + scoreRigthPlayer;
+	let scores = scoreLeftPlayer + "-" + scoreRightPlayer;
 	await putStatsInfo(0, resultats, 0, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, numberVictoryTournament, bestResultTournament);
 }
 
@@ -1250,5 +1252,17 @@ export async function InfoDataSimpleMatch(scoreLeftPlayer, scoreRightPlayer, isW
 		let numberGoalLose = scoreRightPlayer
 		let scores = scoreLeftPlayer + "-" + scoreRightPlayer
 		await putStatsInfo(numberSimpleMatch, resultats, numberVictorySimpleMatch, numberGoalsWin, numberGoalLose, scores, 0, 0, 0, 32)
+	}
+}
+
+export function removeElementWithDelay(id, delay = 2000) {
+	const element = document.getElementById(id);
+	if (element) {
+		setTimeout(() => {
+			element.remove();
+			console.log(`Element with id "${id}" removed after ${delay}ms`);
+		}, delay);
+	} else {
+		console.warn(`Element with id "${id}" does not exist.`);
 	}
 }

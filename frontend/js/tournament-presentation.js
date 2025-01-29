@@ -1,26 +1,67 @@
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { decodeStrToHex, getTournamentInfo, loadContent, putMatchInfo } from "./utils.js";
+import { decodeStrToHex, getTournamentInfo, getUserInfo, loadContent, putMatchInfo, replaceContent } from "./utils.js";
 import { translation } from "./translate.js";
 import { generateNavigator } from "./nav.js";
 import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi-local-tournament.js";
 import { putTournamentInfoNewRound } from "./utils.js";
+import { addEventListenerHomePage, generateHomePageHTML } from "./home.js";
 
-export async function loadTournamentPresentation()
+export function loadTournamentPresentation()
 {
+	const tournamentPresentationHTML = generateTournamentPresentation();
+
+    loadContent(document.getElementById("app"), tournamentPresentationHTML, "tournament-presentation", true, 'Tournament Presentation Page', translation, addNavigatorEventListeners, createTableau);
+
+	document.getElementById("app").innerHTML = tournamentPresentationHTML;
+    translation();
+	addNavigatorEventListeners();
+}
+
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/tournament-presentation")
+		{
+			let dataTournament = await getTournamentInfo();
+			if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
+			{
+				await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+				dataTournament = await getTournamentInfo();
+			}
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Presentation Page', translation, addNavigatorEventListeners, createTableau);
+		}
+		if (this.window.location.pathname === "/game-page-tournament")
+		{
+			const tournamentPresentationHTML = generateTournamentPresentation();
+			let dataTournament = await getTournamentInfo();
+			if (dataTournament)
+			{
+				if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
+				{
+					await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+					dataTournament = await getTournamentInfo();
+				}
+				replaceContent(document.getElementById('app'), tournamentPresentationHTML, "tournament-presentation", true, `Game Page Tournament`, translation, addNavigatorEventListeners, createTableau);
+			}
+			else
+				window.location.replace('/home');
+		}
+	}
+});
+
+async function createTableau()
+{	
 	let dataTournament = await getTournamentInfo();
 	if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
 	{
 		await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
 		dataTournament = await getTournamentInfo();
 	}
-	const tournamentPresentationHTML = generateTournamentPresentation();
-	console.log(dataTournament);
-    loadContent(document.getElementById("app"), tournamentPresentationHTML, "tournament-presentation", true, 'Tournament Presentation Page', translation, addNavigatorEventListeners, () => createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound));
-
-	document.getElementById("app").innerHTML = tournamentPresentationHTML;
-    translation();
-	addNavigatorEventListeners();
-
+	let sizeTournament = dataTournament.sizeTournament;
+	let tab = dataTournament.tabPlayers;
+	let courtColor = decodeStrToHex(dataTournament.courtColor);
+	let superPower = dataTournament.superPower;
+	let numberMatch = dataTournament.numberMatch;
+	let tabNewRound = dataTournament.tabPlayersNewRound;
 	const tabPresentation = document.getElementById("tab-presentation-tournament-round");
 	if (tabPresentation)
 	{
@@ -39,31 +80,7 @@ export async function loadTournamentPresentation()
 		levelTournament.className = "level-tournament";
 		levelTournament.textContent = level;
 		tabPresentation.appendChild(levelTournament);
-	}
-	createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound);
 
-}
-
-window.addEventListener('popstate', async function(event) {
-	if (event.state && event.state.page) {
-		if (this.window.location.pathname === "/tournament-presentation")
-		{
-			let dataTournament = await getTournamentInfo();
-			if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
-			{
-				await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
-				dataTournament = await getTournamentInfo();
-			}
-			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Presentation Page', translation, addNavigatorEventListeners, () => createTableau(dataTournament.sizeTournament, dataTournament.tabPlayers, decodeStrToHex(dataTournament.courtColor), dataTournament.superPower, dataTournament.numberMatch, dataTournament.tabPlayersNewRound));
-		}
-	}
-});
-
-function createTableau(sizeTournament, tab, courtColor, superPower, numberMatch, tabNewRound)
-{
-	const tabPresentation = document.getElementById("tab-presentation-tournament-round");
-	if (tabPresentation)
-	{
 		let divTableau;
 		for (let i = 0; i < sizeTournament; i+=2)
 		{

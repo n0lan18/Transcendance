@@ -65,6 +65,7 @@ function pauseGame(Game)
 		if (event.key === 'Shift')
 		{
 			console.log(Game.gameState)
+			if (Game.gameState === "stopped") return;
 			if (Game.gameState === "countdown") return;
 			if (Game.gameState !== "paused" )
 			{
@@ -73,7 +74,6 @@ function pauseGame(Game)
 			}
 			else
 			{
-				console.log("PIPIPI")
 				Game.gameState = "countdown";
 				const backgroundPauseCountdownContainer = document.getElementById("background-pause");
 				const pauseContainer = document.getElementById("countdown");

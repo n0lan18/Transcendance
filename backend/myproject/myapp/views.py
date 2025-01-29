@@ -484,14 +484,16 @@ class CreateTournamentView(APIView):
 
 	def get(self, request):
 		print('request user', request.user)
-		
-		tournament_user = TournamentUser.objects.get(user=request.user)
-		if (tournament_user):
-			serialized = TournamentSerializer(tournament_user)
-			print(serialized.data)
-			return Response(serialized.data)
-		else:
-			return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+		try:
+			tournament_user = TournamentUser.objects.get(user=request.user)
+			if (tournament_user):
+				serialized = TournamentSerializer(tournament_user)
+				print(serialized.data)
+				return Response(serialized.data)
+			else:
+				return Response({"error": "Invalid request"}, status=status.HTTP_400_BAD_REQUEST)
+		except:
+			return Response({"error": "TournamentUser not found for the current user."}, status=status.HTTP_404_NOT_FOUND)
 
 
 	def put(self, request):
@@ -542,7 +544,11 @@ class CreateTournamentBasicView(APIView):
 	def get(self, request):
 		print('request user', request.user)
 		
-		tournament_user = TournamentUser.objects.get(user=request.user)
+		try:
+			tournament_user = TournamentUser.objects.get(user=request.user)
+		except TournamentUser.DoesNotExist:
+        	# Si l'utilisateur n'existe pas, tu renvoies une erreur 404 (Not Found)
+			return Response({"error": "TournamentUser not found for the given user."}, status=status.HTTP_404_NOT_FOUND)
 		if (tournament_user):
 			serialized = TournamentSerializer(tournament_user)
 			print(serialized.data)
@@ -650,10 +656,15 @@ class RemoveTournamentView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
-		user = request.user
-		tournament_user = TournamentUser.objects.get(user=user)
-		tournament_user.delete()
-		return Response({"message": "Tournament remove successfull."}, status=status.HTTP_200_OK)
+		try:
+			user = request.user
+			tournament_user = TournamentUser.objects.get(user=user)
+			tournament_user.delete()
+			return Response({"message": "Tournament remove successfull."}, status=status.HTTP_200_OK)
+		
+		except TournamentUser.DoesNotExist:
+			return Response({"error": "TournamentUser not found for the current user."}, status=status.HTTP_404_NOT_FOUND)
+
 	
 class InsertWinnerInTabNewRoundView(APIView):
 	permission_classes = [IsAuthenticated]

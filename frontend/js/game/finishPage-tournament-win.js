@@ -1,5 +1,5 @@
 import { translation } from "../translate.js";
-import { getTournamentInfo, loadContent } from "../utils.js";
+import { getTournamentInfo, loadContent, replaceContent } from "../utils.js";
 import { loadTournamentPresentation } from "../tournament-presentation.js";
 
 export async function loadFinishPageTournamentWin()
@@ -16,11 +16,15 @@ export async function loadFinishPageTournamentWin()
 	addEventListenerFinishPageTournament();
 }
 
-window.addEventListener('popstate', function(event) {
+window.addEventListener('popstate', async function(event) {
 	if (event.state && event.state.page)
 	{
 		if (window.location.pathname === "/finish-page-tournament")
-			loadContent(document.getElementById('app'), event.state.page, '', false, 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament)
+		{
+			const tournamentInfo = await getTournamentInfo()
+			if (tournamentInfo)
+				loadContent(document.getElementById('app'), event.state.page, '', false, 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament)
+		}
 	}
 });
 

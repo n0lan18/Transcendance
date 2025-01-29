@@ -31,3 +31,7 @@ clean-volumes:
 clean-docker: clean-images clean-volumes
 	docker network prune -f
 	docker system prune -a --volumes -f
+
+update-ip:
+	@echo "Mise à jour de l'adresse IP dans le fichier .env..."
+	@bash update_ip_env.sh

@@ -9,7 +9,7 @@ export async function loadSoloPlayerPage(pathname, namePage)
 	const matchInfo = await getMatchInfo();
 	let soloPlayerHTML = generateGamePageHTML(matchInfo.username1, matchInfo.username2);
 
-	loadContent(document.getElementById('app'), soloPlayerHTML, `${pathname}`, true, `${namePage}`, translation, "",addEventListenerGamePage)
+	loadContent(document.getElementById('app'), soloPlayerHTML, `${pathname}`, true, `${namePage}`, translation, "", addEventListenerGamePage)
 
 	document.getElementById("app").innerHTML = soloPlayerHTML;
 }
@@ -18,16 +18,8 @@ window.addEventListener('popstate', async function (event) {
     if (event.state && event.state.page) {
         const pathname = this.window.location.pathname;
 
-        // Arrête le jeu si la page appartient à une page de jeu
-        if (pathname === "/game-page-tournament" || pathname === "/game-page-simple-match" || pathname === "/game-page-double-match") {
-			console.log("RIIIEN");
-        }
-
         // Chargement dynamique du contenu selon le type de page
         switch (pathname) {
-            case "/game-page-tournament":
-                loadContent(document.getElementById('app'), event.state.page, '', false, `Game Page Tournament`, translation, "", addEventListenerGamePage);
-                break;
 
             case "/game-page-simple-match":
                 loadContent(document.getElementById('app'), event.state.page, '', false, `Game Page Simple Match`, translation, "", addEventListenerGamePage);
@@ -40,20 +32,19 @@ window.addEventListener('popstate', async function (event) {
             default:
                 // Si on quitte les pages de jeu, arrête le jeu si nécessaire
                 if (game && typeof game.destroy === "function") {
-                    console.log("STOOOOOOP");
 					game.destroy()
                     game = null;
-					console.log(game);
-                } else {
-                    console.log("NOOOOOOOOOOOON");
-                }
                 break;
-        }
-    }
+        	}
+    	}
+	}
 });
 
 async function addEventListenerGamePage()
 {
+	if (game)
+		game.destroy()
+	game = null;
 	const matchInfo = await getMatchInfo();
 	let tournamentInfo;
 	if (matchInfo.modeGame == "tournament-multi-local")

@@ -1,22 +1,29 @@
 import { generateNavigator } from "./nav.js";
-import { addFriend, removeFriend, connectedUsersList, loadContent } from "./utils.js";
+import { addFriend, removeFriend, connectedUsersList, loadContent, removeElementWithDelay } from "./utils.js";
 import { translation } from "./translate.js";
 import { getUserInfo, isUserInList } from "./utils.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { loadStatsPage } from "./stats.js";
 
+window.idStat = 0;
+
 export async function loadFriendsPage()
 {
 	let friendsHTML = generateFriendsPageHTML();
-	loadContent(document.getElementById("app"), friendsHTML, "friends", true, 'Friends Page', translation, addNavigatorEventListeners, );
+	loadContent(document.getElementById("app"), friendsHTML, "friends", true, 'Friends Page', translation, addNavigatorEventListeners, addEventListenerFriendsPage);
 	document.getElementById("app").innerHTML = generateFriendsPageHTML();
 	await translation();
 	
 	addNavigatorEventListeners();
 
+	addEventListenerFriendsPage();
+}
+
+export async function addEventListenerFriendsPage()
+{
 	const friendsTemplate = (index, image, username, statusButton) => {
 		return `
-			<div class="friends-line">
+			<div class="friends-line" id="friends-line${index + 1}">
 				<div class="img-username-user" id="img-username-user">
 					<img id="img-friends${index + 1}" class="superhero-image" src="${image}" alt="Profile image" style="width: 35px; height: 35px; border-radius: 10px;">
 					<span class="status-indicator ${statusButton}"></span>
@@ -24,7 +31,7 @@ export async function loadFriendsPage()
 				</div>	
 				<div class="follow-user-button">
 					<button class="button-center-items" id="button-profile${index + 1}" style="margin-right: 10px; color: #b3b3b3" id="logoutLink">
-						<i class="fa-solid fa-right-from-bracket image-nav" color: #b3b3b3"></i>
+						<i class="fa-solid fa-chart-line image-nav" color: #b3b3b3"></i>
 						<p style="font-size: 15px">Stats</p>
 					</button>
                 	<input id="send-follow-user-button${index + 1}" value="Unfollow" class="btn btn-primary btn-block mb-4 send-preparation-game-button" style="width: 30%;">
@@ -35,7 +42,7 @@ export async function loadFriendsPage()
 
 	const usersTemplate = (index, image, username, statusButton) => {
 		return `
-			<div class="friends-line">
+			<div class="friends-line" id="users-line${index + 1}">
 				<div class="img-username-user" id="img-username-user">
 					<img id="img-friends${index + 1}" class="superhero-image" src="${image}" alt="Profil image" style="width: 35px; height: 35px; border-radius: 10px;">
 					<span class="status-indicator ${statusButton}"></span>
@@ -48,19 +55,14 @@ export async function loadFriendsPage()
 			`;
 		};
 
-	addEventListenerFriendsPage(friendsTemplate, usersTemplate);
-}
 
-export async function addEventListenerFriendsPage(friendsTemplate, usersTemplate)
-{	
-	let userInfo = await getUserInfo();
-	console.log(userInfo)
-	let userConnected = await connectedUsersList();
 	const friendsButton = document.getElementById("friends-online-button");
 	if (friendsButton)
 	{
-		friendsButton.addEventListener('click', function() 
+		friendsButton.addEventListener('click', async function() 
 		{
+			let userInfo = await getUserInfo();
+			let userConnected = await connectedUsersList();
 			friendsButton.style.backgroundColor = "rgb(100, 99, 99, 0.3)"
 			document.getElementById("user-online-button").style.backgroundColor = "transparent";
 			document.getElementById('list-users-online-container').innerHTML = '';
@@ -87,19 +89,24 @@ export async function addEventListenerFriendsPage(friendsTemplate, usersTemplate
 								buttonUnfollowFriend = document.getElementById(`send-follow-user-button${i + 1}`);
 								if (buttonUnfollowFriend)
 								{
-									buttonUnfollowFriend.addEventListener('click', function() {
+									buttonUnfollowFriend.addEventListener('click', async function() {
 										buttonUnfollowFriend.classList.remove("btn-primary");
 										buttonUnfollowFriend.classList.add("btn-success");
 										buttonUnfollowFriend.value = "✓";
-										removeFriend(userInfo.friends[i].id)
-										buttonUnfollowFriend.disable = true;
+										await removeFriend(userInfo.friends[i].id)
+										removeElementWithDelay(`friends-line${i + 1}`, 1500);
+										userInfo = await getUserInfo();
+										console.log(userInfo);
+										if (userInfo.friends.length == 0)
+											listUsersOnlineContainer.innerHTML = `<h3 style="margin-top:10px">No friend yet</h3>`;
 									});
 								}
 								const buttonProfilePage = document.getElementById(`button-profile${i + 1}`);
 								if (buttonProfilePage)
 								{
 									buttonProfilePage.addEventListener('click', function () {
-										loadStatsPage(userInfo.friends[i].id)
+										window.idStat = userInfo.friends[i].id
+										loadStatsPage(userInfo.friends[i].id);
 									})
 								}
 							}
@@ -115,12 +122,15 @@ export async function addEventListenerFriendsPage(friendsTemplate, usersTemplate
 								buttonUnfollowFriend = document.getElementById(`send-follow-user-button${i + 1}`);
 								if (buttonUnfollowFriend)
 								{
-									buttonUnfollowFriend.addEventListener('click', function() {
+									buttonUnfollowFriend.addEventListener('click', async function() {
 										buttonUnfollowFriend.classList.remove("btn-primary");
 										buttonUnfollowFriend.classList.add("btn-success");
 										buttonUnfollowFriend.value = "✓";
-										removeFriend(userInfo.friends[i].id)
-										buttonUnfollowFriend.disable = true;
+										await removeFriend(userInfo.friends[i].id)
+										removeElementWithDelay(`friends-line${i + 1}`, 1500);
+										userInfo = await getUserInfo();
+										if (userInfo.friends.length == 0)
+											listUsersOnlineContainer.innerHTML = `<h3 style="margin-top:10px">No friend yet</h3>`;
 									});
 								}
 							}
@@ -134,7 +144,9 @@ export async function addEventListenerFriendsPage(friendsTemplate, usersTemplate
 	const usersButton = document.getElementById("user-online-button");
 	if (usersButton)
 	{
-		usersButton.addEventListener('click', function() {
+		usersButton.addEventListener('click', async function() {
+			let userInfo = await getUserInfo();
+			let userConnected = await connectedUsersList();
 			usersButton.style.backgroundColor = "rgb(100, 99, 99, 0.3)"
 			document.getElementById("friends-online-button").style.backgroundColor = "transparent"
 			document.getElementById('list-friends-online-container').style.backgroundColor = "black"
@@ -143,11 +155,11 @@ export async function addEventListenerFriendsPage(friendsTemplate, usersTemplate
 			const listUsersOnlineContainer = document.getElementById("list-users-online-container");
 			if (listUsersOnlineContainer)
 			{
-				if (userConnected.connected_users.length == 1)
+				if ((userConnected.connected_users.length - userInfo.friends.length) == 1)
 					listUsersOnlineContainer.innerHTML = `<h3 style="margin-top:10px">No user connected</h3>`;
 				else
 				{
-					if (!document.getElementById('list-users-online'))
+					if (!document.getElementById(`list-users-online`))
 					{
 						for (let i = 0; i < userConnected.connected_users.length; i++)
 						{
@@ -155,27 +167,41 @@ export async function addEventListenerFriendsPage(friendsTemplate, usersTemplate
 							{
 								const userLine = document.createElement('div');
 								userLine.className = "list-users-online";
-								userLine.id = "list-users-online";
+								userLine.id = `list-users-online`;
 								userLine.innerHTML = usersTemplate(i, userConnected.connected_users[i]["profile-photo"], userConnected.connected_users[i].username, "btn-success");
 								listUsersOnlineContainer.appendChild(userLine);
 								const buttonFollowFriend = document.getElementById(`send-follow-user-button${i + 1}`);
 								if (buttonFollowFriend)
 								{
-									buttonFollowFriend.addEventListener('click', function() {
-										addFriend(userConnected.connected_users[i].id)
+									buttonFollowFriend.addEventListener('click', async function() {
+										buttonFollowFriend.classList.remove("btn-primary");
+										buttonFollowFriend.classList.add("btn-success");
+										buttonFollowFriend.value = "✓";
+										buttonFollowFriend.disable = true;
+										await addFriend(userConnected.connected_users[i].id);
+										removeElementWithDelay(`users-line${i + 1}`, 1500);
+										userConnected = await connectedUsersList();
+										userInfo = await getUserInfo();
+										if ((userConnected.connected_users.length - userInfo.friends.length) == 1)
+											listUsersOnlineContainer.innerHTML = `<h3 style="margin-top:10px">No user connected</h3>`;
 									});
 								}
 							}
-						}
-						if (!document.getElementById('list-users-online'))
-							listUsersOnlineContainer.innerHTML = `<h3 style="margin-top:10px">No user connected</h3>`;
+						}							
 					}
 				}
 			}
 		})
 	}
-	let buttonClick = document.getElementById("friends-online-button").click();
+	document.getElementById("friends-online-button").click();
 }
+
+window.addEventListener('popstate', async function(event) {
+	if (event.state && event.state.page) {
+		if (this.window.location.pathname === "/friends")
+			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Friends Page', translation, addNavigatorEventListeners, addEventListenerFriendsPage);
+	}
+});
 
 function generateFriendsHTML()
 {
