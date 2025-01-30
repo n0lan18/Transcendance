@@ -1,5 +1,5 @@
 import { getScores, incrementLeftScore, incrementRightScore } from "./score.js";
-import { InfoDataMatchTournamentFinale, InfoDataSimpleMatch, InfoDataMatchTournament, sizeOfAdvance } from "../utils.js";
+import { InfoDataMatchTournamentFinale, InfoDataSimpleMatch, InfoDataMatchTournament, sizeOfAdvance, putHistoryMatches } from "../utils.js";
 import { startCountdown } from "./countdown.js";
 import { loadFinishPage } from "./finishPage.js";
 import { loadFinishPageTournament } from "./finishPage-tournament.js";
@@ -81,6 +81,8 @@ export async function handleCollisions(Game) {
 
 	// Réinitialisation si la balle sort des limites latérales
 	if (Game.ball.position.x > 25 || Game.ball.position.x < -25) {
+		Game.echangeLongueur = Game.incrementEchange;
+		Game.incrementEchange = 0;
 		Game.scene.remove(Game.ballReplica);
 		Game.scene.remove(Game.trail);
 		let xBall = 0;
@@ -105,9 +107,19 @@ export async function handleCollisions(Game) {
 		Game.pause();
 		if (scores.leftPlayerScore >= 5 || scores.rightPlayerScore >= 5)
 		{
+			Game.endMatch = new Date();
 			Game.ballVelocity.x = 0;
 			Game.ballVelocity.y = 0;
 			let isWin;
+			let scoresText = scores.leftPlayerScore + "-" + scores.rightPlayerScore;
+			let timeMatch = Game.startMatch - Game.endMatch;
+			let winner;
+			if (scores.leftPlayerScore >= 5)
+				winner = username1;
+			else
+				winner = username2;
+			if (Game.modeGame != "tournament-multi-local")
+				await putHistoryMatches(Game.username1, Game.heroPowerPlayer1, Game.username2, Game.heroPowerPlayer2, scoresText, Game.numberGameBreaker, Game.echangeLong, timeMatch, winner, Game.superPower)
 			if (scores.leftPlayerScore >= 5)
 			{
 				if (Game.modeGame == "tournament-multi-local")
@@ -263,6 +275,7 @@ function paddleMiniCollision(paddle, direction, Game)
 
 function paddleCollision(paddle, direction, Game)
 {
+	Game.incrementEchange++;
 	if (Game.originalBallVelocityX != 0)
 	{
 		Game.ballVelocity.x = Game.originalBallVelocityX;

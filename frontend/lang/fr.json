@@ -56,5 +56,7 @@
 	"continue-tournament": "Continuer le tournoi",
 	"new-tournament": "Nouveau tournoi",
 	"user-online": "Joueurs en ligne",
-	"follow": "Suivre"
+	"follow": "Suivre",
+	"historic-game": "Voir historique des matches",
+	"history-game-title": "Historique des matches"
 }

@@ -3,12 +3,14 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.utils.timezone import now
+from datetime import date
 
 
 class User(AbstractUser):
     profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
     isConnect = models.BooleanField(default=False)
     friends = models.ManyToManyField("self", related_name='user_friends', blank=True, symmetrical=False)
+    match_history = ArrayField(models.JSONField(), default=list)
 
     def add_friend(self, friend):
         if friend != self and not self.is_friend(friend):
@@ -30,6 +32,7 @@ class GameStatsLocal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="game_stats")
     scores = ArrayField(models.CharField(max_length=50), default=list)
     resultats = ArrayField(models.CharField(max_length=10), default=list)
+    dates = ArrayField(models.DateField(default=date.today), blank=True, default=list)
     numberSimpleMatch = models.IntegerField(default=0)
     numberVictorySimpleMatch = models.IntegerField(default=0)
     numberTournament = models.IntegerField(default=0)
@@ -71,4 +74,17 @@ class MatchUser(models.Model):
     modeGame = models.CharField(max_length=40, default="multiPlayerTwo")
     superPower = models.CharField(max_length=20, default="isSuperPower")
     courtColor = models.CharField(max_length=8, default="0xCF5A30")
+
+class MatchHistoryUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="match_history_user")
+    username1 = models.CharField(max_length=20, default="Player1")
+    username2 = models.CharField(max_length=20, default="Player2")
+    heroPlayer1 = models.CharField(max_length=20, default="Invisible")
+    heroPlayer2 = models.CharField(max_length=20, default="Super strength")
+    numberGameBreaker = models.IntegerField(default=0)
+    echangeLong = models.IntegerField(default=0)
+    dureeMatch = models.IntegerField(default=0)
+    vainqueur = models.CharField(max_length=20, default="Player1")
+    dates = models.DateField(default=date.today)
+    isSuperPower = models.CharField(max_length=20, default="isSuperPower")
     

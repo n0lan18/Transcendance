@@ -49,6 +49,7 @@ from myapp.views import GameStatsLocalByIdView
 from myapp.views import CreateTournamentBasicView
 from myapp.views import MatchInfoView
 from myapp.views import GameStatsLocalListUpdateView
+from myapp.views import MatchHistoryUserView
 
 urlpatterns = [ 
     path('api/admin/', admin.site.urls),
@@ -82,6 +83,7 @@ urlpatterns = [
     path('api/gamestats-friend/<int:user_id>/', GameStatsLocalByIdView.as_view(), name='gamestats-by-id'),
     path('api/match-user-info/', MatchInfoView.as_view(), name='match-userinfo'),
     path('api/gamestats-update-list/', GameStatsLocalListUpdateView.as_view(), name='gamestats-update-list'),
+    path('api/history-games/', MatchHistoryUserView.as_view(), name='match-history'),
 ]
 
 if settings.DEBUG:

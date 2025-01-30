@@ -121,6 +121,7 @@ function specialShotComputerPlayer1(Game)
 			{
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
 				{
+					Game.numberGameBreaker++;
 					Game.powerPlayer1 = "active";
 					const gameBreakerLeft = document.getElementById("power-container-left");
 					Game.containerProgressBarLeft.style.backgroundColor = "green";
@@ -139,8 +140,9 @@ function specialShotComputerPlayer2(Game)
 		window.addEventListener('keypress', (event) => {
 			if (event.key === "0" && (Game.typeOfGame == "multiplayer"))
 			{
-					if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
+				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
 				{
+					Game.numberGameBreaker++;
 					Game.powerPlayer2 = "active";
 					const gameBreakerLeft = document.getElementById("power-container-right");
 					Game.containerProgressBarRight.style.backgroundColor = "green";

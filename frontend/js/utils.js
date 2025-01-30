@@ -493,6 +493,101 @@ export async function getTournamentBasicInfo()
 	}
 }
 
+export async function getHistoryMatches()
+{
+	try
+	{
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (!jwtToken) {
+			console.error('No token found in localStorage');
+			loadAuthentificationPage();
+			return null;
+		}
+
+		const response = await fetch('api/history-games/', {
+				method: 'GET',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				}
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			return (data);
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}	
+}
+
+export async function putHistoryMatches(username1, superPower1, username2, superPower2, scores, numberGameBreaker, echangeLong, dureeMatch, vainqueur, isSuperPower)
+{
+	const data = {
+		username1: username1,
+		username2: username2,
+		superPower1: superPower1,
+		superPower2, superPower2,
+		scores: scores,
+		numberGameBreaker: numberGameBreaker,
+		echangeLong: echangeLong,
+		dureeMatch: dureeMatch,
+		vainqueur: vainqueur,
+		isSuperPower: isSuperPower
+	}
+	console.log(data);
+	try
+	{
+		const jwtToken = localStorage.getItem('jwt_token');
+		if (!jwtToken) {
+			console.error('No token found in localStorage');
+			loadAuthentificationPage();
+			return null;
+		}
+		const response = await fetch('api/history-games/', {
+				method: 'PUT',
+				headers: {
+					'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			});
+		
+		if (response.ok) {
+			let data = await response.json();
+			return (data);
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch user info:', response.statusText);
+			return null;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		return null;
+	}	
+}
+
 export async function getTournamentInfoBasic()
 {
 	try

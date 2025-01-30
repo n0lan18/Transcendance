@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, GameStatsLocal, TournamentUser, MatchUser
+from .models import User, GameStatsLocal, TournamentUser, MatchUser, MatchHistoryUser
 from pathlib import os
 from django.conf import settings
 import random
@@ -7,7 +7,7 @@ import random
 class GameStatsLocalSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameStatsLocal
-        fields = ['user', 'scores', 'resultats', 'numberSimpleMatch', 'numberVictorySimpleMatch', 'numberTournament', 'numberMatchTournament', 'numberVictoryMatchTournament', 'numberVictoryTournament', 'heroInvisible', 'heroDuplication', 'heroSuperstrength', 'heroTimelaps', 'numberGoalsWin', 'numberGoalLose', 'bestResultTournament']
+        fields = ['user', 'scores', 'resultats', 'dates', 'numberSimpleMatch', 'numberVictorySimpleMatch', 'numberTournament', 'numberMatchTournament', 'numberVictoryMatchTournament', 'numberVictoryTournament', 'heroInvisible', 'heroDuplication', 'heroSuperstrength', 'heroTimelaps', 'numberGoalsWin', 'numberGoalLose', 'bestResultTournament']
         read_only_fields = ['user']
 
 class FriendSerializer(serializers.ModelSerializer):
@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'profile_photo', 'isConnect', 'friends']
+        fields = ['id', 'username', 'email', 'password', 'profile_photo', 'isConnect', 'friends', 'match_history']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -76,4 +76,9 @@ class TournamentSerializer(serializers.ModelSerializer):
 class MatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchUser
+        fields = '__all__'
+
+class MatchHistoryUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MatchHistoryUser
         fields = '__all__'

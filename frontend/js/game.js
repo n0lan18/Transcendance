@@ -73,6 +73,11 @@ export class Game {
         this.tab = tab;
         this.tabNewRound = tabNewRound;
         this.gameState = "paused";
+        this.echangeLongueur = 0;
+        this.incrementEchange = 0;
+        this.numberGameBreaker = 0;
+        this.startMatch = 0;
+        this.endMatch = 0;
         this.init(colorPlayer1, colorPlayer2, colorCourt, superPower, containerId, modeGame, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, numberMatch, tab, tabNewRound);
     }
 
@@ -123,6 +128,7 @@ export class Game {
         this.tab = tab;
         this.tabNewRound = tabNewRound;
         this.gameState = "paused";
+        this.startMatch = new Date();
 
         this.renderer.setSize(this.dimensions.width, this.dimensions.height);
         this.container.appendChild(this.renderer.domElement);

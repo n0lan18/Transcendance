@@ -9,6 +9,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 from random import shuffle
 from rest_framework.exceptions import NotFound
+from datetime import datetime
 import re
 
 
@@ -22,6 +23,8 @@ from .serializers import TournamentSerializer
 from .models import OnlinePlayers
 from .models import MatchUser
 from .serializers import MatchSerializer
+from .models import MatchHistoryUser
+from .serializers import MatchHistoryUserSerializer
 
 class RegisterView(APIView):
 	permission_classes = [AllowAny]
@@ -290,6 +293,24 @@ class GameStatsLocalListUpdateView(APIView):
                     {"error": f"Invalid numberMatchTournament value: {data['numberMatchTournament']}."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+		
+        if "numberSimpleMatch" in data:
+            if (isinstance(data["numberSimpleMatch"], int) and data["numberSimpleMatch"] in {0, 1}):
+                game_stat.numberSimpleMatch += data["numberSimpleMatch"]
+            else:
+                return Response(
+                    {"error": f"Invalid numberSimpleMatch value: {data['numberSimpleMatch']}."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+					
+        if "numberVictorySimpleMatch" in data:
+            if (isinstance(data["numberVictorySimpleMatch"], int) and data["numberVictorySimpleMatch"] in {0, 1}):
+                game_stat.numberVictorySimpleMatch += data["numberVictorySimpleMatch"]
+            else:
+                return Response(
+                    {"error": f"Invalid numberSimpleMatch value: {data['numberSimpleMatch']}."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )			
 
         # Mise à jour des buts gagnés
         if "numberGoalsWin" in data:
@@ -344,6 +365,9 @@ class GameStatsLocalListUpdateView(APIView):
             game_stat.scores.append(data["scores"])
             while len(game_stat.scores) > 5:
                 game_stat.scores.pop(0)
+            game_stat.dates.append(datetime.now().date())
+            while len(game_stat.dates) > 5:
+                game_stat.dates.pop(0)			
 
         # Sauvegarde des modifications
         game_stat.save()
@@ -798,3 +822,45 @@ class RemoveFriendView(APIView):
 			return Response({'message': f'{friend.username} a été supprime de votre liste d amis.'}, status=status.HTTP_200_OK)
 		except User.DoesNotExist:
 			return Response({'error': 'Aucun utilisateur trouvé avec cet ID.'}, status=status.HTTP_404_NOT_FOUND)
+		
+
+class MatchHistoryUserView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def get(self, request):
+		user = request.user
+        
+		matches = MatchHistoryUser.objects.filter(user=user)
+        
+		serializer = MatchHistoryUserSerializer(matches, many=True)
+        
+		return Response(serializer.data, status=status.HTTP_200_OK)		
+
+	def put(self, request):
+		user = request.user
+
+		username1 = request.data.get("username1")
+		username2 = request.data.get("username2")
+		heroPlayer1 = request.data.get("heroPlayer1")
+		heroPlayer2 = request.data.get("heroPlayer2")
+		numberGameBreaker = request.data.get("numberGameBreaker")
+		echangeLong = request.data.get("echangeLong")
+		dureeMatch = request.data.get("dureeMatch")
+		vainqueur = request.data.get("vainqueur")
+		dates = request.data.get("dates")
+		isSuperPower = request.data.get("isSuperPower")
+
+		MatchHistoryUser.objects.create(
+            user=user,
+            username1=username1,
+            username2=username2,
+            heroPlayer1=heroPlayer1,
+            heroPlayer2=heroPlayer2,
+            numberGameBreaker=numberGameBreaker,
+            echangeLong=echangeLong,
+            dureeMatch=dureeMatch,
+            vainqueur=vainqueur,
+            dates=dates,  # assurez-vous que "dates" est une date valide
+            isSuperPower=isSuperPower
+        )
+		return Response({"message": "Match créé avec succès."}, status=status.HTTP_201_CREATED)

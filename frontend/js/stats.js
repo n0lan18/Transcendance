@@ -3,6 +3,7 @@ import { getStatsInfoAll, getStatsInfoAllById } from "./utils.js";
 import { loadContent } from "./utils.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { translation } from "./translate.js";
+import { loadHistoryGamePage } from "./historic-game-page.js";
 
 export async function loadStatsPage(userStat)
 {
@@ -20,6 +21,10 @@ export async function loadStatsPage(userStat)
 	else
 		loadContent(document.getElementById('app'), statsHTML, "stats-perso", true, 'Stats Page Perso', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
 	document.getElementById("app").innerHTML = generateStatsPageHTML(userStatsInfoAll);
+
+	if (userStat)
+		document.getElementById("btn-HistoricMatches").remove();
+
 	translation();
 
 	addNavigatorEventListeners()
@@ -44,6 +49,7 @@ window.addEventListener('popstate', async function(event) {
 
 export function  addEventListenerStats(userStatsInfoAll)
 {
+
 	let imageHero;
 	let powerHero;
 
@@ -78,13 +84,18 @@ export function  addEventListenerStats(userStatsInfoAll)
 	const textPlayer = document.getElementById("superhero-power-text-player1");
 	textPlayer.textContent = powerHero;
 
+	const buttonSeeHistoricMatchPage = document.getElementById("send-historic-page-button");
+	if (buttonSeeHistoricMatchPage)
+	{
+		buttonSeeHistoricMatchPage.addEventListener('clic', function(event) {
+			event.preventDefault();
+			loadHistoryGamePage();
+		});
+	}
+
+
 	let numberVictory = userStatsInfoAll.numberVictoryMatchTournament + userStatsInfoAll.numberVictorySimpleMatch;
 	let numberDefeat =  (userStatsInfoAll.numberSimpleMatch + userStatsInfoAll.numberMatchTournament)- numberVictory;
-	console.log((userStatsInfoAll.numberMatchTournament))
-	console.log(userStatsInfoAll.numberSimpleMatch)
-	console.log(numberDefeat);
-	console.log(numberVictory);
-	console.log((userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch))
 
 	const ctx1 = document.getElementById('myDonutChart1').getContext('2d');
 	let myDonutChart1;
@@ -173,10 +184,10 @@ function addLastMatchesAndResultats(userStatsInfoAll)
 			<div class="scoresAndResultats">
 				<h3>${userStatsInfoAll.scores[i]}</h3>
 				<h3 class="resultatsStatsMatches" style="background-color: ${backgroundColor};">${userStatsInfoAll.resultats[i]}</h3>
+				<p>${userStatsInfoAll.dates[i]}</p>
 			</div>
 		`
 	}
-	console.log("content " + content);
 	if (content == "")
 	{
 		content += `
@@ -190,9 +201,11 @@ function addLastMatchesAndResultats(userStatsInfoAll)
 
 function generateBodyStatsPageHTML(userStatsInfoAll)
 {
-	let numberVictory = userStatsInfoAll.numberVictoryMatchTournament + userStatsInfoAll.numberVictorySimpleMatch;
-	let numberDefeat = (userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch) - numberVictory;
-
+	const numberVictory = userStatsInfoAll.numberVictoryMatchTournament + userStatsInfoAll.numberVictorySimpleMatch;
+	const numberDefeat = (userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch) - numberVictory;
+	const ratioGame = (numberVictory / numberDefeat).toFixed(2)
+	const ratioGoals = (userStatsInfoAll.numberGoalsWin / userStatsInfoAll.numberGoalLose).toFixed(2)
+	const totalMatch = userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch
 	let partTournamentStr;
 	switch (userStatsInfoAll.bestResultTournament)
 	{
@@ -233,7 +246,7 @@ function generateBodyStatsPageHTML(userStatsInfoAll)
 				</div>
 				<div class="totalMatches" id="totalMatches">
 					<h2 data-translate-key="totalMatches"></h2>
-					<h2>${userStatsInfoAll.numberMatchTournament + userStatsInfoAll.numberSimpleMatch}</h2>
+					<h2>${totalMatch}</h2>
 				</div>
 				<div class="bestScoreTournament" id="bestScoreTournament">
 					<h2 data-translate-key="bestScoreTournament"></h2>
@@ -245,6 +258,9 @@ function generateBodyStatsPageHTML(userStatsInfoAll)
 				<div class="resultsLastMatches" id="resultsLastMatches">
 				</div>
 			</div>
+			<div class="btn-HistoricMatches" id="btn-HistoricMatches">
+				<input id="send-historic-page-button" data-translate-key="historic-game" value="" class="btn btn-primary btn-block mb-4 send-historic-game-button" style="width: 100%;">
+			</div>
 			<div class="graphics" id="graphics">
 				<div class="victoryDefeat" id="victoryDefeat">
 					<h2 data-translate-key="victoryDefeat"></h2>
@@ -252,7 +268,7 @@ function generateBodyStatsPageHTML(userStatsInfoAll)
         				<canvas id="myDonutChart1"></canvas>
     				</div>
 					<h3 data-translate-key="ratio"></h3>
-					<h3>${numberVictory / numberDefeat}</h3>
+					<h3>${ratioGame}</h3>
 				</div>
 				<div class="victoryDefeat" id="victoryDefeat">
 					<h2 data-translate-key="goalScoresGoalConceded"></h2>
@@ -260,7 +276,7 @@ function generateBodyStatsPageHTML(userStatsInfoAll)
         				<canvas id="myDonutChart2"></canvas>
     				</div>
 					<h3 data-translate-key="ratio"></h3>
-					<h3>${userStatsInfoAll.numberGoalsWin / userStatsInfoAll.numberGoalLose}</h3>
+					<h3>${ratioGoals}</h3>
 				</div>
 			</div>
 		</div>
