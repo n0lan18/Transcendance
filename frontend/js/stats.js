@@ -17,13 +17,13 @@ export async function loadStatsPage(userStat)
 	let statsHTML = generateStatsPageHTML(userStatsInfoAll);	
 
 	if (userStat)
+	{
+		document.getElementById("btn-HistoricMatches").remove();
 		loadContent(document.getElementById('app'), statsHTML, "stats-friend", true, 'Stats Page Friend', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
+	}
 	else
 		loadContent(document.getElementById('app'), statsHTML, "stats-perso", true, 'Stats Page Perso', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
 	document.getElementById("app").innerHTML = generateStatsPageHTML(userStatsInfoAll);
-
-	if (userStat)
-		document.getElementById("btn-HistoricMatches").remove();
 
 	translation();
 
@@ -84,16 +84,6 @@ export function  addEventListenerStats(userStatsInfoAll)
 	const textPlayer = document.getElementById("superhero-power-text-player1");
 	textPlayer.textContent = powerHero;
 
-	const buttonSeeHistoricMatchPage = document.getElementById("send-historic-page-button");
-	if (buttonSeeHistoricMatchPage)
-	{
-		buttonSeeHistoricMatchPage.addEventListener('clic', function(event) {
-			event.preventDefault();
-			loadHistoryGamePage();
-		});
-	}
-
-
 	let numberVictory = userStatsInfoAll.numberVictoryMatchTournament + userStatsInfoAll.numberVictorySimpleMatch;
 	let numberDefeat =  (userStatsInfoAll.numberSimpleMatch + userStatsInfoAll.numberMatchTournament)- numberVictory;
 
@@ -121,6 +111,16 @@ export function  addEventListenerStats(userStatsInfoAll)
 	});
 
 	addLastMatchesAndResultats(userStatsInfoAll);
+
+	const buttonSeeHistoricMatchPage = document.getElementById("send-historic-page-button");
+	if (buttonSeeHistoricMatchPage)
+	{
+		console.log("PAPAPAPA")
+		buttonSeeHistoricMatchPage.addEventListener('click', (event) => {
+			event.preventDefault();
+			loadHistoryGamePage();
+		});
+	}
 }
 
 function addGraphics(data1, data2, label1, label2, ctx)

@@ -83,8 +83,9 @@ class MatchHistoryUser(models.Model):
     heroPlayer2 = models.CharField(max_length=20, default="Super strength")
     numberGameBreaker = models.IntegerField(default=0)
     echangeLong = models.IntegerField(default=0)
-    dureeMatch = models.IntegerField(default=0)
+    dureeMatch = models.FloatField(default=0.0)
     vainqueur = models.CharField(max_length=20, default="Player1")
     dates = models.DateField(default=date.today)
     isSuperPower = models.CharField(max_length=20, default="isSuperPower")
+    scores = models.CharField(max_length=50, default="0-0")
     

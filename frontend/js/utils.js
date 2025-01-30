@@ -539,8 +539,8 @@ export async function putHistoryMatches(username1, superPower1, username2, super
 	const data = {
 		username1: username1,
 		username2: username2,
-		superPower1: superPower1,
-		superPower2, superPower2,
+		heroPlayer1: superPower1,
+		heroPlayer2: superPower2,
 		scores: scores,
 		numberGameBreaker: numberGameBreaker,
 		echangeLong: echangeLong,

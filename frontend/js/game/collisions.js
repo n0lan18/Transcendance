@@ -107,19 +107,22 @@ export async function handleCollisions(Game) {
 		Game.pause();
 		if (scores.leftPlayerScore >= 5 || scores.rightPlayerScore >= 5)
 		{
+			console.log(Game.startMatch)
 			Game.endMatch = new Date();
+			console.log(Game.endMatch)
 			Game.ballVelocity.x = 0;
 			Game.ballVelocity.y = 0;
 			let isWin;
 			let scoresText = scores.leftPlayerScore + "-" + scores.rightPlayerScore;
-			let timeMatch = Game.startMatch - Game.endMatch;
+			let timeMatch = Math.floor(Game.endMatch - Game.startMatch) / 60000;
+
 			let winner;
 			if (scores.leftPlayerScore >= 5)
-				winner = username1;
+				winner = Game.username1;
 			else
-				winner = username2;
+				winner = Game.username2;
 			if (Game.modeGame != "tournament-multi-local")
-				await putHistoryMatches(Game.username1, Game.heroPowerPlayer1, Game.username2, Game.heroPowerPlayer2, scoresText, Game.numberGameBreaker, Game.echangeLong, timeMatch, winner, Game.superPower)
+				await putHistoryMatches(Game.username1, Game.heroPowerPlayer1, Game.username2, Game.heroPowerPlayer2, scoresText, Game.numberGameBreaker, Game.echangeLongueur, timeMatch, winner, Game.superPower)
 			if (scores.leftPlayerScore >= 5)
 			{
 				if (Game.modeGame == "tournament-multi-local")

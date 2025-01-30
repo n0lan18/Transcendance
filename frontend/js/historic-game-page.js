@@ -1,13 +1,15 @@
-import { addNavigatorEventListeners } from "./eventListener/navigator";
-import { translation } from "./translate";
+import { addNavigatorEventListeners } from "./eventListener/navigator.js";
+import { generateNavigator } from "./nav.js";
+import { translation } from "./translate.js";
+import { getHistoryMatches, loadContent } from "./utils.js";
 
 export async function loadHistoryGamePage()
 {
-    let historicGameHTML = generateHistoricGamePage(userStatsInfoAll);	
+    let historicGameHTML = generateHistoricGamePage();	
 
     loadContent(document.getElementById('app'), historicGameHTML, "history-game", true, 'History Game Page', translation, addNavigatorEventListeners, addEventListenerHistoricGame);
    
-    document.getElementById("app").innerHTML = generateHistoricGamePage(userStatsInfoAll);
+    document.getElementById("app").innerHTML = generateHistoricGamePage();
 
     translation();
 
@@ -53,6 +55,9 @@ async function addEventListenerHistoricGame()
                 break ;
         }
 
+        console.log(imagePlayer1);;
+        console.log(imagePlayer2)
+
 		return `
 			<div class="friends-line" id="friends-line${index + 1}">
                 <div class="indexMatch" id="indexMatch">
@@ -70,9 +75,10 @@ async function addEventListenerHistoricGame()
             	</div>
 			</div>
 		`;
-		};
+	};
 
     const historyMatches = await getHistoryMatches();
+    console.log(historyMatches)
     for (let i = 0; i < historyMatches.length; i++)
     {
         const listHistory = document.getElementById("list-history-game-container");
@@ -80,8 +86,8 @@ async function addEventListenerHistoricGame()
         {
             const friendsLine = document.createElement("div");
             friendsLine.className = "friends-line";
-            friendsLine.id = `friends-line${index + 1}`;
-            let matchListHTML = matchesTemplate(i, historyMatches[i].imagePlayer1, historyMatches[i].username1, historyMatches[i].scores, historyMatches[i].username2, historyMatches[i].imagePlayer2); 
+            friendsLine.id = `friends-line${i + 1}`;
+            let matchListHTML = matchesTemplate(i, historyMatches[i].heroPlayer1, historyMatches[i].username1, historyMatches[i].scores, historyMatches[i].username2, historyMatches[i].heroPlayer2); 
             friendsLine.innerHTML = matchListHTML;
             listHistory.appendChild(friendsLine);
             const buttonPageMatch = document.getElementById(`game-page-button${i + 1}`);

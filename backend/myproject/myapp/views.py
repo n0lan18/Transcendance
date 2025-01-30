@@ -11,6 +11,7 @@ from random import shuffle
 from rest_framework.exceptions import NotFound
 from datetime import datetime
 import re
+from datetime import date
 
 
 from .models import User
@@ -847,8 +848,9 @@ class MatchHistoryUserView(APIView):
 		echangeLong = request.data.get("echangeLong")
 		dureeMatch = request.data.get("dureeMatch")
 		vainqueur = request.data.get("vainqueur")
-		dates = request.data.get("dates")
+		dates = date.today()
 		isSuperPower = request.data.get("isSuperPower")
+		scores = request.data.get("scores")
 
 		MatchHistoryUser.objects.create(
             user=user,
@@ -860,7 +862,8 @@ class MatchHistoryUserView(APIView):
             echangeLong=echangeLong,
             dureeMatch=dureeMatch,
             vainqueur=vainqueur,
-            dates=dates,  # assurez-vous que "dates" est une date valide
-            isSuperPower=isSuperPower
+            dates=dates,
+            isSuperPower=isSuperPower,
+			scores=scores
         )
 		return Response({"message": "Match créé avec succès."}, status=status.HTTP_201_CREATED)
