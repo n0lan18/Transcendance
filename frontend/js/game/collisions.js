@@ -81,8 +81,8 @@ export async function handleCollisions(Game) {
 
 	// Réinitialisation si la balle sort des limites latérales
 	if (Game.ball.position.x > 25 || Game.ball.position.x < -25) {
-		Game.echangeLongueur = Game.incrementEchange;
-		Game.incrementEchange = 0;
+		if (Game.numberPaddelCollision > Game.echangeLongueur)
+			Game.echangeLongueur = Game.numberPaddelCollision;
 		Game.scene.remove(Game.ballReplica);
 		Game.scene.remove(Game.trail);
 		let xBall = 0;
@@ -114,7 +114,7 @@ export async function handleCollisions(Game) {
 			Game.ballVelocity.y = 0;
 			let isWin;
 			let scoresText = scores.leftPlayerScore + "-" + scores.rightPlayerScore;
-			let timeMatch = Math.floor(Game.endMatch - Game.startMatch) / 60000;
+			let timeMatch = Game.endMatch - Game.startMatch;
 
 			let winner;
 			if (scores.leftPlayerScore >= 5)
@@ -278,7 +278,6 @@ function paddleMiniCollision(paddle, direction, Game)
 
 function paddleCollision(paddle, direction, Game)
 {
-	Game.incrementEchange++;
 	if (Game.originalBallVelocityX != 0)
 	{
 		Game.ballVelocity.x = Game.originalBallVelocityX;

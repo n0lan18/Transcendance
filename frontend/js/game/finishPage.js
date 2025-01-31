@@ -1,11 +1,11 @@
 import { loadHomePage } from "../home.js";
 import { loadPreparationSimpleMatchGamePage } from "../preparation-simple-match-game-page.js";
 import { translation } from "../translate.js";
-import { getMatchInfo, loadContent } from "../utils.js";
+import { getHistoryMatches, getMatchInfo, loadContent } from "../utils.js";
 
 export async function loadFinishPage()
 {
-	const finishPage = finishPageHTML();
+	const finishPage = await finishPageHTML();
 
 	loadContent(document.getElementById("app"), finishPage, "finish-page-single-match", true, 'Finish Page Single match', translation, "", addEventListenerFinishPageSimpleMatch);
 	document.getElementById("app").innerHTML = finishPage;
@@ -41,7 +41,7 @@ function addEventListenerFinishPageSimpleMatch()
 	});
 }
 
-export function finishPageHTML()
+export async function finishPageHTML()
 {
 	let GameStr;
 	const lang = localStorage.getItem('language') || 'en';
@@ -51,10 +51,64 @@ export function finishPageHTML()
 		GameStr = `¡Felicitaciones! ¡El partido ha terminado!`
 	else if (lang == "fr")
 		GameStr = `Felicitations ! Le match est termine`
+
+	const matchData = await getHistoryMatches();
+	console.log(matchData);
+	console.log(matchData.length);
+	console
+
+	let totalSecondes = matchData[matchData.length - 1].dureeMatch / 1000
+	let minute = Math.floor(totalSecondes / 60);
+	let seconds = (totalSecondes % 60).toFixed(0);
+
+	const heroImages = {
+		"Invisible": "../images/super1.png",
+		"Duplication": "../images/super2.png",
+		"Super strength": "../images/super3.png",
+		"Time laps": "../images/super4.png"
+	};
+
+	const imagePlayer1 = heroImages[matchData[matchData.length - 1].heroPlayer1] || "../images/default.png";
+	const imagePlayer2 = heroImages[matchData[matchData.length - 1].heroPlayer2] || "../images/default.png";
+
 	return `
 		<div class="finish-page" id="finish-page">
 			<h1 data-translate-key="finish"></h1>
 			<h2>${GameStr}</h2>
+			<div class="endmatch-container" id="endmatch-container">
+                <div class="recap-match-finish-page">
+                    <div class="recap-match-finish" id="recap-match">
+                        <div class="recap-match-user1">
+                            <img id="img-friends1" class="superhero-image" src="${imagePlayer1}" alt="Profile image" style="width: 100px; height: 100px; border-radius: 10px;">
+                            <h2 style="margin-left: 5px;">${matchData[matchData.length - 1].username1 || "Unknown Player 1"}</h2>
+                        </div>
+                        <h2 class="recap-match-scores">${matchData[matchData.length - 1].scores || "0-0"}</h2>
+                        <div class="recap-match-user2">
+                            <h2 style="margin-right: 5px;">${matchData[matchData.length - 1].username2 || "Unknown Player 2"}</h2>
+                            <img id="img-friends2" class="superhero-image" src="${imagePlayer2}" alt="Profile image" style="width: 100px; height: 100px; border-radius: 10px;">
+                        </div>
+                    </div>
+                    <h3 class="date-match-stats">${matchData[matchData.length - 1].dates || "1/1/2025"}</h3>
+                </div>
+                <div class="statspart-match-page">
+                    <div class="statspart">
+                        <h2 data-translate-key="winner"></h2>
+                        <h3>${matchData[matchData.length - 1].vainqueur || "Player1"}</h3>
+                    </div>
+                    <div class="statspart">
+                        <h2 data-translate-key="duration-match"></h2>
+                        <h3>${minute + "min " + seconds + "sec" || "0min 0sec"}</h3>
+                    </div>
+                    <div class="statspart">
+                        <h2 data-translate-key="longest-rally"></h2>
+                        <h3>${matchData[matchData.length - 1].echangeLong || "0"}</h3>
+                    </div>
+                    <div class="statspart">
+                        <h2 data-translate-key="number-gamebreaker"></h2>
+                        <h3>${matchData[matchData.length - 1].numberGameBreaker || "0"}</h3>
+                    </div>
+                </div>
+            </div>
 			<div class="button-finish-page">
 				<button id="home-button-end-party" class="solo-player-simple-match-button">
 					<i class="fa-solid fa-house home-button-finish-page" style="font-size: 100px; color: white"></i>

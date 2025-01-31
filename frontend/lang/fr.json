@@ -58,5 +58,10 @@
 	"user-online": "Joueurs en ligne",
 	"follow": "Suivre",
 	"historic-game": "Voir historique des matches",
-	"history-game-title": "Historique des matches"
+	"history-game-title": "Historique des matches",
+	"stat-match": "Statistiques de match",
+	"longest-rally": "Echange le plus long",
+	"duration-match": "Duree du match",
+	"number-gamebreaker": "Nombre de gamebreakers",
+	"winner": "Le vainqueur"
 }

@@ -372,8 +372,8 @@ function generateBodyProfilePageHTML()
 			<div class="profile-image-update-container">
 				<h2 data-translate-key="updateProfilImage"></h2>
     			<form class="profile-form" id="profileForm" enctype="multipart/form-data">
-					<input type="file" class="profile-picture" id="profile_picture" name="profile_picture" accept="image/*" required/>
-					<button class="btn btn-success btn-block mb-4 update-image-button" id="update-image-button" data-translate-key="update" type="submit" style="width: 50%;"></button>
+					<input type="file" class="profile-picture button-send-profile" id="profile_picture" name="profile_picture" accept="image/*" required/>
+					<button class="btn btn-success btn-block mb-4 update-image-button button-send-profile" id="update-image-button" data-translate-key="update" type="submit"></button>
 				</form>
 			</div>
 			<div class="email-update-container" id="email-update-container">
@@ -381,10 +381,10 @@ function generateBodyProfilePageHTML()
 				<form class="email-form" id="emailForm">
 					<div class="email-place" id="emailPlace" data-mdb-input-init class="form-outline mb-4">
 						<div class="form-item">
-							<input type="text" id="emailUpdate" name="emailUpdate" autocomplete="email" data-translate-key="email" placeholder="" required class="form-control" style="width: 25%;"/>
+							<input type="text" id="emailUpdate" name="emailUpdate" autocomplete="email" data-translate-key="email" placeholder="" required class="form-control button-send-profile"/>
 						</div>
-						<div class="email-form-button">
-							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-email-button" style="width: 25%;">
+						<div class="button-send-profile">
+							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-email-button">
 							<span id="result-email-update"></span>
 						</div>
 					</div>
@@ -395,10 +395,10 @@ function generateBodyProfilePageHTML()
 				<form class="username-form" id="usernameForm">
 					<div class="username-place" id="usernamePlace" data-mdb-input-init class="form-outline mb-4">
 						<div class="form-item">
-							<input type="text" id="usernameUpdate" name="usernameUpdate" autocomplete="usernameUpdate" data-translate-key="username" placeholder="" required class="form-control" style="width: 25%;"/>
+							<input type="text" id="usernameUpdate" name="usernameUpdate" autocomplete="usernameUpdate" data-translate-key="username" placeholder="" required class="form-control button-send-profile"/>
 						</div>
-						<div class="username-form-button">
-							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-username-button" style="width: 25%;">
+						<div class="button-send-profile">
+							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-username-button">
 							<span id="result-username-update"></span>
 						</div>
 					</div>
@@ -428,8 +428,8 @@ function generateBodyProfilePageHTML()
 								<span data-translate-key="password3"></span>
 							</div>
 						</ul>
-						<div class="password-form-button">
-							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-password-button" style="width: 25%;">
+						<div class="button-send-profile">
+							<input type="submit" data-translate-key="updateInput" value="" class="btn btn-success btn-block mb-4" id="update-password-button">
 							<span id="result-password-update"></span>
 						</div>
 					</div>

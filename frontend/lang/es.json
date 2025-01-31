@@ -58,5 +58,10 @@
 	"user-online": "Jugadores en linea",
 	"follow": "Seguir",
 	"historic-game": "Ver juegos históricos",
-	"history-game-title": "Juegos de Historia"
+	"history-game-title": "Juegos de Historia",
+	"stat-match": "Estadísticas del partido",
+	"longest-rally": "Punto más largo",
+	"duration-match": "Duración del partido",
+	"number-gamebreaker": "Number of gamebreakers",
+	"winner": "El ganador"
 }

@@ -1,7 +1,10 @@
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
 import { generateNavigator } from "./nav.js";
+import { loadPageMatch } from "./page-stats-match.js";
 import { translation } from "./translate.js";
 import { getHistoryMatches, loadContent } from "./utils.js";
+
+window.idMatchStat = 0;
 
 export async function loadHistoryGamePage()
 {
@@ -14,9 +17,14 @@ export async function loadHistoryGamePage()
     translation();
 
     addNavigatorEventListeners()
-
-    addEventListenerHistoricGame()
 }
+
+window.addEventListener('popstate', async function(event) {
+    if (event.state && event.state.page) {
+        if (this.window.location.pathname === "/history-game")
+            loadContent(this.document.getElementById("app"), event.state.page, '', false, 'History Game Page', translation, addNavigatorEventListeners, addEventListenerHistoricGame);
+    }
+});
 
 async function addEventListenerHistoricGame()
 {
@@ -55,25 +63,24 @@ async function addEventListenerHistoricGame()
                 break ;
         }
 
-        console.log(imagePlayer1);;
-        console.log(imagePlayer2)
-
 		return `
-			<div class="friends-line" id="friends-line${index + 1}">
                 <div class="indexMatch" id="indexMatch">
                     <h1>${index + 1}</h1>
                 </div>
-				<div class="img-username-user" id="img-username-user">
-					<img id="img-friends${index + 1}" class="superhero-image" src="${imagePlayer1}" alt="Profile image" style="width: 35px; height: 35px; border-radius: 10px;">
-					<h2>${username1}</h2>
-                    <h2>${scores}</h2>
-                    <h2>${username2}</h2>
-                    <img id="img-friends${index + 1}" class="superhero-image" src="${imagePlayer2}" alt="Profile image" style="width: 35px; height: 35px; border-radius: 10px;">
-				</div>	
+				<div class="recap-match" id="recap-match${index + 1}">
+                    <div class="recap-match-user1">
+					    <img id="img-friends${index + 1}" class="superhero-image" src="${imagePlayer1}" alt="Profile image" style="width: 35px; height: 35px; border-radius: 10px;">
+					    <h2 style="margin-left: 5px;">${username1}</h2>
+                    </div>
+                    <h2 class="recap-match-scores">${scores}</h2>
+                    <div class="recap-match-user2">
+                        <h2 style="margin-right: 5px;">${username2}</h2>
+                        <img id="img-friends${index + 1}" class="superhero-image" src="${imagePlayer2}" alt="Profile image" style="width: 35px; height: 35px; border-radius: 10px;">
+                    </div>
+                </div>	
 				<div class="page-match-button">
-                	<input id="game-page-button${index + 1}" value="Match" class="btn btn-primary btn-block mb-4 send-preparation-game-button" style="width: 30%;">
+                	<input id="game-page-button${index + 1}" value="Match" class="btn btn-primary btn-block mb-4 send-preparation-game-button" style="width: 100%;">
             	</div>
-			</div>
 		`;
 	};
 
@@ -85,16 +92,21 @@ async function addEventListenerHistoricGame()
         if (listHistory)
         {
             const friendsLine = document.createElement("div");
-            friendsLine.className = "friends-line";
-            friendsLine.id = `friends-line${i + 1}`;
+            friendsLine.className = "match-line";
+            friendsLine.id = `match-line${i + 1}`;
             let matchListHTML = matchesTemplate(i, historyMatches[i].heroPlayer1, historyMatches[i].username1, historyMatches[i].scores, historyMatches[i].username2, historyMatches[i].heroPlayer2); 
             friendsLine.innerHTML = matchListHTML;
             listHistory.appendChild(friendsLine);
             const buttonPageMatch = document.getElementById(`game-page-button${i + 1}`);
             if (buttonPageMatch)
             {
-                console.log("PageMAtch");
-                //loadPageMatch
+                buttonPageMatch.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    console.log("PageMAtch");
+                    window.idMatchStat = i;
+                    console.log(idMatchStat)
+                    loadPageMatch()
+                });
             }
         }
     }

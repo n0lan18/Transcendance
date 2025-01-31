@@ -499,16 +499,16 @@ function generateBodyPreparationGamePageHTML(username)
 				<h2 data-translate-key="environnement"></h2>
 				<div class="environnement-preparation-container-button">
 					<button id="environnement-preparation-container-button-orange" class="environnement-preparation-container-button-orange btn-court" style="border: 3px solid #ffffff; border-radius: 10px">
-						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/orange-court.png" alt="Orange court">
+						<img class="img-court-color" src="../images/orange-court.png" alt="Orange court">
 					</button>
 					<button id="environnement-preparation-container-button-dark-blue" class="environnement-preparation-container-button-dark-blue btn-court">
-						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/dark-blue-court.png" alt="Dark blue court">
+						<img class="img-court-color" src="../images/dark-blue-court.png" alt="Dark blue court">
 					</button>
 					<button id="environnement-preparation-container-button-light-blue" class="environnement-preparation-container-button-light-blue btn-court">
-						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/light-blue-court.png" alt="Light blue court">
+						<img class="img-court-color" src="../images/light-blue-court.png" alt="Light blue court">
 					</button>
 					<button id="environnement-preparation-container-button-green" class="environnement-preparation-container-button-green btn-court">
-						<img style="width: 100%; height: 100%; border-radius: 10px;" src="../images/green-court.png" alt="Green court">
+						<img class="img-court-color" src="../images/green-court.png" alt="Green court">
 					</button>
 				</div>
 				<div class="environnement-preparation-random-button">

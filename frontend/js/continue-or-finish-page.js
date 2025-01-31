@@ -45,9 +45,9 @@ export async function addEventListenerContinueOrNewTournament()
 function ContinueOrFinishTournamentPageHTML()
 {
     return `
-        <div class="finish-page" id="finish-page">
+        <div class="finish-page-tournament" id="finish-page">
             <h1 data-translate-key="tournament"></h1>
-            <div class="button-finish-page">
+            <div class="continue-or-new-tournament-page">
                 <button id="continue-tournament-button" class="solo-player-simple-match-button">
                     <i class="fa-solid fa-arrow-right-to-bracket home-button-finish-page" style="font-size: 100px; color: white"></i>
                     <div class="item-name">

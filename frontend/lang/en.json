@@ -58,5 +58,10 @@
 	"user-online": "Players online",
 	"follow": "Follow",
 	"historic-game": "See history games",
-	"history-game-title": "History Games"
+	"history-game-title": "History Games",
+	"stat-match": "Match statistics",
+	"longest-rally": "Longest rally ",
+	"duration-match": "Duration match",
+	"winner": "The winner",
+	"number-gamebreaker": "Numbers of gamebreaker"
 }
