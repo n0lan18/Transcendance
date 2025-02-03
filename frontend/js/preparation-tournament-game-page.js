@@ -107,10 +107,7 @@ export async function addEventListenerPreparationTournament()
 				}
 			}
 			else
-			{
 				await putTournamentInfoBasic(courtColor, sizeTournament, superPower);
-				loadUsernamePlayersTournament();
-			}
 		});
 	}
 

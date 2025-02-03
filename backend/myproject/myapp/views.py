@@ -12,6 +12,7 @@ from rest_framework.exceptions import NotFound
 from datetime import datetime
 import re
 from datetime import date
+import html
 
 
 from .models import User
@@ -32,7 +33,28 @@ class RegisterView(APIView):
 	def post(self, request, *args, **kwargs):
 		serializer = UserSerializer(data=request.data)
 		if serializer.is_valid():
-			print(request.data)
+			if not request.data.get('email'):
+				return Response({"error": "No email provided"}, status=status.HTTP_400_BAD_REQUEST)
+			if User.objects.filter(email=request.data.get('email')).exists():
+				return Response({"exists": True, "message": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+			email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+			if not re.match(email_regex, request.data.get('email')):
+				return Response({"error": "Invalid email format"}, status=status.HTTP_400_BAD_REQUEST)
+			
+			if not request.data.get('username'):
+				return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+			if User.objects.filter(username=request.data.get('username')).exists():
+				return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+			username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+			if not re.match(username_regex, request.data.get('username')):
+				return Response({"error": "Invalid username format"}, status=status.HTTP_400_BAD_REQUEST)
+			
+			if not request.data.get('password'):
+				return Response({"error": "No password provided"}, status=status.HTTP_400_BAD_REQUEST)
+			password_regex = r"^(?=.*[a-zA-Z])(?=.*[0-9.#?!&]).{10,}$"
+			if not re.match(password_regex, request.data.get('password')):
+				return Response({"error": "Invalid password format"}, status=status.HTTP_400_BAD_REQUEST)
+
 			serializer.save() 
 			return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
 		else:
@@ -45,8 +67,21 @@ class LoginView(APIView):
 	def post(self, request, *args, **kwargs):
 		usernameOrEmail = request.data.get('emailUsername')
 		password = request.data.get('password')
+		safeUsernameOrEmail = html.escape(usernameOrEmail)
+		safePassword = html.escape(password)
+
+		if not safeUsernameOrEmail:
+			return Response({"error": "No username or email provided"}, status=status.HTTP_400_BAD_REQUEST)
+		email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+		if not re.match(email_regex, safeUsernameOrEmail):
+			username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+			if not re.match(username_regex, safeUsernameOrEmail):
+				return Response({"error": "Invalid username or email format"}, status=status.HTTP_400_BAD_REQUEST)
+			
+		if not safePassword:
+			return Response({"error": "No password provided"}, status=status.HTTP_400_BAD_REQUEST)
 		
-		user = authenticate(request, username=usernameOrEmail, password=password)
+		user = authenticate(request, username=safeUsernameOrEmail, password=safePassword)
 		if user is not None:
 			if not OnlinePlayers.objects.filter(user=user).exists():
 				OnlinePlayers.objects.create(user=user)
@@ -118,28 +153,46 @@ class CheckEmailView(APIView):
     
 	def post(self, request, *args, **kwargs):
 		data = request.data.get('data', {})
-		email = data.get('email', None)
-		print('Email: ', email)
-		if email:
-			if User.objects.filter(email=email).exists():
-				return Response({"exists": True, "message": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
-			else:
-				return Response({"exists": False, "message": "Email does not exist."}, status=status.HTTP_200_OK)
-		return Response({"error": "No email provided"}, status=status.HTTP_400_BAD_REQUEST)
+		email = data.get('email')
+		if not email:
+			return Response({"error": "No email provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+		safeEmail = html.escape(email)
+		if not safeEmail:
+			return Response({"error": "No email provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+		email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+		if not re.match(email_regex, safeEmail):
+			return Response({"error": "Invalid email format"}, status=status.HTTP_400_BAD_REQUEST)
+
+		if User.objects.filter(email=safeEmail).exists():
+			return Response({"exists": True, "message": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+		else:
+			return Response({"exists": False, "message": "Email does not exist."}, status=status.HTTP_200_OK)
+		
 			
 class CheckUsernameView(APIView):
 	permission_classes = [AllowAny]
 
 	def post(self, request, *args, **kwargs):
 		data = request.data.get('data', {})
-		username = data.get('username', None)
-		print('Username: ', username)
-		if username:
-			if User.objects.filter(username=username).exists():
-				return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
-			else:
-				return Response({"exists": False, "message": "Username does not exist."}, status=status.HTTP_200_OK)
-		return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+		username = data.get('username')
+		if not username:
+			return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+		safeUsername = html.escape(username)
+		if not safeUsername:
+			return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, safeUsername):
+			return Response({"error": "Invalid username format"}, status=status.HTTP_400_BAD_REQUEST)
+
+		if User.objects.filter(username=safeUsername).exists():
+			return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+		else:
+			return Response({"exists": False, "message": "Username does not exist."}, status=status.HTTP_200_OK)
+		
 
 
 class UpdateUsernameView(APIView):
@@ -147,16 +200,31 @@ class UpdateUsernameView(APIView):
 
 	def put(self, request):
 		username = request.data.get("username")
-		print('Username: ', username)
-		if username:
-			if User.objects.filter(username=username).exists():
-				return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
-			else:
-				request.user.username = username
-				request.user.save()
-				return Response({"message": "Username updated successfully."}, status=status.HTTP_200_OK)
-		else:
+		if not username:
 			return Response({"message": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
+		print('Username: ', username)
+		try:
+			safeUsername = html.escape(username)
+			print(f"Email échappé : {safeUsername}")			
+
+		except Exception as e:
+			return Response({"message": f"Error while processing email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+		if not safeUsername:
+			return Response({"message": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
+		
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, safeUsername):
+			return Response({"message": "Invalid username format."}, status=status.HTTP_400_BAD_REQUEST)
+		if User.objects.filter(username=safeUsername).exists():
+			return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
+		if User.objects.filter(email=safeUsername).exists():
+			return Response({"message": "Username already exist."}, status=status.HTTP_400_BAD_REQUEST)
+		else:
+			request.user.username = safeUsername
+			request.user.save()
+			return Response({"message": "Username updated successfully."}, status=status.HTTP_200_OK)
+			
 
 class UpdateIsConnectView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -177,42 +245,64 @@ class UpdateEmailView(APIView):
 
 	def put(self, request):
 		email = request.data.get("email")
-		print('Email: ', email)
-		if email:
-			if User.objects.filter(email=email).exists():
-				return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
-			else:
-				request.user.email = email
-				request.user.save()
-				return Response({"message": "Email updated successfully."}, status=status.HTTP_200_OK)
-		return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if not email:
+			return Response({"message": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+		print(email)
+		try:
+			safeEmail = html.escape(email)
+			print(f"Email échappé : {safeEmail}")
+
+		except Exception as e:
+			return Response({"message": f"Error while processing email: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+		if not safeEmail:
+			return Response({"message": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+		email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+		if not re.match(email_regex, safeEmail):
+			return Response({"message": "Invalid email format."}, status=status.HTTP_400_BAD_REQUEST)
+		if User.objects.filter(email=safeEmail).exists():
+			return Response({"message": "Email already exist."}, status=status.HTTP_400_BAD_REQUEST)
+		else:
+			request.user.email = safeEmail
+			request.user.save()
+			return Response({"message": "Email updated successfully."}, status=status.HTTP_200_OK)
 
 class UpdatePasswordView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
 		new_password = request.data.get("password")
-		print('Password: ', new_password)
-		if new_password:
-			user = request.user
-			user.set_password(new_password)
-			user.save()
-			return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
-		else:
+		if not new_password:
 			return Response({"message": "Password is required."}, status=status.HTTP_400_BAD_REQUEST)
+		print('Password: ', new_password)
+
+		password_regex = r"^(?=.*[a-zA-Z])(?=.*[0-9.#?!&]).{10,}$"
+		if not re.match(password_regex, new_password):
+			return Response({"error": "Invalid password format"}, status=status.HTTP_400_BAD_REQUEST)
+		user = request.user
+		user.set_password(new_password)
+		user.save()
+		return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
 
 class UpdateImageView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def put(self, request):
 		profile_photo = request.FILES.get('image', None)
+		if not profile_photo:
+			return Response({"message": "Image is required."}, status=status.HTTP_400_BAD_REQUEST)
+		
+		ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
+		ext = profile_photo.name.split('.')[-1].lower()
+		if ext not in ALLOWED_EXTENSIONS:
+			return Response({"message": "Invalid file extension"}, status=status.HTTP_400_BAD_REQUEST)
+
 		if profile_photo:
 			user = request.user
 			user.profile_photo = profile_photo
 			user.save()
 			return Response({"message": "Profile image updated successfully."}, status=status.HTTP_200_OK)
-		else:
-			return Response({"message": "Image is required."}, status=status.HTTP_400_BAD_REQUEST)
+			
 
 class UpdateIsConnectView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -535,17 +625,61 @@ class CreateTournamentView(APIView):
 		new_tournament_user = TournamentUser.objects.create(user=user)
 
 		tabPlayers = request.data.get('tabPlayers')
+		numberMatchPlayed = request.data.get('numberMatchPlayed')
+		courtColor = request.data.get('courtColor')
+		sizeTournament = request.data.get('sizeTournament')
+		superPower = request.data.get('superPower')
+
+		if not tabPlayers:
+			return Response({"error": "tabPlayers missing."}, status=status.HTTP_404_NOT_FOUND)
+		if not courtColor:
+			return Response({"error": "Court color missing."}, status=status.HTTP_404_NOT_FOUND)
+		if not sizeTournament:
+			return Response({"error": "SizeTournament missing."}, status=status.HTTP_404_NOT_FOUND)
+		if not superPower:
+			return Response({"error": "SuperPower missing."}, status=status.HTTP_404_NOT_FOUND)
+
 		if not isinstance(tabPlayers, list):
 			return Response({'error': 'tabPlayers must be a list'}, status=400)
 		shuffle(tabPlayers)
 		tabPlayersNewRound = []
 		if not isinstance(tabPlayersNewRound, list):
 			return Response({'error': 'tabPlayers must be a list'}, status=400)
-		numberMatchPlayed = request.data.get('numberMatchPlayed')
-		courtColor = request.data.get('courtColor')
-		sizeTournament = request.data.get('sizeTournament')
-		superPower = request.data.get('superPower')
-		
+		ALLOWED_COURT_COLOR = {"#CF5A30", "#043976", "#0183CB", "#689D63"}
+		ALLOWED_SIZE_TOURNAMENT = {4, 8, 16, 32}
+		ALLOWED_SUPERPOWER = {"isSuperPower", "isNotSuperPower"}
+		ALLOWED_POWER_PLAYER = {"Invisible", "Duplication", "Time laps", "Super strength"}
+
+		if courtColor not in ALLOWED_COURT_COLOR:
+			return Response({"error": "Invalid color court."}, status=status.HTTP_404_NOT_FOUND)
+		if sizeTournament not in ALLOWED_SIZE_TOURNAMENT:
+			return Response({"error": "Invalid size Tournament."}, status=status.HTTP_404_NOT_FOUND)
+		if superPower not in ALLOWED_SUPERPOWER:
+			return Response({"error": "Invalid Superpower."}, status=status.HTTP_404_NOT_FOUND)
+		if len(tabPlayers) != sizeTournament:
+			return Response({"error": "Invalid Member and sizeTournament."}, status=status.HTTP_404_NOT_FOUND)
+		for i, player in enumerate(tabPlayers):
+			if len(player) < 3:
+				return Response({"error": f"Player {i} data is incomplete"}, status=status.HTTP_400_BAD_REQUEST)
+			
+			username = tabPlayers[i][0]
+			power = tabPlayers[i][1]
+			colorPaddel = tabPlayers[i][2]
+			
+			if not username:
+				return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+			username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+			if not re.match(username_regex, username):
+				return Response({"error": "Invalid username format"}, status=status.HTTP_400_BAD_REQUEST)
+			if not power:
+				return Response({"error": "No power provided"}, status=status.HTTP_400_BAD_REQUEST)
+			if power not in ALLOWED_POWER_PLAYER:
+				return Response({"error": "Invalid Power Player."}, status=status.HTTP_404_NOT_FOUND)
+			if not colorPaddel:
+				return Response({"error": "No Color Paddel provided"}, status=status.HTTP_400_BAD_REQUEST)
+			colorPaddel_regex = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+			if not re.match(colorPaddel_regex, colorPaddel):
+				return Response({"error": "Invalid colorPaddel format"}, status=status.HTTP_400_BAD_REQUEST)
 		new_tournament_user.tabPlayers = tabPlayers
 		new_tournament_user.tabPlayersNewRound = tabPlayersNewRound
 		new_tournament_user.numberMatchPlayed = numberMatchPlayed
@@ -567,12 +701,9 @@ class CreateTournamentBasicView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def get(self, request):
-		print('request user', request.user)
-		
 		try:
 			tournament_user = TournamentUser.objects.get(user=request.user)
 		except TournamentUser.DoesNotExist:
-        	# Si l'utilisateur n'existe pas, tu renvoies une erreur 404 (Not Found)
 			return Response({"error": "TournamentUser not found for the given user."}, status=status.HTTP_404_NOT_FOUND)
 		if (tournament_user):
 			serialized = TournamentSerializer(tournament_user)
@@ -598,6 +729,21 @@ class CreateTournamentBasicView(APIView):
 		courtColor = request.data.get('courtColor')
 		sizeTournament = request.data.get('sizeTournament')
 		superPower = request.data.get('superPower')
+		if not courtColor:
+			return Response({"error": "Court color missing."}, status=status.HTTP_404_NOT_FOUND)
+		if not sizeTournament:
+			return Response({"error": "SizeTournament missing."}, status=status.HTTP_404_NOT_FOUND)
+		if not superPower:
+			return Response({"error": "SuperPower missing."}, status=status.HTTP_404_NOT_FOUND)
+		ALLOWED_COURT_COLOR = {"#CF5A30", "#043976", "#0183CB", "#689D63"}
+		ALLOWED_SIZE_TOURNAMENT = {4, 8, 16, 32}
+		ALLOWED_SUPERPOWER = {"isSuperPower", "isNotSuperPower"}
+		if courtColor not in ALLOWED_COURT_COLOR:
+			return Response({"error": "Invalid color court."}, status=status.HTTP_404_NOT_FOUND)
+		if sizeTournament not in ALLOWED_SIZE_TOURNAMENT:
+			return Response({"error": "Invalid size Tournament."}, status=status.HTTP_404_NOT_FOUND)
+		if superPower not in ALLOWED_SUPERPOWER:
+			return Response({"error": "Invalid Superpower."}, status=status.HTTP_404_NOT_FOUND)
 		
 		new_tournament_user.courtColor = courtColor
 		new_tournament_user.sizeTournament = sizeTournament
@@ -697,7 +843,28 @@ class InsertWinnerInTabNewRoundView(APIView):
 	def put(self, request):
 		user = request.user
 		tournament_user = TournamentUser.objects.get(user=user)
-		tournament_user.tabPlayersNewRound = request.data.get('tabPlayersNewRound')
+		tabNewRound = request.data.get('tabPlayersNewRound')
+		if not tabNewRound:
+			return Response({"error": "TabNewRound missing."}, status=status.HTTP_404_NOT_FOUND)
+		if not isinstance(tabNewRound, list):
+			return Response({"error": "Invalid type tabNewRound."}, status=status.HTTP_404_NOT_FOUND)
+		username = tabNewRound[-1][0]
+		power = tabNewRound[-1][1]
+		colorPaddel = tabNewRound[-1][2]
+		if not username:
+			return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, username):
+			return Response({"error": "No power provided"}, status=status.HTTP_400_BAD_REQUEST)
+		ALLOWED_POWER_PLAYER = {"Invisible", "Duplication", "Time laps", "Super strength"}
+		if power not in ALLOWED_POWER_PLAYER:
+			return Response({"error": "Invalid Power Player."}, status=status.HTTP_404_NOT_FOUND)
+		if not colorPaddel:
+			return Response({"error": "No Color Paddel provided"}, status=status.HTTP_400_BAD_REQUEST)
+		colorPaddel_regex = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+		if not re.match(colorPaddel_regex, colorPaddel):
+			return Response({"error": "Invalid colorPaddel format"}, status=status.HTTP_400_BAD_REQUEST)
+		tournament_user.tabPlayersNewRound = tabNewRound
 		tournament_user.numberMatchPlayed = tournament_user.numberMatchPlayed + 1
 		tournament_user.save()
 		return Response({"message": "Tournament insert winner successfull."}, status=status.HTTP_200_OK)
@@ -788,16 +955,18 @@ class AddFriendView(APIView):
 	def put(self, request):
 		user = request.user
 		friend_id = request.data.get('id')
-		
+
 		if not friend_id:
 			return Response({'error': 'friend_id est requis.'}, status=status.HTTP_400_BAD_REQUEST)
-		
+		if not isinstance(friend_id, int):
+			return Response({'error': 'Invalid id friend.'}, status=status.HTTP_400_BAD_REQUEST)
 		try:
 			friend = User.objects.get(id=friend_id)
 
 			if user == friend:
 				return Response({'error': 'Vous ne pouvez pas vous ajouter vous-même comme ami.'}, status=status.HTTP_400_BAD_REQUEST)
-
+			if user.friends.filter(id=friend.id).exists():
+				return Response({'error': 'Cet utilisateur est déjà votre ami.'}, status=status.HTTP_400_BAD_REQUEST)
 			user.add_friend(friend)
 			return Response({'message': f'{friend.username} a été ajouté comme ami.'}, status=status.HTTP_200_OK)
 		except User.DoesNotExist:
@@ -812,13 +981,16 @@ class RemoveFriendView(APIView):
 		
 		if not friend_id:
 			return Response({'error': 'friend_id est requis.'}, status=status.HTTP_400_BAD_REQUEST)
+		if not isinstance(friend_id, int):
+			return Response({'error': 'Invalid id friend.'}, status=status.HTTP_400_BAD_REQUEST)
 		
 		try:
 			friend = User.objects.get(id=friend_id)
 
 			if user == friend:
 				return Response({'error': 'Vous ne pouvez pas vous supprimer vous-même comme ami.'}, status=status.HTTP_400_BAD_REQUEST)
-
+			if not user.friends.filter(id=friend.id).exists():
+				return Response({'error': 'Cet utilisateur est pas votre ami.'}, status=status.HTTP_400_BAD_REQUEST)
 			user.remove_friend(friend)
 			return Response({'message': f'{friend.username} a été supprime de votre liste d amis.'}, status=status.HTTP_200_OK)
 		except User.DoesNotExist:

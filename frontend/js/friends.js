@@ -96,7 +96,6 @@ export async function addEventListenerFriendsPage()
 										await removeFriend(userInfo.friends[i].id)
 										removeElementWithDelay(`friends-line${i + 1}`, 1500);
 										userInfo = await getUserInfo();
-										console.log(userInfo);
 										if (userInfo.friends.length == 0)
 											listUsersOnlineContainer.innerHTML = `<h3 style="margin-top:10px">No friend yet</h3>`;
 									});

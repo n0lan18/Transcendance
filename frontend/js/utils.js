@@ -1,4 +1,6 @@
 import { loadAuthentificationPage } from "./auth.js";
+import { loadTournamentPresentation } from "./tournament-presentation.js";
+import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
 
 export function loadContent(appDiv, page, url, addToHistory, namePage, translate, eventListenerNavigator, eventListenerPage) {
 	appDiv.innerHTML = page;
@@ -323,7 +325,7 @@ export async function putTournamentInfo(tabPlayers, numberMatchPlayed, courtColo
 		if (response.ok) {
 			let updatedData = await response.json();
 			console.log("Updated Data:", JSON.stringify(updatedData));
-			return updatedData;
+			loadTournamentPresentation();
 		}
 		else if (response.status === 401)
 		{
@@ -423,7 +425,7 @@ export async function putTournamentInfoBasic(courtColor, sizeTournament, superPo
 		if (response.ok) {
 			let updatedData = await response.json();
 			console.log("Updated Data:", JSON.stringify(updatedData));
-			return updatedData;
+			loadUsernamePlayersTournament();
 		}
 		else if (response.status === 401)
 		{
@@ -1202,7 +1204,7 @@ export function sizeOfAdvance(fullSizePowerBar, emptySizePowerBar)
 
 export function isValidUsername(username)
 {
-	const regex = /^[a-zA-Z0-9@.+_-]+$/;
+	const regex = /^[a-zA-Z0-9@.+_-]{1,14}$/;
 	return regex.test(username);
 }
 

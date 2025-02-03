@@ -17,10 +17,7 @@ export async function loadStatsPage(userStat)
 	let statsHTML = generateStatsPageHTML(userStatsInfoAll);	
 
 	if (userStat)
-	{
-		document.getElementById("btn-HistoricMatches").remove();
 		loadContent(document.getElementById('app'), statsHTML, "stats-friend", true, 'Stats Page Friend', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
-	}
 	else
 		loadContent(document.getElementById('app'), statsHTML, "stats-perso", true, 'Stats Page Perso', translation, addNavigatorEventListeners, () => addEventListenerStats(userStatsInfoAll));
 	document.getElementById("app").innerHTML = generateStatsPageHTML(userStatsInfoAll);
@@ -49,7 +46,9 @@ window.addEventListener('popstate', async function(event) {
 
 export function  addEventListenerStats(userStatsInfoAll)
 {
-
+	if (window.location.path == "/stats-friend")
+		document.getElementById("btn-HistoricMatches").remove();
+	
 	let imageHero;
 	let powerHero;
 

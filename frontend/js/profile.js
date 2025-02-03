@@ -52,7 +52,6 @@ export function addEventListenerProfile()
 			const data = {
 				password: passwordInput.value,
 			};
-			console.log(data);
 
 			const letterRegex = /[a-zA-Z]/;
 			const numberOrSpecialCharRegex = /[0-9.#?!&]/;
@@ -118,7 +117,7 @@ export function addEventListenerProfile()
 	let emailRegister = document.getElementById("emailForm");
 	if (emailRegister)
 	{
-		emailRegister.addEventListener("submit", (event) =>
+		emailRegister.addEventListener("submit", async (event) =>
 		{
 			event.preventDefault();
 			const email = document.getElementById("emailUpdate");
@@ -128,10 +127,13 @@ export function addEventListenerProfile()
 
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,3}$/;
 			if (emailRegex.test(email.value))
-				checkEmailIfExist(data, email);
+			{
+				if (await checkEmailIfExist(data, email));
+					await updateDataToDatabase(data, "email")
+			}
 			else
 			{
-				let registerPlace = document.getElementById("RegisterPlace");
+				let registerPlace = document.getElementById("email-update-container");
 				if (document.getElementById("newEmailValidate"))
 					document.getElementById("newEmailValidate").remove();
 				if (!document.getElementById('badEmail'))
@@ -152,7 +154,7 @@ export function addEventListenerProfile()
 	let usernameUpdate = document.getElementById("usernameForm");
 	if (usernameUpdate)
 	{
-		usernameUpdate.addEventListener("submit", (event) =>
+		usernameUpdate.addEventListener("submit", async (event) =>
 		{
 			event.preventDefault();
 			let username = document.getElementById("usernameUpdate");
@@ -160,7 +162,7 @@ export function addEventListenerProfile()
 			const data = {
 				username: username,
 			}
-			checkUsernameIfExist(data, username);
+			await checkUsernameIfExist(data, username);
 		});
 	}
 }
@@ -193,6 +195,7 @@ async function updateImageToDatabase(data)
 async function updateDataToDatabase(data, typeData)
 {
 	try {
+		console.log(data)
 		let link;
 		if (typeData == "password")
 			link = "api/update-password/";
@@ -278,7 +281,7 @@ async function checkEmailIfExist(data, email)
 {
 	const dataCopy = data;
 	const csrftoken = getCookie('csrftoken');
-	fetch('api/check-email/', {
+	await fetch('api/check-email/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -310,8 +313,7 @@ async function checkEmailIfExist(data, email)
 		return response.json();
 	})
 	.then((data) => {
-		if (!data.exists)
-			updateDataToDatabase(dataCopy, "email")
+		return null;
 	})
 	.catch(error => {
 		console.error('Error:', error);

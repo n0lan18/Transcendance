@@ -105,7 +105,6 @@ async function addEventListenerUsernamePlayersTournament()
     const buttonSendEvent = async function(event) {
         event.preventDefault();
         await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
-        loadTournamentPresentation();
     }
 
     const addLinesPlayers = document.getElementById("username-players-line");
@@ -284,7 +283,6 @@ async function addEventListenerUsernamePlayersTournament()
                 tab[i][2] = stringsColorPlayer[Math.floor(Math.random() * stringsColorPlayer.length)];
             }
             await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
-            loadTournamentPresentation();
         });
     }
 }
