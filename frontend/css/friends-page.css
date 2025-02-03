@@ -115,6 +115,25 @@
 	font-size: 15px;
 }
 
+@media (orientation: portrait) and (max-width: 900px) {
+	.friends-container {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-direction: column;
+		width: 100%;
+		height: calc(80vh - 70px, 1028px);
+		max-width: 900px;
+		min-width: 510px;
+		max-height: 800px;
+		min-height: 400px;
+		margin-top: 100px;
+		margin-bottom: auto;
+		overflow-y: auto;
+		overflow-x: auto;	
+	}
+}
+
 @media screen and (orientation: landscape) and (max-width: 1024px) {
 	.message-change-orientation {
 		display: flex;

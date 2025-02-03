@@ -72,6 +72,10 @@ export async function finishPageHTML()
 	const imagePlayer2 = heroImages[matchData[matchData.length - 1].heroPlayer2] || "../images/default.png";
 
 	return `
+		<div class="message-change-orientation">
+			<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
+			<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
+		</div>
 		<div class="finish-page" id="finish-page">
 			<h1 data-translate-key="finish"></h1>
 			<h2>${GameStr}</h2>

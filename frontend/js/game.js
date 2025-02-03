@@ -185,11 +185,14 @@ export class Game {
                     self.scene.remove(model);
                 };
         });
-
+        console.log(this.camera)
         if (isMobileDevice())
             cameraMobile(this);
         else
-            document.getElementById("button-controller").style.display = "none";
+        {
+            document.getElementById("button-controller-right").style.display = "none";
+            document.getElementById("button-controller-left").style.display = "none";
+        }
         eventListener(this);
 
 		startCountdown(this);

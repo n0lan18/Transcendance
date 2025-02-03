@@ -1,4 +1,4 @@
-.message-change-orientation {
+.message-change-orientation-game {
 	display: none;
 }
 
@@ -123,7 +123,7 @@
 }
 
 @media screen and (orientation: portrait) and (max-width: 900px) {
-	.message-change-orientation {
+	.message-change-orientation-game {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -135,13 +135,14 @@
 		display: none;
 	}
 
-	.button-controller {
+
+	.pause-button, .camera-button, .up-button, .down-button {
 		display: none;
 	}
 }
 
 @media screen and (orientation: landscape) and (max-width: 1024px) {
-	.message-change-orientation {
+	.message-change-orientation-game {
 		display: none;
 	}
 
@@ -159,6 +160,8 @@
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: nowrap;
+		position: absolute;
+		top: 5px;
 	}
 
 	.player1-container, .player2-container {
@@ -194,10 +197,12 @@
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
-		height: 20px;
+		height: 10px;
 		margin-bottom: 5px;
 		margin-right: 2px;
 		margin-left: 2px;
+		position: absolute;
+		top: 30px;
 	}
 
 	.game-container {
@@ -205,16 +210,36 @@
 		height: 70%;
 	}
 
-	.button-controller {
+	.button-controller-left {
+		margin-top: 30px;
+		left: 0;
+	}
+
+	.button-controller-right {
+		margin-top: 30px;
+		right: 0;
+	}
+
+	.button-controller-left, .button-controller-right {
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		justify-content: space-around;
 		align-items: center;
 		position: fixed;
-		bottom: 10px;
+		width: 7%;
+		height: 70%;
+	}
+
+	.power-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 		width: 100%;
-		height: 7%;
-		margin-top: 30px;
+		height: 20px;
+		margin-bottom: 5px;
+		padding: 0 10px;
+		position: absolute;
+		top: 40px;
 	}
 
 	.up-button {
@@ -245,5 +270,7 @@
 	.pause-button, .camera-button, .up-button, .down-button {
 		border: 1px solid white;
 		color: white;
+		transform: rotate(90deg);
+		background-color: black;
 	}
 }

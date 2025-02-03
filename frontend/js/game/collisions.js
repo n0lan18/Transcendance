@@ -381,8 +381,9 @@ function changeColorIfBarIsFull(Game)
 {
 	const gameBreakerLeft = document.getElementById("power-container-left");
 	const gameBreakerSmartphone = document.getElementById("special-shot-button");
+	const gameBreakerSmartphoneRight = document.getElementById("special-shot-button-right");
 	const gameBreakerRight = document.getElementById("power-container-right");
-	if (gameBreakerLeft && gameBreakerSmartphone && gameBreakerRight)
+	if (gameBreakerLeft && gameBreakerSmartphone && gameBreakerRight && gameBreakerSmartphoneRight)
 	{
 		if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
 		{
@@ -398,6 +399,7 @@ function changeColorIfBarIsFull(Game)
 		}
 		if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
 		{
+			gameBreakerSmartphoneRight.style.color = "white";
 			Game.containerProgressBarRight.style.backgroundColor = "red";
 			gameBreakerRight.style.color = "white";
 		}
@@ -405,6 +407,7 @@ function changeColorIfBarIsFull(Game)
 		{
 			Game.containerProgressBarRight.style.backgroundColor = "green";
 			gameBreakerRight.style.color = "grey";
+			gameBreakerSmartphoneRight.style.color = "grey";
 		}
 	}
 }

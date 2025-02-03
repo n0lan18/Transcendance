@@ -77,10 +77,8 @@
 
 @media (max-width: 900px) {
     .container-nav {
-        
-        height: 15%;
         position: absolute;
-        bottom: 10px;
+        bottom: 5px;
         top: auto;
     }
 
@@ -104,39 +102,7 @@
     }
 }
 
-@media (max-width: 414px) {
-    .container-nav {
-        height: 10%;
-        position: absolute;
-        bottom: 57px;
-        top: auto;
-    }
-
-    .box-nav-smartphone2 {
-        margin-left: 0;
-    }
-
-    .navbar {
-        align-items: flex-start;
-    }
-
-	.nav-item {
-        width: 100%;
-        justify-content: space-around;
-        align-items: flex-start;
-    }
-
-    .image-nav {
-        font-size: 20px;
-    }
-
-    .box-nav-smartphone1 .box-nav-smartphone2 .box-nav-smartphone3 {
-        width: 30px;
-        background-color: beige;
-    }
-}
-
-@media screen and (orientation: landscape) and (max-width: 768px) {
+@media screen and (orientation: landscape) and (max-width: 900px) {
     .container-nav {
         display: none;
     }

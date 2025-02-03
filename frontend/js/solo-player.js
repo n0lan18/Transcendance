@@ -58,8 +58,6 @@ async function addEventListenerGamePage()
 		};
 	}
 	let pageGameContainer = document.getElementById("page-game-container");
-	if (isMobileDevice())
-		toggleFullScreen();
 	if (matchInfo.superPower == "isNotSuperPower")
 	{
 		let progressBar = document.getElementById("progress-bar-container");
@@ -70,7 +68,7 @@ async function addEventListenerGamePage()
 	if (pageGameContainer)
 		game = new Game("game-container", matchInfo.modeGame, matchInfo.colorPlayer1, matchInfo.colorPlayer2, decodeStrToHex(matchInfo.courtColor), matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2, matchInfo.username1, matchInfo.username2, matchInfo.typeOfGame, matchInfo.numberPlayers, matchInfo.superPower, tournamentInfo.numberMatch, tournamentInfo.tabPlayers, tournamentInfo.tabPlayersNewRound);
 }
-
+/*
 function toggleFullScreen() {
     const gameContainer = document.querySelector('.flex-game-container');
     if (!document.fullscreenElement) {
@@ -81,12 +79,12 @@ function toggleFullScreen() {
         document.exitFullscreen();
     }
 }
-
+*/
 function generateBodyGamePageHTML(username, username2)
 {
 	return `
 		<div class="page-game-container" id="page-game-container">
-			<div class="message-change-orientation">
+			<div class="message-change-orientation-game">
 				<h1 style="font-size: 25px; text-align: center;" data-translate-key="messageChangeOrientation"></h1>
 				<i class="fa-solid fa-rotate" style="font-size: 50px; text-align: center;"></i>
 			</div>
@@ -109,7 +107,7 @@ function generateBodyGamePageHTML(username, username2)
 					<div class="power-container-right" id="power-container-right"><h3 style="font-size: 15px">GAME BREAKER</h3></div>
 				</div>
 				<div id="game-container" class="game-container"></div>
-				<div class="button-controller" id="button-controller">
+				<div class="button-controller-left" id="button-controller-left">
 					<button id="up-button" class="btn up-button btn-lg">
 						<i class="fa-solid fa-chevron-left"></i>
 					</button>
@@ -122,6 +120,22 @@ function generateBodyGamePageHTML(username, username2)
 						</button>
 					</div>
 					<button id="down-button" class="btn down-button btn-lg">
+						<i class="fa-solid fa-chevron-right"></i>
+					</button>
+				</div>
+				<div class="button-controller-right" id="button-controller-right">
+					<button id="up-button-right" class="btn up-button btn-lg">
+						<i class="fa-solid fa-chevron-left"></i>
+					</button>
+					<div class="pause-camera-button-container">
+						<button id="pause-button-right" class="btn pause-button">
+							<i class="fa-solid fa-pause"></i>
+						</button>
+						<button id="special-shot-button-right" class="btn special-shot-button">
+							<i class="fa-solid fa-bullseye"></i>
+						</button>
+					</div>
+					<button id="down-button-right" class="btn down-button btn-lg">
 						<i class="fa-solid fa-chevron-right"></i>
 					</button>
 				</div>
