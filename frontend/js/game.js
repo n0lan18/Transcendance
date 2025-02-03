@@ -185,7 +185,6 @@ export class Game {
                     self.scene.remove(model);
                 };
         });
-        console.log(this.camera)
         if (isMobileDevice())
             cameraMobile(this);
         else

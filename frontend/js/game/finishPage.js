@@ -112,21 +112,21 @@ export async function finishPageHTML()
                         <h3>${matchData[matchData.length - 1].numberGameBreaker || "0"}</h3>
                     </div>
                 </div>
+				<div class="button-finish-page">
+					<button id="home-button-end-party" class="solo-player-simple-match-button">
+						<i class="fa-solid fa-house home-button-finish-page" style="font-size: 100px; color: white"></i>
+						<div class="item-name"
+							<h1 data-translate-key="home"></h1>
+						</div>
+					</button>
+					<button id="retry-button-end-party" class="solo-player-tournament-button" style="background-color: #1982c4">
+						<i class="fa-solid fa-rotate-right retry-button-finish-page" style="font-size: 100px;"></i>
+						<div class="item-name"
+							<h1 data-translate-key="retry"></p>
+						</div>
+					</button>
+				</div>
             </div>
-			<div class="button-finish-page">
-				<button id="home-button-end-party" class="solo-player-simple-match-button">
-					<i class="fa-solid fa-house home-button-finish-page" style="font-size: 100px; color: white"></i>
-					<div class="item-name"
-						<h1 data-translate-key="home"></h1>
-					</div>
-				</button>
-				<button id="retry-button-end-party" class="solo-player-tournament-button" style="background-color: #1982c4">
-					<i class="fa-solid fa-rotate-right retry-button-finish-page" style="font-size: 100px;"></i>
-					<div class="item-name"
-						<h1 data-translate-key="retry"></p>
-					</div>
-				</button>
-			</div>
 		<div>
 	`;
 }

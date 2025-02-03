@@ -58,7 +58,8 @@ async function createTableau()
 	}
 	let sizeTournament = dataTournament.sizeTournament;
 	let tab = dataTournament.tabPlayers;
-	let courtColor = decodeStrToHex(dataTournament.courtColor);
+//	let courtColor = decodeStrToHex(dataTournament.courtColor);
+	let courtColor = dataTournament.courtColor
 	let superPower = dataTournament.superPower;
 	let numberMatch = dataTournament.numberMatch;
 	let tabNewRound = dataTournament.tabPlayersNewRound;

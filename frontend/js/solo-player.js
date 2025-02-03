@@ -66,7 +66,7 @@ async function addEventListenerGamePage()
 		powerContainer.style.display = "none";
 	}
 	if (pageGameContainer)
-		game = new Game("game-container", matchInfo.modeGame, matchInfo.colorPlayer1, matchInfo.colorPlayer2, decodeStrToHex(matchInfo.courtColor), matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2, matchInfo.username1, matchInfo.username2, matchInfo.typeOfGame, matchInfo.numberPlayers, matchInfo.superPower, tournamentInfo.numberMatch, tournamentInfo.tabPlayers, tournamentInfo.tabPlayersNewRound);
+		game = new Game("game-container", matchInfo.modeGame, matchInfo.colorPlayer1, matchInfo.colorPlayer2, matchInfo.courtColor, matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2, matchInfo.username1, matchInfo.username2, matchInfo.typeOfGame, matchInfo.numberPlayers, matchInfo.superPower, tournamentInfo.numberMatch, tournamentInfo.tabPlayers, tournamentInfo.tabPlayersNewRound);
 }
 /*
 function toggleFullScreen() {

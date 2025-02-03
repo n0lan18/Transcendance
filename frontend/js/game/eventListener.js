@@ -6,7 +6,6 @@ import { fullScreen } from "./fullscreen.js";
 
 export function eventListener(Game)
 {
-//	orientationChange(Game);
 	resizeWindow(Game);
 	fullScreenEvent(Game);
 	pauseGame(Game);
@@ -16,31 +15,7 @@ export function eventListener(Game)
 	cameraChangement(Game);
 	specialShotComputerPlayer1(Game);
 }
-/*
-function orientationChange(Game)
-{
-	window.addEventListener('orientationchange', () => {
-		if (Game.gameState === "stopped") return;
-		if (Game.gameState === "countdown") return;
-		if (Game.gameState !== 'running')
-		{
-			Game.pause();
-			pausePage(Game);
-		}
-		else
-		{
-			Game.gameState = "countdown";
-			const backgroundPauseCountdownContainer = document.getElementById("background-pause");
-			const pauseContainer = document.getElementById("countdown");
-			if (backgroundPauseCountdownContainer)
-				backgroundPauseCountdownContainer.remove();
-			if (pauseContainer)
-				pauseContainer.remove();
-			startCountdown(Game);
-		}
-	});
-}
-*/
+
 function fullScreenEvent(Game)
 {
 	document.addEventListener("fullscreenchange", () => {
@@ -65,7 +40,9 @@ function resizeWindow(Game)
 			Game.camera.updateProjectionMatrix();
 			Game.renderer.setSize(Game.dimensions.width, Game.dimensions.height);
 			const newHeight = Game.dimensions.width / (16 / 9);
-			if (Game.dimensions.width <= 1024 && !isMobileDevice())
+			if (isMobileDevice())
+				return;
+			if (Game.dimensions.width <= 1024)
 				Game.container.style.height = `500px`;
 			else
 				Game.container.style.height = `${newHeight}px`;
@@ -109,30 +86,35 @@ function specialShotSmartphone(Game)
 {
 	if (Game.superPower == "isSuperPower")
 	{
-		window.addEventListener('touchstart', (event) => {
-			if (event.target.id === "special-shot-button")
-			{
+		const specialShotSmartphonePlayer1 = document.getElementById("special-shot-button")
+		if (specialShotSmartphonePlayer1)
+		{
+			specialShotSmartphonePlayer1.addEventListener("click", () => {
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
-				{
-					Game.powerPlayer1 = "active";
-					const gameBreakerLeft = document.getElementById("power-container-left");
-					Game.containerProgressBarLeft.style.backgroundColor = "green";
-					gameBreakerLeft.style.color = "grey";
-					Game.containerProgressBarLeft.style.width = Game.sizeOfStep + 'px';
-				}
-			}
-			if (event.target.id === "special-shot-button-right")
-			{
+					{
+						Game.powerPlayer1 = "active";
+						const gameBreakerLeft = document.getElementById("power-container-left");
+						Game.containerProgressBarLeft.style.backgroundColor = "green";
+						gameBreakerLeft.style.color = "grey";
+						Game.containerProgressBarLeft.style.width = Game.sizeOfStep + 'px';
+					}
+			});
+		}
+
+		const specialShotSmartphonePlayer2 = document.getElementById("special-shot-button-right")
+		if (specialShotSmartphonePlayer2)
+		{
+			specialShotSmartphonePlayer2.addEventListener('click', () => {
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
-				{
-					Game.powerPlayer2 = "active";
-					const gameBreakerLeft = document.getElementById("power-container-right");
-					Game.containerProgressBarRight.style.backgroundColor = "green";
-					gameBreakerRight.style.color = "grey";
-					Game.containerProgressBarRight.style.width = Game.sizeOfStep + 'px';
-				}
-			}
-		});
+					{
+						Game.powerPlayer2 = "active";
+						const gameBreakerRight = document.getElementById("power-container-right");
+						Game.containerProgressBarRight.style.backgroundColor = "green";
+						gameBreakerRight.style.color = "grey";
+						Game.containerProgressBarRight.style.width = Game.sizeOfStep + 'px';
+					}
+			})
+		}
 	}
 }
 
@@ -162,15 +144,15 @@ function specialShotComputerPlayer2(Game)
 	if (Game.superPower == "isSuperPower")
 	{
 		window.addEventListener('keypress', (event) => {
-			if (event.key === "0" && (Game.typeOfGame == "multiplayer"))
+			if (event.key === "0")
 			{
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
 				{
 					Game.numberGameBreaker++;
 					Game.powerPlayer2 = "active";
-					const gameBreakerLeft = document.getElementById("power-container-right");
+					const gameBreakerRight = document.getElementById("power-container-right");
 					Game.containerProgressBarRight.style.backgroundColor = "green";
-					gameBreakerLeft.style.color = "grey";
+					gameBreakerRight.style.color = "grey";
 					Game.containerProgressBarRight.style.width = Game.sizeOfStep + 'px';
 				}
 			}
@@ -180,30 +162,40 @@ function specialShotComputerPlayer2(Game)
 
 function pauseButtonSmartphone(Game)
 {
-		window.addEventListener('click', (event) => {
-			console.log(event.target.id)
-			if (event.target.id === "pause-button" || event.target.id === "pause-button-right" || event.target.id == "background-pause")
-			{
-				if (Game.gameState === "stopped") return;
-				if (Game.gameState === "countdown") return;
-				if (Game.gameState !== "paused")
-				{
-					Game.pause()
-					pausePage(Game);
-				}
-				else
-				{
-					Game.gameState = "countdown";
-					const backgroundPauseCountdownContainer = document.getElementById("background-pause");
-					const pauseContainer = document.getElementById("countdown");
-					if (backgroundPauseCountdownContainer)
-						backgroundPauseCountdownContainer.remove();
-					if (pauseContainer)
-						pauseContainer.remove();
-					startCountdown(Game);
-				}
-			}
-		});
+	const pauseButtonSmart = document.getElementById("pause-button");
+	if (pauseButtonSmart)
+		pauseButtonSmart.addEventListener('click', () => pauseSmartphone(Game));
+	const pauseButtonSmart2 = document.getElementById("pause-button-right");
+	if (pauseButtonSmart2)
+		pauseButtonSmart2.addEventListener('click', () => pauseSmartphone(Game));
+
+	window.addEventListener('click', (event) => {
+		console.log(event.target.id)
+		if (event.target.id == "background-pause")
+			pauseSmartphone(Game);
+	})
+}
+
+function pauseSmartphone(Game)
+{
+	if (Game.gameState === "stopped") return;
+	if (Game.gameState === "countdown") return;
+	if (Game.gameState !== "paused")
+	{
+		Game.pause()
+		pausePage(Game);
+	}
+	else
+	{
+		Game.gameState = "countdown";
+		const backgroundPauseCountdownContainer = document.getElementById("background-pause");
+		const pauseContainer = document.getElementById("countdown");
+		if (backgroundPauseCountdownContainer)
+			backgroundPauseCountdownContainer.remove();
+		if (pauseContainer)
+			pauseContainer.remove();
+		startCountdown(Game);
+	}	
 }
 
 function cameraChangement(Game)

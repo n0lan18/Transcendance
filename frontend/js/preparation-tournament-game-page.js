@@ -29,7 +29,7 @@ window.addEventListener('popstate', async function(event) {
 
 export async function addEventListenerPreparationTournament()
 {
-	let courtColor = "0xCF5A30";
+	let courtColor = "#CF5A30";
 	let colorPlayer1 = "#E23F22";
 	let sizeTournament = 32;
 	let superPower = "isSuperPower";
@@ -127,23 +127,23 @@ export async function addEventListenerPreparationTournament()
 
 			switch (buttonId) {
 				case "environnement-preparation-container-button-orange":
-					courtColor = "0xCF5A30";
+					courtColor = "#CF5A30";
 					break;
 				case "environnement-preparation-container-button-dark-blue":
-					courtColor = "0x043976";
+					courtColor = "#043976";
 					break;
 				case "environnement-preparation-container-button-light-blue":
-					courtColor = "0x0183CB";
+					courtColor = "#0183CB";
 					break;
 				case "environnement-preparation-container-button-green":
-					courtColor = "0x689D63";
+					courtColor = "#689D63";
 					break;
 				case "environnement-preparation-container-button-random":
-					const strings = ["0xCF5A30", "0x043976", "0x0183CB", "0x689D63"];
+					const strings = ["#CF5A30", "#043976", "#0183CB", "#689D63"];
 					courtColor = strings[Math.floor(Math.random() * strings.length)];
 					break;
 				default :
-					courtColor = 0xCF5A30;
+					courtColor = "#CF5A30";
 			}
 		});
 	});

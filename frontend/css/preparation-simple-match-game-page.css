@@ -265,17 +265,26 @@
         justify-content: flex-start;
         align-items: center;
         width: 100%;
-        height: calc(min(87vh - 70px, 1028px));
-        margin-top: 100px;
+        height: calc(min(97vh - 70px, 1028px));
+        margin-top: 50px;
         margin-bottom: auto;
         overflow-y: auto;
         max-width: 1090px;
-        min-width: 460px;
         box-sizing: border-box;
     }
 
 	.environnement-preparation-container-button-orange, .environnement-preparation-container-button-dark-blue, .environnement-preparation-container-button-light-blue, .environnement-preparation-container-button-green {
 		aspect-ratio: 1 / 1;
+	}
+
+	.img-court-color {
+		width: 50px;
+		height: 50px;
+		border-radius: 10px;
+	}
+
+	.send-preparation-game-button {
+		margin-top: 0px;
 	}
 }
 
