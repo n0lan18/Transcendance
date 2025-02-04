@@ -1,14 +1,12 @@
 .stats-match-page-container {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     flex-direction: column;
 	width: 100%;
 	height: calc(80vh - 70px, 1028px);
 	max-width: 900px;
 	max-height: 800px;
-	margin-top: 150px;;
-	margin-bottom: auto;
 	overflow-y: auto;
 }
 
@@ -49,6 +47,10 @@
 
 .img-friends1, .img-friends2 {
     border-radius: 10px;
+    width: 160px;
+    height: 160px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 
 @media (orientation: portrait) and (max-width: 900px)
@@ -60,11 +62,8 @@
         align-items: center;
         width: 100%;
         height: calc(min(87vh - 70px, 1028px));
-        margin-top: 100px;
-        margin-bottom: auto;
         overflow-y: auto;
         max-width: 1090px;
-        min-width: 460px;
         box-sizing: border-box;
     }
 
@@ -83,6 +82,10 @@
 
     .img-friends1, .img-friends2 {
         border-radius: 10px;
+        width: 50px;
+        height: 50px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
     }
 }
 

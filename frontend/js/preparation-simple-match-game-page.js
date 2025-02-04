@@ -63,8 +63,6 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 	let heroPowerPlayer2 = "Super strength";
 	let superPower = "isSuperPower";
 
-	const username2 = document.querySelector("[data-translate-key='simpleMatchUsername2']").textContent;
-
 	document.querySelectorAll('.color-button-player1').forEach(button => {
 		button.addEventListener('click', (event) => {
 			event.stopPropagation();
@@ -151,10 +149,12 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 					await putStatsInfoById(11, {heroSuperstrength: 1})
 				else if (heroPowerPlayer1 == "Time laps")
 					await putStatsInfoById(12, {heroTimelaps: 1})
+				let username2 = document.querySelector("[data-translate-key='simpleMatchUsername2']").textContent;
+				if (!username2)
+					username2 = "Player2"
 				await putMatchInfo(username1, username2, courtColor, colorPlayer1, colorPlayer2, heroPowerPlayer1, heroPowerPlayer2, typeOfGame, 2, modeGame, superPower)
 				let pathnameUrl;
 				let namePage;
-				console.log(modeGame)
 				if (modeGame == "multiPlayerTwo")
 				{
 					pathnameUrl = "game-page-simple-match";
@@ -194,7 +194,7 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			username2 = usernameValue;
 			username2 = escapeHTML(username2);
 			if (username2 === "")
-				username2 = "Player 2"
+				username2 = "Player2"
 			if (isValidUsernameBad(username2))
 				document.getElementById("usernameGamePlayer2-text").innerHTML = username2;
 		});

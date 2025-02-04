@@ -29,7 +29,6 @@ async function addEventListenerUsernamePlayersTournament()
 {
     let userInfo = await getUserInfo();
     let tournamentBasicInfo = await getTournamentBasicInfo()
-    console.log(tournamentBasicInfo)
 	let username1 = userInfo.username;
     let courtColor = tournamentBasicInfo.courtColor;
     let sizeTournament = tournamentBasicInfo.sizeTournament;
@@ -104,7 +103,7 @@ async function addEventListenerUsernamePlayersTournament()
 
     const buttonSendEvent = async function(event) {
         event.preventDefault();
-        await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
+        await putTournamentInfo(tab, courtColor, sizeTournament, superPower);
     }
 
     const addLinesPlayers = document.getElementById("username-players-line");
@@ -190,6 +189,7 @@ async function addEventListenerUsernamePlayersTournament()
             {
                 usernameInput.addEventListener(('input'), function(event) {
                     inputUsername = event.target.value;
+                    const parent = document.getElementById(`RegisterPlace${i + 1}`);
                     let exist = 0;
                     for (let i = 0; i < sizeTournament; i++)
                     {
@@ -198,7 +198,6 @@ async function addEventListenerUsernamePlayersTournament()
                     }
                     if (exist == 1)
                     {
-                        const parent = document.getElementById(`RegisterPlace${i + 1}`);
                         if (parent)
                         {
                             if (!document.getElementById(`message-bad-username${i + 1}`))
@@ -282,7 +281,7 @@ async function addEventListenerUsernamePlayersTournament()
                     tab[i][1] = stringsHeroPowerPlayer[Math.floor(Math.random() * stringsHeroPowerPlayer.length)];
                 tab[i][2] = stringsColorPlayer[Math.floor(Math.random() * stringsColorPlayer.length)];
             }
-            await putTournamentInfo(tab, 0, courtColor, sizeTournament, superPower);
+            await putTournamentInfo(tab, courtColor, sizeTournament, superPower);
         });
     }
 }

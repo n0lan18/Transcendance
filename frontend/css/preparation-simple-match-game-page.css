@@ -7,7 +7,7 @@
 	max-width: 1024px;
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-start;
+	justify-content: center;
 	align-items: center;
 	width: 100%;
 	height: calc(80vh - 70px);
@@ -262,7 +262,7 @@
     .preparation-game-container {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: center;
         width: 100%;
         height: calc(min(97vh - 70px, 1028px));

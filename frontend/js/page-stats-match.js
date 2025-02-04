@@ -60,13 +60,13 @@ async function generateStatsMatchPageHTML() {
                 <div class="recap-match-stats-page">
                     <div class="recap-match" id="recap-match">
                         <div class="recap-match-user1">
-                            <img id="img-friends1" class="superhero-image img-friends1" src="${imagePlayer1}" alt="Profile image">
+                            <img id="img-friends1" class="img-friends1" src="${imagePlayer1}" alt="Profile image">
                             <h2 style="margin-left: 5px;">${matchData.username1 || "Unknown Player 1"}</h2>
                         </div>
                         <h2 class="recap-match-scores">${matchData.scores || "0-0"}</h2>
                         <div class="recap-match-user2">
                             <h2 style="margin-right: 5px;">${matchData.username2 || "Unknown Player 2"}</h2>
-                            <img id="img-friends2" class="superhero-image img-friends2" src="${imagePlayer2}" alt="Profile image"; >
+                            <img id="img-friends2" class="img-friends2" src="${imagePlayer2}" alt="Profile image"; >
                         </div>
                     </div>
                     <h3 class="date-match-stats">${matchData.dates || "1/1/2025"}</h3>

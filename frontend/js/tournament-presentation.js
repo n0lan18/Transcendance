@@ -24,7 +24,7 @@ window.addEventListener('popstate', async function(event) {
 			let dataTournament = await getTournamentInfo();
 			if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
 			{
-				await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+				await putTournamentInfoNewRound()
 				dataTournament = await getTournamentInfo();
 			}
 			loadContent(this.document.getElementById("app"), event.state.page, '', false, 'Tournament Presentation Page', translation, addNavigatorEventListeners, createTableau);
@@ -37,7 +37,7 @@ window.addEventListener('popstate', async function(event) {
 			{
 				if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
 				{
-					await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+					await putTournamentInfoNewRound()
 					dataTournament = await getTournamentInfo();
 				}
 				replaceContent(document.getElementById('app'), tournamentPresentationHTML, "tournament-presentation", true, `Game Page Tournament`, translation, addNavigatorEventListeners, createTableau);
@@ -53,12 +53,11 @@ async function createTableau()
 	let dataTournament = await getTournamentInfo();
 	if (dataTournament.numberMatchPlayed == dataTournament.sizeTournament / 2)
 	{
-		await putTournamentInfoNewRound(dataTournament.sizeTournament, dataTournament.numberMatchPlayed, dataTournament.tabPlayersNewRound)
+		await putTournamentInfoNewRound()
 		dataTournament = await getTournamentInfo();
 	}
 	let sizeTournament = dataTournament.sizeTournament;
 	let tab = dataTournament.tabPlayers;
-//	let courtColor = decodeStrToHex(dataTournament.courtColor);
 	let courtColor = dataTournament.courtColor
 	let superPower = dataTournament.superPower;
 	let numberMatch = dataTournament.numberMatch;
@@ -170,7 +169,6 @@ function checkUsername(tab, inc, div, courtColor, sizeTournament, superPower, nu
 	{
 		div.addEventListener(('click'), async function() {
 			await putMatchInfo(tab[inc][0], tab[inc + 1][0], courtColor, tab[inc][2], tab[inc + 1][2], tab[inc][1], tab[inc + 1][1], "multiplayer", sizeTournament, "tournament-multi-local", superPower);
-			loadPresentationMultiLocalPlayerPage();
 		});
 	}
 }

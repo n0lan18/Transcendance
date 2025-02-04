@@ -13,6 +13,7 @@ from datetime import datetime
 import re
 from datetime import date
 import html
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from .models import User
@@ -336,131 +337,62 @@ class GameStatsLocalListUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
-        valid_resultats = {"D", "V"}
-        valid_tournament_stages = {32, 16, 8, 4, 2}
+        ALLOWED_RESULT = {'D', 'V'}
+        ALLOWED_TOURNAMENT_STAGES = {32, 16, 8, 4, 2}
 		
         print(request.user)
         game_stat = get_object_or_404(GameStatsLocal, user=request.user)
         data = request.data
+        print(data)
+        resultats = request.data.get('resultats')
+        if not resultats:
+            return Response({"error": "No resultats provided"}, status=status.HTTP_400_BAD_REQUEST)
+        if resultats not in ALLOWED_RESULT:
+            return Response({"error": "Invalid resultats format"}, status=status.HTTP_400_BAD_REQUEST)
+        regex_goal = r'^[0-5]$'
+        numberGoalsWin = request.data.get('numberGoalsWin')
+        print(numberGoalsWin)
+        if numberGoalsWin is None:
+            return Response({"error": "No numberGoalsWin provided"}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(regex_goal, str(numberGoalsWin)):
+            return Response({"error": "Invalid numberGoalsWin format"}, status=status.HTTP_400_BAD_REQUEST)		
+        numberGoalLose = request.data.get('numberGoalLose')
+        if numberGoalLose is None:
+            return Response({"error": "No numberGoalLose provided"}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match(regex_goal, str(numberGoalLose)):
+            return Response({"error": "Invalid numberGoalLose format"}, status=status.HTTP_400_BAD_REQUEST)
+        numberVictoryTournament = request.data.get('numberVictoryTournament')
+        if numberVictoryTournament is None:
+            return Response({"error": "No numberVictoryTournament provided"}, status=status.HTTP_400_BAD_REQUEST)
+        if numberVictoryTournament != 1 and numberVictoryTournament != 0:
+            return Response({"error": "Invalid numberVictoryTournament format"}, status=status.HTTP_400_BAD_REQUEST)
+        bestResultTournament = request.data.get('bestResultTournament')
+        if bestResultTournament is None:
+            return Response({"error": "No bestResultTournament provided"}, status=status.HTTP_400_BAD_REQUEST)
+        if bestResultTournament not in ALLOWED_TOURNAMENT_STAGES:
+            return Response({"error": "Invalid bestResultTournament format"}, status=status.HTTP_400_BAD_REQUEST)			
 
-        # Vérification et mise à jour du meilleur résultat du tournoi
-        if "bestResultTournament" in data:
-            best_result_tournament = data["bestResultTournament"]
-            if best_result_tournament in valid_tournament_stages:
-                if best_result_tournament is None or best_result_tournament < game_stat.bestResultTournament:
-                    game_stat.bestResultTournament = best_result_tournament
-            else:
-                return Response(
-                    {"error": f"Invalid tournament stage value for {best_result_tournament}. Valid values are 32, 16, 8, 4, 2."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        if bestResultTournament < game_stat.bestResultTournament:
+            game_stat.bestResultTournament = bestResultTournament
 
-        # Mise à jour des victoires par match
-        if "numberVictoryMatchTournament" in data:
-            if isinstance(data["numberVictoryMatchTournament"], int) and data["numberVictoryMatchTournament"] in {0, 1}:
-                game_stat.numberVictoryMatchTournament += data["numberVictoryMatchTournament"]
-            else:
-                return Response(
-                    {"error": f"Invalid numberVictoryMatchTournament value: {data['numberVictoryMatchTournament']}."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        game_stat.numberVictoryTournament += numberVictoryTournament
 
-        # Mise à jour des victoires en tournoi
-        if "numberVictoryTournament" in data:
-            if isinstance(data["numberVictoryTournament"], int) and data["numberVictoryTournament"] in {0, 1}:
-                game_stat.numberVictoryTournament += data["numberVictoryTournament"]
-            else:
-                return Response(
-                    {"error": f"Invalid numberVictoryTournament value: {data['numberVictoryTournament']}."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        game_stat.numberSimpleMatch += 1
 
-        # Mise à jour des matchs en tournoi
-        if "numberMatchTournament" in data:
-            if isinstance(data["numberMatchTournament"], int) and data["numberMatchTournament"] in {0, 1}:
-                game_stat.numberMatchTournament += data["numberMatchTournament"]
-            else:
-                return Response(
-                    {"error": f"Invalid numberMatchTournament value: {data['numberMatchTournament']}."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-		
-        if "numberSimpleMatch" in data:
-            if (isinstance(data["numberSimpleMatch"], int) and data["numberSimpleMatch"] in {0, 1}):
-                game_stat.numberSimpleMatch += data["numberSimpleMatch"]
-            else:
-                return Response(
-                    {"error": f"Invalid numberSimpleMatch value: {data['numberSimpleMatch']}."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-					
-        if "numberVictorySimpleMatch" in data:
-            if (isinstance(data["numberVictorySimpleMatch"], int) and data["numberVictorySimpleMatch"] in {0, 1}):
-                game_stat.numberVictorySimpleMatch += data["numberVictorySimpleMatch"]
-            else:
-                return Response(
-                    {"error": f"Invalid numberSimpleMatch value: {data['numberSimpleMatch']}."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )			
+        if resultats == 'V':
+            game_stat.numberVictorySimpleMatch += 1
 
-        # Mise à jour des buts gagnés
-        if "numberGoalsWin" in data:
-            if isinstance(data["numberGoalsWin"], int) and 0 <= data["numberGoalsWin"] <= 5:
-                game_stat.numberGoalsWin += data["numberGoalsWin"]
-            else:
-                return Response(
-                    {"error": f"Invalid numberGoalsWin value: {data['numberGoalsWin']}. Expected a number between 0 and 5."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        game_stat.numberGoalsWin = numberGoalsWin
 
-        # Mise à jour des buts encaissés
-        if "numberGoalLose" in data:
-            if isinstance(data["numberGoalLose"], int) and 0 <= data["numberGoalLose"] <= 5:
-                game_stat.numberGoalLose += data["numberGoalLose"]
-            else:
-                return Response(
-                    {"error": f"Invalid numberGoalLose value: {data['numberGoalLose']}. Expected a number between 0 and 5."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        game_stat.numberGoalLose = numberGoalLose			
 
-        # Mise à jour des résultats (D ou V)
-        if "resultats" in data:
-            if data["resultats"] in valid_resultats:
-                if not isinstance(game_stat.resultats, list):
-                    return Response(
-                        {"error": f"Invalid resultats field in game_stat. Expected a list, found {type(game_stat.resultats).__name__}."},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
-                game_stat.resultats.append(data["resultats"])
-                while len(game_stat.resultats) > 5:
-                    game_stat.resultats.pop(0)
-            else:
-                return Response(
-                    {"error": f"Invalid resultats value: {data['resultats']}. Valid values are 'D' or 'V'."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        game_stat.scores.append(str(numberGoalsWin) + '-' + str(numberGoalLose))
+        while len(game_stat.scores) > 5:
+            game_stat.scores.pop(0)
+        game_stat.dates.append(datetime.now().date())
+        while len(game_stat.dates) > 5:
+            game_stat.dates.pop(0)        		
 
-        # Mise à jour des scores
-        if "scores" in data:
-            regex = r'^(0|[1-5])-(0|[1-5])$'
-            if not re.match(regex, str(data["scores"])):
-                return Response(
-                    {"error": f"Invalid scores value: {data['scores']}. Expected format is 'number1-number2' where both numbers are between 0 and 5."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            if not isinstance(game_stat.scores, list):
-                return Response(
-                    {"error": f"Invalid scores field in game_stat. Expected a list, found {type(game_stat.scores).__name__}."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            game_stat.scores.append(data["scores"])
-            while len(game_stat.scores) > 5:
-                game_stat.scores.pop(0)
-            game_stat.dates.append(datetime.now().date())
-            while len(game_stat.dates) > 5:
-                game_stat.dates.pop(0)			
-
-        # Sauvegarde des modifications
         game_stat.save()
         return Response({"message": "Game statistics updated successfully."}, status=status.HTTP_200_OK)
 
@@ -625,7 +557,7 @@ class CreateTournamentView(APIView):
 		new_tournament_user = TournamentUser.objects.create(user=user)
 
 		tabPlayers = request.data.get('tabPlayers')
-		numberMatchPlayed = request.data.get('numberMatchPlayed')
+		numberMatchPlayed = 0
 		courtColor = request.data.get('courtColor')
 		sizeTournament = request.data.get('sizeTournament')
 		superPower = request.data.get('superPower')
@@ -781,17 +713,83 @@ class MatchInfoView(APIView):
 		new_match_user = MatchUser.objects.create(user=user)
 
 		username1 = request.data.get('username1')
+		if not isinstance(username1, str):
+			return Response({"message": "Invalid username1 type."}, status=status.HTTP_400_OK)
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, username1):
+			return Response({"error": "Invalid username1 format"}, status=status.HTTP_400_BAD_REQUEST)		
+
 		username2 = request.data.get('username2')
-		colorPlayer1 = request.data.get('colorPlayer1')
-		colorPlayer2 = request.data.get('colorPlayer2')
-		heroPowerPlayer1 = request.data.get('heroPowerPlayer1')
-		heroPowerPlayer2 = request.data.get('heroPowerPlayer2')
-		typeOfGame = request.data.get('typeOfGame')
-		numberPlayers = request.data.get('numberPlayers')
-		modeGame = request.data.get('modeGame')
-		superPower = request.data.get('superPower')
-		courtColor = request.data.get('courtColor')
+		if not isinstance(username2, str):
+			return Response({"message": "Invalid username2 type."}, status=status.HTTP_400_OK)
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, username2):
+			return Response({"error": "Invalid username2 format"}, status=status.HTTP_400_BAD_REQUEST)	
 		
+		colorPlayer1 = request.data.get('colorPlayer1')
+		if not colorPlayer1:
+			return Response({"error": "No ColorPlayer1 provided"}, status=status.HTTP_400_BAD_REQUEST)
+		colorPaddel_regex = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+		if not re.match(colorPaddel_regex, colorPlayer1):
+			return Response({"error": "Invalid colorPlayer1 format"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		colorPlayer2 = request.data.get('colorPlayer2')
+		if not colorPlayer2:
+			return Response({"error": "No ColorPlayer2 provided"}, status=status.HTTP_400_BAD_REQUEST)
+		colorPaddel_regex = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+		if not re.match(colorPaddel_regex, colorPlayer2):
+			return Response({"error": "Invalid colorPlayer2 format"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		ALLOWED_POWER_PLAYER = {"Invisible", "Duplication", "Time laps", "Super strength"}
+		heroPowerPlayer1 = request.data.get('heroPowerPlayer1')
+		if not heroPowerPlayer1:
+			return Response({"error": "No heroPowerPlayer1 provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if heroPowerPlayer1 not in ALLOWED_POWER_PLAYER:
+			return Response({"error": "Invalid format heroPowerPlayer1"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		heroPowerPlayer2 = request.data.get('heroPowerPlayer2')
+		if not heroPowerPlayer2:
+			return Response({"error": "No heroPowerPlayer2 provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if heroPowerPlayer2 not in ALLOWED_POWER_PLAYER:
+			return Response({"error": "Invalid format heroPowerPlayer2"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		typeOfGame = request.data.get('typeOfGame')
+		ALLOWED_TYPE_OF_GAME = {"multiplayer"}
+		if not typeOfGame:
+			return Response({"error": "No typeOfHame provided"}, status=status.HTTP_400_BAD_REQUEST)		
+		if typeOfGame not in ALLOWED_TYPE_OF_GAME:
+			return Response({"error": "Invalid format tyeOfGame"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		ALLOWED_MODE_GAME = {"multiPlayerTwo", "multiPlayerFour", "tournament-multi-local"}
+		modeGame = request.data.get('modeGame')
+		if not modeGame:
+			return Response({"error": "No modeGame provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if modeGame not in ALLOWED_MODE_GAME:
+			return Response({"error": "Invalid format modeGame"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		numberPlayers = request.data.get('numberPlayers')
+		if not numberPlayers:
+			return Response({"error": "No numberPlayers provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if (modeGame == "multiPlayerTwo" or modeGame == "multiPlayerFour") and numberPlayers != 2:
+			return Response({"error": "Invalid format numberPlayers"}, status=status.HTTP_400_BAD_REQUEST)
+		ALLOWED_SIZE_TOURNAMENT = {2, 4, 8, 16, 32}
+		if modeGame == "tournament-multi-local" and numberPlayers not in ALLOWED_SIZE_TOURNAMENT:
+			return Response({"error": "Invalid format numberPlayers"}, status=status.HTTP_400_BAD_REQUEST)
+	
+		ALLOWED_SUPERPOWER = {"isSuperPower", "isNotSuperPower"}
+		superPower = request.data.get('superPower')
+		if not superPower:
+			return Response({"error": "No superPower provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if superPower not in ALLOWED_SUPERPOWER:
+			return Response({"error": "Invalid format superPower"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		ALLOWED_COURT_COLOR = {"#CF5A30", "#043976", "#0183CB", "#689D63"}
+		courtColor = request.data.get('courtColor')
+		if not courtColor:
+			return Response({"error": "No courtColor provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if courtColor not in ALLOWED_COURT_COLOR:
+			return Response({"error": "Invalid format courtColor"}, status=status.HTTP_400_BAD_REQUEST)
+			
 		new_match_user.username1 = username1
 		new_match_user.username2 = username2
 		new_match_user.colorPlayer1 = colorPlayer1
@@ -811,17 +809,18 @@ class NewRoundTournamentView(APIView):
 
 	def put(self, request):
 
-		user = request.user
-		tournament_user = TournamentUser.objects.get(user=user)
-		if not isinstance(request.data.get('tabPlayersNewRound'), list):
-			return Response({'error': 'tabPlayers must be a list'}, status=400)
-		tournament_user.tabPlayers = request.data.get('tabPlayersNewRound')
+		try:
+			user = request.user
+			tournament_user = TournamentUser.objects.get(user=user)
+			tournament_user.sizeTournament /= 2
+			tournament_user.numberMatchPlayed = 0
+			tournament_user.tabPlayersNewRound = []
+			tournament_user.save()
+			return Response({"message": "Tournament New Round modify successfull."}, status=status.HTTP_200_OK)
+		
+		except tournament_user.ObjectDoesNotExist:
+			return Response({"message": "No Tournament found."}, status=status.HTTP_400_BAD_REQUEST)
 
-		tournament_user.sizeTournament /= 2
-		tournament_user.numberMatchPlayed = 0
-		tournament_user.tabPlayersNewRound = []
-		tournament_user.save()
-		return Response({"message": "Tournament New Round modify successfull."}, status=status.HTTP_200_OK)
 	
 class RemoveTournamentView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -1012,17 +1011,77 @@ class MatchHistoryUserView(APIView):
 	def put(self, request):
 		user = request.user
 
+		print(user)
+
 		username1 = request.data.get("username1")
+		if not isinstance(username1, str):
+			return Response({"message": "Invalid username1 type."}, status=status.HTTP_400_OK)
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, username1):
+			return Response({"error": "Invalid username1 format"}, status=status.HTTP_400_BAD_REQUEST)	
+
 		username2 = request.data.get("username2")
+		if not isinstance(username2, str):
+			return Response({"message": "Invalid username2 type."}, status=status.HTTP_400_OK)
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, username2):
+			return Response({"error": "Invalid username2 format"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		ALLOWED_POWER_PLAYER = {"Invisible", "Duplication", "Time laps", "Super strength"}
 		heroPlayer1 = request.data.get("heroPlayer1")
+		if not heroPlayer1:
+			return Response({"error": "No heroPlayer1 provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if heroPlayer1 not in ALLOWED_POWER_PLAYER:
+			return Response({"error": "Invalid format heroPlayer1"}, status=status.HTTP_400_BAD_REQUEST)
+		
 		heroPlayer2 = request.data.get("heroPlayer2")
+		if not heroPlayer2:
+			return Response({"error": "No heroPlayer2 provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if heroPlayer2 not in ALLOWED_POWER_PLAYER:
+			return Response({"error": "Invalid format heroPlayer2"}, status=status.HTTP_400_BAD_REQUEST)
+		
 		numberGameBreaker = request.data.get("numberGameBreaker")
+		if numberGameBreaker is None:
+			return Response({"error": "No numberGameBreaker provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if not isinstance(numberGameBreaker, int):
+			return Response({"error": "Invalid format numberGameBreaker"}, status=status.HTTP_400_BAD_REQUEST)
+		
 		echangeLong = request.data.get("echangeLong")
+		if echangeLong is None:
+			return Response({"error": "No echangeLong provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if not isinstance(echangeLong, int):
+			return Response({"error": "Invalid format echangeLong"}, status=status.HTTP_400_BAD_REQUEST)
+		
 		dureeMatch = request.data.get("dureeMatch")
+		if dureeMatch is None:
+			return Response({"error": "No dureeMatch provided"}, status=status.HTTP_400_BAD_REQUEST)
+		if not isinstance(dureeMatch, int):
+			return Response({"error": "Invalid format dureeMatch"}, status=status.HTTP_400_BAD_REQUEST)	
+		
 		vainqueur = request.data.get("vainqueur")
+		if not vainqueur:
+			return Response({"error": "No vainqueur provided"}, status=status.HTTP_400_BAD_REQUEST)
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, vainqueur):
+			return Response({"error": "Invalid vainqueur format"}, status=status.HTTP_400_BAD_REQUEST)
+		
 		dates = date.today()
+		if not isinstance(dates, date):
+			return Response({"error": "Invalid format dates"}, status=status.HTTP_400_BAD_REQUEST)
+		
 		isSuperPower = request.data.get("isSuperPower")
+		if not isSuperPower:
+			return Response({"error": "No isSuperPower provided"}, status=status.HTTP_400_BAD_REQUEST)
+		ALLOWED_SUPERPOWER = {"isSuperPower", "isNotSuperPower"}
+		if isSuperPower not in ALLOWED_SUPERPOWER:
+			return Response({"error": "Invalid format isSuperPower"}, status=status.HTTP_400_BAD_REQUEST)
+		
 		scores = request.data.get("scores")
+		if not scores:
+			return Response({"error": "No isSuperPower provided"}, status=status.HTTP_400_BAD_REQUEST)
+		scores_regex = r'^(0|[1-5])-(0|[1-5])$'
+		if not re.match(scores_regex, scores):
+			return Response({"error": "Invalid format scores"}, status=status.HTTP_400_BAD_REQUEST)
 
 		MatchHistoryUser.objects.create(
             user=user,
@@ -1039,3 +1098,46 @@ class MatchHistoryUserView(APIView):
 			scores=scores
         )
 		return Response({"message": "Match créé avec succès."}, status=status.HTTP_201_CREATED)
+	
+class AddWinnerMatchTournamentView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def put(self, request):
+		user = request.user
+
+		try:
+			tournament_user = TournamentUser.objects.get(user=user)
+		except tournament_user.ObjectDoesNotExist:
+			return Response({"message": "No Tournament found."}, status=status.HTTP_400_BAD_REQUEST)
+
+		tabPlayersNewRound = tournament_user.tabPlayersNewRound
+
+		if len(tabPlayersNewRound) > tournament_user.sizeTournament / 2:
+			return Response({"message": "Bad enter tabPlayersNewRound."}, status=status.HTTP_400_BAD_REQUEST)
+		
+		userWinner = request.data.get('userWinner')
+		if not userWinner:
+			return Response({"error": "No userWinner provided"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
+		if not re.match(username_regex, userWinner):
+			return Response({"error": "Invalid userWinner format"}, status=status.HTTP_400_BAD_REQUEST)	
+
+		found = False
+		for player in tournament_user.tabPlayers:
+			username = player[0]
+			if userWinner == username:
+				userWinner = player
+				found = True
+				break
+
+		if found == False:
+			return Response({"error": "Invalid userWinner"}, status=status.HTTP_400_BAD_REQUEST)
+		
+		tournament_user.numberMatchPlayed += 1
+		
+		tabPlayersNewRound.append(userWinner)
+
+		tournament_user.save()
+
+		return Response({"message": "Winner added successfully"}, status=status.HTTP_200_OK)

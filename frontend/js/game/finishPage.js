@@ -53,9 +53,6 @@ export async function finishPageHTML()
 		GameStr = `Felicitations ! Le match est termine`
 
 	const matchData = await getHistoryMatches();
-	console.log(matchData);
-	console.log(matchData.length);
-	console
 
 	let totalSecondes = matchData[matchData.length - 1].dureeMatch / 1000
 	let minute = Math.floor(totalSecondes / 60);
@@ -113,16 +110,16 @@ export async function finishPageHTML()
                     </div>
                 </div>
 				<div class="button-finish-page">
-					<button id="home-button-end-party" class="solo-player-simple-match-button">
-						<i class="fa-solid fa-house home-button-finish-page" style="font-size: 100px; color: white"></i>
+					<button id="home-button-end-party" class="solo-finish-simple-match-button" style="background-color: #8ac926">
+						<i class="fa-solid fa-house" style="font-size: 100px;"></i>
 						<div class="item-name"
 							<h1 data-translate-key="home"></h1>
 						</div>
 					</button>
-					<button id="retry-button-end-party" class="solo-player-tournament-button" style="background-color: #1982c4">
-						<i class="fa-solid fa-rotate-right retry-button-finish-page" style="font-size: 100px;"></i>
+					<button id="retry-button-end-party" class="solo-finish-simple-match-button" style="background-color: #1982c4">
+						<i class="fa-solid fa-rotate-right" style="font-size: 100px;"></i>
 						<div class="item-name"
-							<h1 data-translate-key="retry"></p>
+							<h1 data-translate-key="retry"></h1>
 						</div>
 					</button>
 				</div>

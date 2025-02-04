@@ -99,6 +99,24 @@
 	background-color: #ffca3a;
 }
 
+.home-button-finish-page {
+	height: 100%;
+	width: 100%;
+}
+
+.solo-finish-simple-match-button {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 160px;
+	width: 160px;
+	margin: 15px;
+	border-radius: 3px;
+	border: none;
+	aspect-ratio: 1/1;
+}
+
 @media (orientation: portrait) and (max-width: 900px)
 {
     .finish-page {

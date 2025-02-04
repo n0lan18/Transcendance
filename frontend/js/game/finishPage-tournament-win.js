@@ -5,7 +5,6 @@ import { loadTournamentPresentation } from "../tournament-presentation.js";
 export async function loadFinishPageTournamentWin()
 {	
 	const tournamentInfo = await getTournamentInfo();
-	console.log(tournamentInfo)
 	const finishPage = finishPageHTML(tournamentInfo.sizeTournament);
 
 	loadContent(document.getElementById('app'), finishPage, 'finish-page-tournament', true, 'Finish Page Tournament', translation, "", addEventListenerFinishPageTournament);

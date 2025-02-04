@@ -46,7 +46,7 @@ window.addEventListener('popstate', async function(event) {
 
 export function  addEventListenerStats(userStatsInfoAll)
 {
-	if (window.location.path == "/stats-friend")
+	if (window.location.pathname === "/stats-friend")
 		document.getElementById("btn-HistoricMatches").remove();
 	
 	let imageHero;

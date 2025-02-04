@@ -68,18 +68,8 @@ async function addEventListenerGamePage()
 	if (pageGameContainer)
 		game = new Game("game-container", matchInfo.modeGame, matchInfo.colorPlayer1, matchInfo.colorPlayer2, matchInfo.courtColor, matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2, matchInfo.username1, matchInfo.username2, matchInfo.typeOfGame, matchInfo.numberPlayers, matchInfo.superPower, tournamentInfo.numberMatch, tournamentInfo.tabPlayers, tournamentInfo.tabPlayersNewRound);
 }
-/*
-function toggleFullScreen() {
-    const gameContainer = document.querySelector('.flex-game-container');
-    if (!document.fullscreenElement) {
-        gameContainer.requestFullscreen().catch(err => {
-            console.error(`Erreur lors de la tentative d'activation du plein écran: ${err.message} (${err.name})`);
-        });
-    } else {
-        document.exitFullscreen();
-    }
-}
-*/
+
+
 function generateBodyGamePageHTML(username, username2)
 {
 	return `

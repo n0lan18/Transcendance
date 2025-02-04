@@ -410,7 +410,7 @@ function generateBodyProfilePageHTML()
 				<h2 data-translate-key="updatePassword"></h2>
 				<form class="password-form" id="passwordForm">
 					<div class="password-place" id="passwordPlace" data-mdb-input-init class="form-outline mb-4">
-						<div id="input-password" style="position: relative; width: 25%;">
+						<div id="input-password" class="profile-input-password">
 							<input type="password" id="passwordUpdate" name="passwordUpdate" autocomplete="new-password" data-translate-key="password" placeholder="" required class="form-control"  style="padding-right: 40px;" />
 							<button type="button" class="toggle-password" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #b3b3b3; padding: 0;">
 								<i class="fa-solid fa-eye-slash"></i>

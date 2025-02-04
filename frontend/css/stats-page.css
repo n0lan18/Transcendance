@@ -9,8 +9,6 @@
 	height: calc(80vh - 70px, 1028px);
 	max-width: 900px;
 	max-height: 800px;
-	margin-top: 150px;;
-	margin-bottom: auto;
 	overflow-y: auto;
 }
 
@@ -116,14 +114,14 @@ canvas {
     .statsContainer {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         width: 100%;
         height: calc(min(97vh - 70px, 1028px));
-        margin-top: 50px;
-        margin-bottom: auto;
         overflow-y: auto;
         box-sizing: border-box;
+		margin-top: 0;
+		margin-bottom: 0;
     }
 
 	.graphics {
@@ -131,8 +129,6 @@ canvas {
 		justify-content: center;
 		align-items: center;
 		flex-direction: row;
-		width: 70%;
-		height: 70%;
 	}
 }
 

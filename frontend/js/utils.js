@@ -1,4 +1,5 @@
 import { loadAuthentificationPage } from "./auth.js";
+import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi-local-tournament.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
 import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
 
@@ -200,17 +201,12 @@ export async function getStatsInfo(pk)
 	}
 }
 
-export async function putStatsInfo(numberSimpleMatch, resultats, numberVictorySimpleMatch, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, numberVictoryTournament, bestResultTournament)
+export async function putStatsInfo(resultats, numberGoalsWin, numberGoalLose, numberVictoryTournament, bestResultTournament)
 {
 	const data = {
-		numberSimpleMatch:  numberSimpleMatch,
 		resultats: resultats,
-		numberVictorySimpleMatch: numberVictorySimpleMatch,
 		numberGoalsWin: numberGoalsWin,
 		numberGoalLose: numberGoalLose,
-		scores: scores,
-		numberMatchTournament: numberMatchTournament,
-		numberVictoryMatchTournament: numberVictoryMatchTournament,
 		numberVictoryTournament: numberVictoryTournament,
 		bestResultTournament: bestResultTournament,
 	}
@@ -302,11 +298,10 @@ export async function putStatsInfoById(pk, data)
 	}	
 }
 
-export async function putTournamentInfo(tabPlayers, numberMatchPlayed, courtColor, sizeTournament, superPower)
+export async function putTournamentInfo(tabPlayers, courtColor, sizeTournament, superPower)
 {
 	const data = {
 		tabPlayers: tabPlayers,
-		numberMatchPlayed: numberMatchPlayed,
 		courtColor: courtColor,
 		sizeTournament: sizeTournament,
 		superPower: superPower,
@@ -354,14 +349,8 @@ export async function putTournamentInfo(tabPlayers, numberMatchPlayed, courtColo
 	}
 }
 
-export async function putTournamentInfoNewRound(sizeTournament, numberMatchPlayed, tabPlayersNewRound)
+export async function putTournamentInfoNewRound()
 {
-	const data = {
-		tabPlayersNewRound: tabPlayersNewRound,
-		numberMatchPlayed: numberMatchPlayed,
-		sizeTournament: sizeTournament,
-	};
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/new-round-tournament/`, {
@@ -370,7 +359,6 @@ export async function putTournamentInfoNewRound(sizeTournament, numberMatchPlaye
 				'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(data),
 		})
 		if (response.ok) {
 			let updatedData = await response.json();
@@ -660,7 +648,8 @@ export async function putMatchInfo(username1, username2, courtColor, colorPlayer
 		if (response.ok) {
 			let updatedData = await response.json();
 			console.log("Updated Data:", JSON.stringify(updatedData));
-			return updatedData;
+			if (modeGame == "tournament-multi-local")
+				loadPresentationMultiLocalPlayerPage();
 		}
 		else if (response.status === 401)
 		{
@@ -1241,14 +1230,10 @@ export function loadDataStorage(data) {
 	return null
 }
 
-export async function InfoDataMatchTournament(username1, username2, numberPlayer, scoreLeftPlayer, scoreRightPlayer, tabNewRound)
+export async function InfoDataMatchTournament(username1, username2, numberPlayers, scoreLeftPlayer, scoreRightPlayer)
 {
-	await insertWinnerInTabNewRound(tabNewRound);
 	let userInfo = await getUserInfo();
-	let scores = scoreLeftPlayer + "-" + scoreRightPlayer;
-	let numberMatchTournament = 1;
 	let resultats = "D";
-	let numberVictoryMatchTournament = 0
 	let numberGoalLose;
 	let numberGoalsWin;
 	if (userInfo.username != username1 && userInfo.username != username2)
@@ -1256,7 +1241,6 @@ export async function InfoDataMatchTournament(username1, username2, numberPlayer
 	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRightPlayer) || (userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
 	{
 		resultats = "V";
-		numberVictoryMatchTournament = 1;
 		if ((userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
 		{
 			numberGoalsWin = scoreRightPlayer;
@@ -1281,24 +1265,21 @@ export async function InfoDataMatchTournament(username1, username2, numberPlayer
 			numberGoalLose = scoreLeftPlayer;
 		}
 	}
-	await putStatsInfo(0, resultats, 0, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, 0, numberPlayer);
+	await putStatsInfo(resultats, numberGoalsWin, numberGoalLose, 0, numberPlayers);
 }
 
 export async function InfoDataMatchTournamentFinale(username1, username2, numberPlayer, scoreLeftPlayer, scoreRightPlayer)
 {
 	let userInfo = await getUserInfo();
-	let numberVictoryMatchTournament = 0;
 	let numberVictoryTournament = 0;
 	let resultats;
 	let numberGoalsWin;
 	let numberGoalLose;
 
-	let numberMatchTournament = 1;
 	if (userInfo.username != username1 && userInfo.username2 != username2)
 		return ;
 	if ((userInfo.username == username1 && scoreLeftPlayer > scoreRightPlayer) || (userInfo.username == username2 && scoreRightPlayer > scoreLeftPlayer))
 	{
-		numberVictoryMatchTournament = 1;
 		numberVictoryTournament = 1;
 		resultats = "V";
 		if (scoreLeftPlayer > scoreRightPlayer)
@@ -1328,27 +1309,19 @@ export async function InfoDataMatchTournamentFinale(username1, username2, number
 	}
 	if (numberPlayer == 1)
 		numberPlayer = 2;
-	let bestResultTournament = numberPlayer;
-	let scores = scoreLeftPlayer + "-" + scoreRightPlayer;
-	await putStatsInfo(0, resultats, 0, numberGoalsWin, numberGoalLose, scores, numberMatchTournament, numberVictoryMatchTournament, numberVictoryTournament, bestResultTournament);
+	await putStatsInfo(resultats, numberGoalsWin, numberGoalLose, numberVictoryTournament, numberPlayer);
 }
 
 export async function InfoDataSimpleMatch(scoreLeftPlayer, scoreRightPlayer, isWin, modeGame)
 {
 	if (modeGame == "multiPlayerTwo")
 	{
-		let numberSimpleMatch = 1;
 		let resultats = "D";
-		let numberVictorySimpleMatch = 0;
 		if (isWin == true)
-		{
 			resultats = "V";
-			numberVictorySimpleMatch = 1;
-		}
 		let numberGoalsWin = scoreLeftPlayer;
 		let numberGoalLose = scoreRightPlayer
-		let scores = scoreLeftPlayer + "-" + scoreRightPlayer
-		await putStatsInfo(numberSimpleMatch, resultats, numberVictorySimpleMatch, numberGoalsWin, numberGoalLose, scores, 0, 0, 0, 32)
+		await putStatsInfo(resultats, numberGoalsWin, numberGoalLose, 0, 32)
 	}
 }
 
@@ -1362,4 +1335,53 @@ export function removeElementWithDelay(id, delay = 2000) {
 	} else {
 		console.warn(`Element with id "${id}" does not exist.`);
 	}
+}
+
+export async function putWinnerMatchTournament(userWinner)
+{
+	const data = {
+		userWinner: userWinner,
+	};
+	console.log(data);
+	try
+	{
+		const response = await fetch(`api/add-winner-match-tournament/`, {
+			method: 'PUT',
+			headers: {
+				'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		})
+		if (response.ok) {
+			let valueData = await response.json();
+			console.log("value Data:", JSON.stringify(valueData));
+			return valueData;
+		}
+		else if (response.status === 401)
+		{
+			console.error('Unauthorized: Invalid or expired token');
+			localStorage.removeItem('jwt_token');
+			loadAuthentificationPage();
+			return null;
+		}
+		else
+		{
+			console.error('Failed to fetch tournament info:', response.statusText);
+			const contentType = response.headers.get("content-type");
+			if (contentType && contentType.includes("application/json")) {
+				const errorData = await response.json();
+				console.error('Erreur détaillée:', errorData);
+			} else {
+				const errorText = await response.text();
+				console.error('Erreur non-JSON:', errorText);
+			}
+			return null;
+		}
+	
+	}
+	catch (error) {
+		console.error('Error:', error);
+		return null;
+	}	
 }

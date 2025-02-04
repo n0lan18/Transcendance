@@ -1,5 +1,5 @@
 import { getScores, incrementLeftScore, incrementRightScore } from "./score.js";
-import { InfoDataMatchTournamentFinale, InfoDataSimpleMatch, InfoDataMatchTournament, sizeOfAdvance, putHistoryMatches } from "../utils.js";
+import { InfoDataMatchTournamentFinale, InfoDataSimpleMatch, InfoDataMatchTournament, sizeOfAdvance, putHistoryMatches, putWinnerMatchTournament } from "../utils.js";
 import { startCountdown } from "./countdown.js";
 import { loadFinishPage } from "./finishPage.js";
 import { loadFinishPageTournament } from "./finishPage-tournament.js";
@@ -126,19 +126,13 @@ export async function handleCollisions(Game) {
 			if (scores.leftPlayerScore >= 5)
 			{
 				if (Game.modeGame == "tournament-multi-local")
-				{
-					const user = Game.tab.find(row => row.includes(Game.username1));
-					Game.tabNewRound.push(user);
-				}
+					await putWinnerMatchTournament(Game.username1)
 				isWin = true;
 			}
 			else
 			{
 				if (Game.modeGame == "tournament-multi-local")
-				{
-					const user = Game.tab.find(row => row.includes(Game.username2));
-					Game.tabNewRound.push(user);
-				}
+					await putWinnerMatchTournament(Game.username2)
 				isWin = false;
 			}
 			if (Game.modeGame == "tournament-multi-local")
@@ -150,7 +144,7 @@ export async function handleCollisions(Game) {
 				}
 				else
 				{
-					InfoDataMatchTournament(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore, Game.tabNewRound)
+					InfoDataMatchTournament(Game.username1, Game.username2, Game.numberPlayers, scores.leftPlayerScore, scores.rightPlayerScore)
 					loadFinishPageTournamentWin();
 				}
 			}
