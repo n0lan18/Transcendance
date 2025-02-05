@@ -1,5 +1,5 @@
 import { getScores, incrementLeftScore, incrementRightScore } from "./score.js";
-import { InfoDataMatchTournamentFinale, InfoDataSimpleMatch, InfoDataMatchTournament, sizeOfAdvance, putHistoryMatches, putWinnerMatchTournament } from "../utils.js";
+import { InfoDataMatchTournamentFinale, InfoDataSimpleMatch, InfoDataMatchTournament, sizeOfAdvance, putHistoryMatches, putWinnerMatchTournament, getUserInfo } from "../utils.js";
 import { startCountdown } from "./countdown.js";
 import { loadFinishPage } from "./finishPage.js";
 import { loadFinishPageTournament } from "./finishPage-tournament.js";
@@ -107,9 +107,7 @@ export async function handleCollisions(Game) {
 		Game.pause();
 		if (scores.leftPlayerScore >= 5 || scores.rightPlayerScore >= 5)
 		{
-			console.log(Game.startMatch)
 			Game.endMatch = new Date();
-			console.log(Game.endMatch)
 			Game.ballVelocity.x = 0;
 			Game.ballVelocity.y = 0;
 			let isWin;
@@ -121,7 +119,8 @@ export async function handleCollisions(Game) {
 				winner = Game.username1;
 			else
 				winner = Game.username2;
-			if (Game.modeGame != "tournament-multi-local")
+			let userInfo = await getUserInfo();
+			if (userInfo.username == Game.username1 || userInfo.username == Game.username2)
 				await putHistoryMatches(Game.username1, Game.heroPowerPlayer1, Game.username2, Game.heroPowerPlayer2, scoresText, Game.numberGameBreaker, Game.echangeLongueur, timeMatch, winner, Game.superPower)
 			if (scores.leftPlayerScore >= 5)
 			{

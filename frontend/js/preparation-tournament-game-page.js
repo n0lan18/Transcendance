@@ -43,7 +43,6 @@ export async function addEventListenerPreparationTournament()
 			event.target.style.border = "3px solid #ffffff";
 			let color = event.target.style.backgroundColor;
 			colorPlayer1 = rgbToHex(color);
-			console.log(colorPlayer1);
 			const colorPickerContainer1 = document.getElementById("color-picker-container1");
 			const colorPicker1 = document.getElementById("color-picker-player1");
 			colorPickerContainer1.style.backgroundColor = colorPicker1.value;

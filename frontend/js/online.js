@@ -7,7 +7,6 @@ import { newWebSocket } from "./websocket.js"
 export async function loadOnlinePage()
 {
 	let userInfo = await getUserInfo();
-	console.log(userInfo);
 
 	let onlineHTML = generateOnlinePageHTML(userInfo);
 

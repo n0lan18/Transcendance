@@ -273,6 +273,10 @@
         box-sizing: border-box;
     }
 
+	.environnement-preparation-random-button {
+		width: 100%;
+	}
+
 	.environnement-preparation-container-button-orange, .environnement-preparation-container-button-dark-blue, .environnement-preparation-container-button-light-blue, .environnement-preparation-container-button-green {
 		aspect-ratio: 1 / 1;
 	}

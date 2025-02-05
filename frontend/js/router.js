@@ -42,8 +42,6 @@ export function addRoute(path, routeConfig) {
 // Fonction unique pour charger les routes
 export function loadRoute(pathname) {
 	const route = routes[pathname];  // Chercher la route dans l'objet 'routes'
-	console.log(routes)
-	console.log(pathname);
 	if (route) {
 		route();  // Appeler la fonction de la route correspondante
 	} else {

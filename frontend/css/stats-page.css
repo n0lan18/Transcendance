@@ -129,6 +129,12 @@ canvas {
 		justify-content: center;
 		align-items: center;
 		flex-direction: row;
+		height: 100%;
+		width: 70%;
+	}
+
+	.dates-stats-match {
+		font-size: 0.5rem;
 	}
 }
 

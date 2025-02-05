@@ -1,6 +1,6 @@
 import { generateNavigator } from "./nav.js";
 import { addNavigatorEventListeners } from "./eventListener/navigator.js";
-import { escapeHTML, getTournamentBasicInfo, getUserInfo, loadContent, putTournamentInfo } from "./utils.js";
+import { escapeHTML, getTournamentBasicInfo, getUserInfo, isValidUsername, loadContent, putTournamentInfo } from "./utils.js";
 import { translation } from "./translate.js";
 import { rgbToHex } from "./utils.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
@@ -149,11 +149,8 @@ async function addEventListenerUsernamePlayersTournament()
                     tab[i][1] = superheroPlayerText.innerHTML;
                     albumImage.style.width = "50%";
                     albumImage.style.height = "50%";
-                    console.log(tab[i]);
                 });
             }
-            else
-                console.log("prevBtn not found");
         
             let nextBtn = document.getElementById(`right-arrow${i + 1}`);
             if (nextBtn)
@@ -176,11 +173,8 @@ async function addEventListenerUsernamePlayersTournament()
                     tab[i][1] = superheroPlayerText.innerHTML;
                     albumImage.style.width = "50%";
                     albumImage.style.height = "50%";
-                    console.log(tab[i]);
                 });
             }
-            else
-                console.log("nextBtn not found");
 
             usernameInput = document.getElementById(`usernameRegister${i + 1}`);
 
@@ -190,6 +184,22 @@ async function addEventListenerUsernamePlayersTournament()
                 usernameInput.addEventListener(('input'), function(event) {
                     inputUsername = event.target.value;
                     const parent = document.getElementById(`RegisterPlace${i + 1}`);
+                    if (!isValidUsername(inputUsername) && inputUsername.length > 0)
+                    {
+                        if (!document.getElementById(`message-valid-username${i + 1}`))
+                        {
+                            let messageValidUsername = document.createElement("p");
+                            messageValidUsername.id = `message-valid-username${i + 1}`;
+                            messageValidUsername.classList.add("invalid-register");
+                            messageValidUsername.textContent = "Invalid Username exist";
+                            parent.appendChild(messageValidUsername);
+                        }                        
+                    }
+                    else
+                    {
+                        if (document.getElementById(`message-valid-username${i + 1}`))
+                            document.getElementById(`message-valid-username${i + 1}`).remove()
+                    }
                     let exist = 0;
                     for (let i = 0; i < sizeTournament; i++)
                     {
@@ -245,7 +255,6 @@ async function addEventListenerUsernamePlayersTournament()
                     const colorPickerContainer1 = document.getElementById(`color-picker-container${i + 1}`);
                     const colorPicker1 = document.getElementById(`color-picker-player${i + 1}`);
                     colorPickerContainer1.style.backgroundColor = colorPicker1.value;
-                    console.log(tab[i]);
                 });
             });
             let colorPicker1 = document.getElementById(`color-picker-player${i + 1}`);
@@ -253,7 +262,6 @@ async function addEventListenerUsernamePlayersTournament()
             {
                 colorPicker1.addEventListener('input', function (event) {
                     tab[i][2] = event.target.value;
-                    console.log(tab[i][2]);
                     const colorPickerContainer1 = document.getElementById(`color-picker-container${i + 1}`);
                     colorPickerContainer1.style.backgroundColor = "#ffffff";
                     document.querySelectorAll(`.color-button-container-player${i + 1} .color-button`).forEach(button => {

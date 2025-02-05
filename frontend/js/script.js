@@ -17,16 +17,13 @@ import { loadFriendsPage } from "./friends.js";
 document.addEventListener('DOMContentLoaded', async () => 
     {
         const jwtToken = localStorage.getItem('jwt_token');
-        console.log("JWT Token:", jwtToken);
 
         addRoute("/login", { loadFunction: loadAuthentificationPage });
         addRoute("/home", { loadFunction: loadHomePage });
         addRoute("/profile", { loadFunction: loadProfilePage });
         addRoute("/stats-perso", { loadFunction: loadStatsPage });
-        addRoute("/continue-or-new-tournament", { loadFunction: loadContinueOrNewTournamentPage });
         addRoute("/tournament-presentation", { loadFunction: loadTournamentPresentation});
         addRoute("/preparation-solo-tournament", { loadFunction: loadPreparationTournamentGamePage });
-        addRoute('/preparation-username-tournament', { loadFunction: loadUsernamePlayersTournament });
         addRoute('/preparation-simple-game', { 
             loadFunction: () => {
                 const typeOfGame = "multiplayer";
@@ -41,9 +38,6 @@ document.addEventListener('DOMContentLoaded', async () =>
                 loadPreparationSimpleMatchGamePage(typeOfGame, modeGame);
             }
         });
-        addRoute("/register-email", { loadFunction: loadRegisterEmailPage });
-        addRoute('/finish-page-tournament-win', { loadFunction: loadFinishPageTournament});
-        addRoute('/finish-page-tournament', { loadFunction: loadFinishPageTournamentWin});
         addRoute('/friends', { loadFunction: loadFriendsPage });
 
 

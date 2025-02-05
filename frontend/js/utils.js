@@ -3,7 +3,7 @@ import { loadPresentationMultiLocalPlayerPage } from "./presentation-match-multi
 import { loadTournamentPresentation } from "./tournament-presentation.js";
 import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
 
-export function loadContent(appDiv, page, url, addToHistory, namePage, translate, eventListenerNavigator, eventListenerPage) {
+export async function loadContent(appDiv, page, url, addToHistory, namePage, translate, eventListenerNavigator, eventListenerPage) {
 	appDiv.innerHTML = page;
 	if (typeof translate === "function")
 		translate();
@@ -16,23 +16,14 @@ export function loadContent(appDiv, page, url, addToHistory, namePage, translate
 	}
 }
 
-export function replaceContent(appDiv, page, url, namePage, translate, eventListenerNavigator, eventListenerPage) {
+export async function replaceContent(appDiv, page, url, namePage, translate, eventListenerNavigator, eventListenerPage) {
 	appDiv.innerHTML = page;
 	if (typeof translate === "function")
-	{
-		console.log("Translate");
 		translate();
-	}
 	if (typeof eventListenerNavigator === "function")
-	{
-		console.log("NAV EVENT")
 		eventListenerNavigator();
-	}
 	if (typeof eventListenerPage === "function")
-	{
-		console.log("EVENT PAGE")
 		eventListenerPage();
-	}
 	history.replaceState({ page: page }, namePage, `/${url}`);
 }
 
@@ -50,7 +41,6 @@ export async function getUserInfo()
 		
 		if (response.ok) {
 			let data = await response.json();
-			console.log('User: ', data);
 			return data;
 		}
 		else if (response.status === 401)
@@ -92,7 +82,6 @@ export async function getStatsInfoAll()
 		
 		if (response.ok) {
 			let data = await response.json();
-			console.log(data);
 
 			const firstStat = data.length > 0 ? data[0] : null;
 			if (!firstStat)
@@ -138,7 +127,6 @@ export async function getStatsInfoAllById(friend_id)
 		
 		if (response.ok) {
 			let data = await response.json();
-			console.log(data);
 
 			const firstStat = data.length > 0 ? data[0] : null;
 			if (!firstStat)
@@ -178,7 +166,6 @@ export async function getStatsInfo(pk)
 		if (response.ok) {
 			let data = await response.json();
 			JSON.stringify(data, null, 2);
-			console.log(data[0]);
 			if (data.length > 0)
 				return data[0];
 			return data;
@@ -210,7 +197,6 @@ export async function putStatsInfo(resultats, numberGoalsWin, numberGoalLose, nu
 		numberVictoryTournament: numberVictoryTournament,
 		bestResultTournament: bestResultTournament,
 	}
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/gamestats-update-list/`, {
@@ -224,7 +210,6 @@ export async function putStatsInfo(resultats, numberGoalsWin, numberGoalLose, nu
 		
 		if (response.ok) {
 			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData, null, 2));
 			return updatedData;
 		}
 		else if (response.status === 401)
@@ -255,7 +240,6 @@ export async function putStatsInfo(resultats, numberGoalsWin, numberGoalLose, nu
 
 export async function putStatsInfoById(pk, data)
 {
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/gamestats/${pk}/`, {
@@ -269,7 +253,6 @@ export async function putStatsInfoById(pk, data)
 		
 		if (response.ok) {
 			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData, null, 2));
 			return updatedData;
 		}
 		else if (response.status === 401)
@@ -306,7 +289,6 @@ export async function putTournamentInfo(tabPlayers, courtColor, sizeTournament, 
 		sizeTournament: sizeTournament,
 		superPower: superPower,
 	};
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/create-tournament/`, {
@@ -319,7 +301,6 @@ export async function putTournamentInfo(tabPlayers, courtColor, sizeTournament, 
 		})
 		if (response.ok) {
 			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData));
 			loadTournamentPresentation();
 		}
 		else if (response.status === 401)
@@ -362,7 +343,6 @@ export async function putTournamentInfoNewRound()
 		})
 		if (response.ok) {
 			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData));
 			return updatedData;
 		}
 		else if (response.status === 401)
@@ -399,7 +379,6 @@ export async function putTournamentInfoBasic(courtColor, sizeTournament, superPo
 		sizeTournament: sizeTournament,
 		superPower: superPower,
 	};
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/create-tournament-basic/`, {
@@ -412,7 +391,6 @@ export async function putTournamentInfoBasic(courtColor, sizeTournament, superPo
 		})
 		if (response.ok) {
 			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData));
 			loadUsernamePlayersTournament();
 		}
 		else if (response.status === 401)
@@ -538,7 +516,6 @@ export async function putHistoryMatches(username1, superPower1, username2, super
 		vainqueur: vainqueur,
 		isSuperPower: isSuperPower
 	}
-	console.log(data);
 	try
 	{
 		const jwtToken = localStorage.getItem('jwt_token');
@@ -634,7 +611,6 @@ export async function putMatchInfo(username1, username2, courtColor, colorPlayer
 		superPower: superPower,
 		courtColor: courtColor,
 	};
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/match-user-info/`, {
@@ -646,8 +622,6 @@ export async function putMatchInfo(username1, username2, courtColor, colorPlayer
 			body: JSON.stringify(data),
 		})
 		if (response.ok) {
-			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData));
 			if (modeGame == "tournament-multi-local")
 				loadPresentationMultiLocalPlayerPage();
 		}
@@ -733,7 +707,6 @@ export async function removeTournament()
 		})
 		if (response.ok) {
 			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData));
 			return updatedData;
 		}
 		else if (response.status === 401)
@@ -780,7 +753,6 @@ export async function insertWinnerInTabNewRound(tabPlayersNewRound)
 		})
 		if (response.ok) {
 			let updatedData = await response.json();
-			console.log("Updated Data:", JSON.stringify(updatedData));
 			return updatedData;
 		}
 		else if (response.status === 401)
@@ -823,7 +795,6 @@ export async function getTournamentInfo()
 		})
 		if (response.ok) {
 			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
 		}
 		else if (response.status === 401)
@@ -866,16 +837,10 @@ export async function checkIsTournament()
 		})
 		if (response.ok) {
 			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
 		}
 		else if (response.status === 400)
-		{
-			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
-			console.log(valueData)
 			return null;
-		}
 		else if (response.status === 401)
 		{
 			console.error('Unauthorized: Invalid or expired token');
@@ -916,7 +881,6 @@ export async function removeUserInPlayerOnline()
 		})
 		if (response.ok) {
 			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
 		}
 		else if (response.status === 401)
@@ -959,7 +923,6 @@ export async function connectedUsersList()
 		})
 		if (response.ok) {
 			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
 		}
 		else if (response.status === 401)
@@ -994,7 +957,6 @@ export async function addFriend(friend_id)
 	const data = {
 		id: friend_id,
 	};
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/add-friend/`, {
@@ -1007,7 +969,6 @@ export async function addFriend(friend_id)
 		})
 		if (response.ok) {
 			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
 		}
 		else if (response.status === 401)
@@ -1043,7 +1004,6 @@ export async function removeFriend(friend_id)
 	const data = {
 		id: friend_id,
 	};
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/remove-friend/`, {
@@ -1056,7 +1016,6 @@ export async function removeFriend(friend_id)
 		})
 		if (response.ok) {
 			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
 		}
 		else if (response.status === 401)
@@ -1330,7 +1289,6 @@ export function removeElementWithDelay(id, delay = 2000) {
 	if (element) {
 		setTimeout(() => {
 			element.remove();
-			console.log(`Element with id "${id}" removed after ${delay}ms`);
 		}, delay);
 	} else {
 		console.warn(`Element with id "${id}" does not exist.`);
@@ -1342,7 +1300,6 @@ export async function putWinnerMatchTournament(userWinner)
 	const data = {
 		userWinner: userWinner,
 	};
-	console.log(data);
 	try
 	{
 		const response = await fetch(`api/add-winner-match-tournament/`, {
@@ -1355,7 +1312,6 @@ export async function putWinnerMatchTournament(userWinner)
 		})
 		if (response.ok) {
 			let valueData = await response.json();
-			console.log("value Data:", JSON.stringify(valueData));
 			return valueData;
 		}
 		else if (response.status === 401)

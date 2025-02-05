@@ -49,7 +49,7 @@ function ContinueOrFinishTournamentPageHTML()
             <h1 data-translate-key="tournament"></h1>
             <div class="continue-or-new-tournament-page">
                 <button id="continue-tournament-button" class="solo-player-simple-match-button">
-                    <i class="fa-solid fa-arrow-right-to-bracket home-button-finish-page" style="font-size: 100px; color: white"></i>
+                    <i class="fa-solid fa-arrow-right-to-bracket" style="font-size: 100px; color: white"></i>
                     <div class="item-name">
                         <h1 data-translate-key="continue-tournament"></h1>
                     </div>

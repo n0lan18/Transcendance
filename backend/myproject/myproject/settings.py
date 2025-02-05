@@ -42,18 +42,19 @@ DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
+# Securisation http request
 CSRF_TRUSTED_ORIGINS = [
 	LOCAL_ADDRESS,
 	IP_ADDRESS
 ]
 
+# Only local_address and Ip_address can access API
 CORS_ALLOWED_ORIGINS = [
     LOCAL_ADDRESS,
     IP_ADDRESS
 ]
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -68,6 +69,7 @@ INSTALLED_APPS = [
     'myapp',
 ]
 
+# Different application for protecting middlewares
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -97,14 +99,18 @@ TEMPLATES = [
     },
 ]
 
+# Classic http request
 WSGI_APPLICATION = 'myproject.wsgi.application'
+
+# Async request like websockets
 ASGI_APPLICATION = 'myproject.asgi.application'
 
+# Websocket connexion 
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('redis', 6379)],  # Assure-toi que Redis tourne localement
+            "hosts": [('redis', 6379)],
         },
     },
 }
@@ -126,6 +132,7 @@ DATABASES = {
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
+    #User must be authenticate
     'DEFAULT_AUTHENTICATION_CLASSES': (
 		'rest_framework_simplejwt.authentication.JWTAuthentication',
 	),
@@ -134,6 +141,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Configuration JWToken
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Durée de validité du token d'accès
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Durée de validité du token de rafraîchissement
@@ -145,6 +153,7 @@ SIMPLE_JWT = {
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
+# Default password Django validator
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -187,11 +196,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Authentification with function in backends.py
 AUTHENTICATION_BACKENDS = [
     'myapp.backends.UsernameOrEmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
+# Keep traces and logs for production
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -211,4 +222,5 @@ LOGGING = {
     },
 }
 
+# Model for authentification
 AUTH_USER_MODEL = 'myapp.User'

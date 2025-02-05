@@ -113,6 +113,16 @@
 	font-size: 15px;
 }
 
+.send-follow-friend-button {
+	width: 30%;
+	margin-top: 20px;
+}
+
+.send-unfollow-friend-button {
+	width: 30%;
+	margin-top: 20px;
+}
+
 @media (orientation: portrait) and (max-width: 900px) {
 	.friends-container {
 		display: flex;
@@ -131,6 +141,16 @@
 
 	.button-page-friends {
 		font-size: 12px;
+	}
+
+	.send-follow-friend-button {
+		width: 40%;
+		margin-top: 20px;
+	}
+
+	.send-unfollow-friend-button {
+		width: 50%;
+		margin-top: 20px;
 	}
 }
 

@@ -72,7 +72,6 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			event.target.style.border = "3px solid #ffffff";
 			let color = event.target.style.backgroundColor;
 			colorPlayer1 = rgbToHex(color);
-			console.log(colorPlayer1);
 			const colorPickerContainer1 = document.getElementById("color-picker-container1");
 			const colorPicker1 = document.getElementById("color-picker-player1");
 			colorPickerContainer1.style.backgroundColor = colorPicker1.value;
@@ -99,7 +98,6 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			event.target.style.border = "3px solid #ffffff";
 			let color = event.target.style.backgroundColor;
 			colorPlayer2 = rgbToHex(color);
-			console.log(colorPlayer2);
 			const colorPickerContainer2 = document.getElementById("color-picker-container2");
 			const colorPicker2 = document.getElementById("color-picker-player2");
 			colorPickerContainer2.style.backgroundColor = colorPicker2.value;
@@ -169,36 +167,7 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			}
 		});
 	}
-
-	let usernameGamePlayer1 = document.getElementById("usernameGamePlayer1");
-	if (usernameGamePlayer1)
-	{
-		usernameGamePlayer1.addEventListener('input', function (event) {
-			let usernameValue = event.target.value;
-			console.log(usernameValue);
-			username1 = usernameValue;
-			username1 = escapeHTML(username1);
-			if (username1 === "")
-				username1 = userInfo.username;
-			if (isValidUsernameBad(username1))
-				document.getElementById("usernameGamePlayer1-text").innerHTML = username1;
-		});
-	}
 	
-	let usernameGamePlayer2 = document.getElementById("usernameGamePlayer2");
-	if (usernameGamePlayer2)
-	{
-		usernameGamePlayer2.addEventListener('input', function (event) {
-			let usernameValue = event.target.value;
-			console.log(usernameValue);
-			username2 = usernameValue;
-			username2 = escapeHTML(username2);
-			if (username2 === "")
-				username2 = "Player2"
-			if (isValidUsernameBad(username2))
-				document.getElementById("usernameGamePlayer2-text").innerHTML = username2;
-		});
-	}
 
 	const buttons = document.querySelectorAll('.btn-court');
 	buttons.forEach(button => {
@@ -246,7 +215,6 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 	if (prevBtn)
 	{
 		prevBtn.addEventListener('click', (event) => {
-			console.log("prevBtn");
 			const albumImage = document.getElementById("superhero-image");
 			const superheroPlayerText = document.getElementById("superhero-power-text-player1");
 			currentImageIndex--;
@@ -278,8 +246,6 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			albumImage.style.height = "40%";
 		});
 	}
-	else
-		console.log("prevBtn not found");
 
 	const nextBtn = document.getElementById("right-arrow1");
 	if (nextBtn)
@@ -316,8 +282,6 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			albumImage.style.height = "40%";
 		});
 	}
-	else
-		console.log("nextBtn not found");
 
 	const prevBtn2 = document.getElementById("left-arrow2");
 	if (prevBtn2)
@@ -342,8 +306,6 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			albumImage2.style.height = "40%";
 		});
 	}
-	else
-		console.log("prevBtn2 not found");
 
 	const nextBtn2 = document.getElementById("right-arrow2");
 	if (nextBtn2)
@@ -368,14 +330,11 @@ export async function addEventListenerPreparationGame(typeOfGame, modeGame)
 			albumImage2.style.height = "40%";
 		});
 	}
-	else
-		console.log("nextBtn2 not found");
 
 	const radios = document.querySelectorAll('input[name="choice"]');
 	radios.forEach(radio => {
 		radio.addEventListener('change', () => {
 			if (radio.checked) {
-				console.log(`Le bouton radio sélectionné est : ${radio.value}`);
 				let superHeroContainer1 = document.getElementById("superhero-container1");
 				let superHeroContainer2 = document.getElementById("superhero-container2");
 				if (radio.value == "isSuperPower")

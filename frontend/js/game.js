@@ -311,10 +311,7 @@ export class Game {
         }
     
         if (this.gameState !== "stopped")
-        {
             this.gameState = "running";
-            console.log("Game is running.");
-        }
     
         const animate = () => {
             if (this.gameState === "stopped") {
@@ -336,8 +333,6 @@ export class Game {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
         this.gameState = "stopped";
-    
-        console.log("Game has been stopped.");
     }
 
     pause() {
@@ -350,8 +345,6 @@ export class Game {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
         this.gameState = "paused";
-    
-        console.log("Game is paused.");
     }
 
     destroy() {
@@ -359,8 +352,6 @@ export class Game {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
         this.gameState = "stopped";
-
-        console.log("Game has been stopped.");
 
         cleanupScene(this.scene)
 
@@ -406,7 +397,5 @@ export class Game {
             this.containerProgressBarRight.remove();
         if (this.scoreContainer)
             this.scoreContainer.remove();
-
-        console.log("Le jeu a été détruit et toutes les ressources ont été nettoyées.");
     }
 }

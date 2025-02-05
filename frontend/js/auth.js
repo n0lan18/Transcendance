@@ -82,14 +82,12 @@ async function checkConnexion()
 			const emailUsername = document.getElementById("usernameEmailLogin").value;
 			const password = document.getElementById("passwordLogin").value;
 			if (!emailUsername || !password) {
-				console.log('Please fill in both fields');
 				return ;
 			}
 			const credentials = {
 				emailUsername: emailUsername,
 				password: password,
 			};
-			console.log("SENDING DATA:", credentials);
 			try
 			{
 				const csrftoken = getCookie('csrftoken')
@@ -107,7 +105,6 @@ async function checkConnexion()
 					const token = data.access;
 
 					localStorage.setItem('jwt_token', token);
-					console.log('Login successful!');
 					history.replaceState({}, '', '/home');		
 					loadHomePage();
 				}
@@ -129,7 +126,6 @@ async function checkConnexion()
 				}
 			} catch (error) {
 				console.error('Error:', error);
-				console.log('An error occured.');
 			}
 		});
 	}

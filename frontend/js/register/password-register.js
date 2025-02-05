@@ -40,7 +40,6 @@ export function addEventListenerPasswordRegister(username, email)
                 email: email,
 				password: password.value,
 			}
-			console.log(data);
 			const letterRegex = new RegExp("[a-zA-Z]");
 			const numberOrSpecialCharRegex = new RegExp("[0-9.#?!&]");
 			const minCharacterRegex = new RegExp("^.{10,}$");
@@ -148,7 +147,6 @@ async function sendDataToDatabase(data)
 		}
 
 		const result = await response.json();
-		console.log('Success:', result);
 		loadAuthentificationPage();
 	} catch (error) {
 		console.error('Error:', error);

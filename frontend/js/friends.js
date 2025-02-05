@@ -34,7 +34,7 @@ export async function addEventListenerFriendsPage()
 						<i class="fa-solid fa-chart-line image-nav" color: #b3b3b3"></i>
 						<p style="font-size: 15px">Stats</p>
 					</button>
-                	<input id="send-follow-user-button${index + 1}" value="Unfollow" class="btn btn-primary btn-block mb-4 send-preparation-game-button" style="width: 30%;">
+                	<input id="send-follow-user-button${index + 1}" value="Unfollow" class="btn btn-primary btn-block mb-4 send-unfollow-friend-button">
             	</div>
 			</div>
 		`;
@@ -49,7 +49,7 @@ export async function addEventListenerFriendsPage()
 					<h3 id="username-friend${index + 1}" class="username-user">${username}</h3>
 				</div>
 				<div class="follow-user-button">
-					<input id="send-follow-user-button${index + 1}" value="Follow" class="btn btn-primary btn-block mb-4 send-preparation-game-button" style="width: 30%;">
+					<input id="send-follow-user-button${index + 1}" value="Follow" class="btn btn-primary btn-block mb-4 send-follow-friend-button">
 				</div>
 			</div>
 			`;

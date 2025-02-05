@@ -79,13 +79,12 @@ async function addEventListenerHistoricGame()
                     </div>
                 </div>	
 				<div class="page-match-button">
-                	<input id="game-page-button${index + 1}" value="Match" class="btn btn-primary btn-block mb-4 send-preparation-game-button" style="width: 100%;">
+                	<input id="game-page-button${index + 1}" value="Match" class="btn btn-primary btn-block mb-4 send-match-history-button" style="width: 100%;">
             	</div>
 		`;
 	};
 
     const historyMatches = await getHistoryMatches();
-    console.log(historyMatches)
     for (let i = 0; i < historyMatches.length; i++)
     {
         const listHistory = document.getElementById("list-history-game-container");
@@ -102,9 +101,7 @@ async function addEventListenerHistoricGame()
             {
                 buttonPageMatch.addEventListener('click', (event) => {
                     event.preventDefault();
-                    console.log("PageMAtch");
                     window.idMatchStat = i;
-                    console.log(idMatchStat)
                     loadPageMatch()
                 });
             }

@@ -2,7 +2,6 @@ export function duplication(Game, player)
 {
 	if (Game.ball.position.x > -23 && Game.ball.position.x <= 0 && player == "left" && Game.powerPlayer1 == "active")
 	{
-		console.log("WWWW");
 		Game.powerPlayer1 = "disactive";
 		Game.ballReplica = Game.ball.clone();
 		Game.ballReplica.position.copy(Game.ball.position);

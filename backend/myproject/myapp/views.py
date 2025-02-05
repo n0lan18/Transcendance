@@ -34,26 +34,31 @@ class RegisterView(APIView):
 	def post(self, request, *args, **kwargs):
 		serializer = UserSerializer(data=request.data)
 		if serializer.is_valid():
-			if not request.data.get('email'):
+			print(request.data)
+			print(request.data.get('email'))
+			email = request.data.get('email')
+			username = request.data.get('username')
+			password = request.data.get('password')
+			if not email:
 				return Response({"error": "No email provided"}, status=status.HTTP_400_BAD_REQUEST)
-			if User.objects.filter(email=request.data.get('email')).exists():
+			if User.objects.filter(email=email).exists():
 				return Response({"exists": True, "message": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
-			email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-			if not re.match(email_regex, request.data.get('email')):
+			email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$'
+			if not re.match(email_regex, email):
 				return Response({"error": "Invalid email format"}, status=status.HTTP_400_BAD_REQUEST)
 			
-			if not request.data.get('username'):
+			if not username:
 				return Response({"error": "No username provided"}, status=status.HTTP_400_BAD_REQUEST)
-			if User.objects.filter(username=request.data.get('username')).exists():
+			if User.objects.filter(username=username).exists():
 				return Response({"exists": True, "message": "Username already exists."}, status=status.HTTP_400_BAD_REQUEST)
 			username_regex = r'^[a-zA-Z0-9@.+_-]{1,14}$'
-			if not re.match(username_regex, request.data.get('username')):
+			if not re.match(username_regex, username):
 				return Response({"error": "Invalid username format"}, status=status.HTTP_400_BAD_REQUEST)
 			
-			if not request.data.get('password'):
+			if not password:
 				return Response({"error": "No password provided"}, status=status.HTTP_400_BAD_REQUEST)
 			password_regex = r"^(?=.*[a-zA-Z])(?=.*[0-9.#?!&]).{10,}$"
-			if not re.match(password_regex, request.data.get('password')):
+			if not re.match(password_regex, password):
 				return Response({"error": "Invalid password format"}, status=status.HTTP_400_BAD_REQUEST)
 
 			serializer.save() 
@@ -382,16 +387,19 @@ class GameStatsLocalListUpdateView(APIView):
         if resultats == 'V':
             game_stat.numberVictorySimpleMatch += 1
 
-        game_stat.numberGoalsWin = numberGoalsWin
+        game_stat.numberGoalsWin += numberGoalsWin
 
-        game_stat.numberGoalLose = numberGoalLose			
+        game_stat.numberGoalLose += numberGoalLose			
 
         game_stat.scores.append(str(numberGoalsWin) + '-' + str(numberGoalLose))
         while len(game_stat.scores) > 5:
             game_stat.scores.pop(0)
         game_stat.dates.append(datetime.now().date())
         while len(game_stat.dates) > 5:
-            game_stat.dates.pop(0)        		
+            game_stat.dates.pop(0)
+        game_stat.resultats.append(resultats)
+        while len(game_stat.resultats) > 5:
+            game_stat.resultats.pop(0)
 
         game_stat.save()
         return Response({"message": "Game statistics updated successfully."}, status=status.HTTP_200_OK)

@@ -9,7 +9,6 @@ export async function loadPageMatch()
 
     loadContent(document.getElementById('app'), statsMatchPageHTML, "page-stats-match", true, 'Page Stats Match', translation, addNavigatorEventListeners, "");
    
-    console.log(statsMatchPageHTML)
     document.getElementById("app").innerHTML = statsMatchPageHTML;
 
     translation();
@@ -102,7 +101,6 @@ async function generateStatsMatchPage()
 {
     let nav = generateNavigator();
     let body = await generateStatsMatchPageHTML();
-    console.log(body);
 
     return (nav + body);
 }

@@ -92,6 +92,7 @@ function specialShotSmartphone(Game)
 			specialShotSmartphonePlayer1.addEventListener("click", () => {
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
 					{
+						Game.numberGameBreaker++;
 						Game.powerPlayer1 = "active";
 						const gameBreakerLeft = document.getElementById("power-container-left");
 						Game.containerProgressBarLeft.style.backgroundColor = "green";
@@ -107,6 +108,7 @@ function specialShotSmartphone(Game)
 			specialShotSmartphonePlayer2.addEventListener('click', () => {
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
 					{
+						Game.numberGameBreaker++;
 						Game.powerPlayer2 = "active";
 						const gameBreakerRight = document.getElementById("power-container-right");
 						Game.containerProgressBarRight.style.backgroundColor = "green";
@@ -170,7 +172,6 @@ function pauseButtonSmartphone(Game)
 		pauseButtonSmart2.addEventListener('click', () => pauseSmartphone(Game));
 
 	window.addEventListener('click', (event) => {
-		console.log(event.target.id)
 		if (event.target.id == "background-pause")
 			pauseSmartphone(Game);
 	})

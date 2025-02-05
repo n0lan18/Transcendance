@@ -195,7 +195,6 @@ async function updateImageToDatabase(data)
 async function updateDataToDatabase(data, typeData)
 {
 	try {
-		console.log(data)
 		let link;
 		if (typeData == "password")
 			link = "api/update-password/";
@@ -256,7 +255,6 @@ async function updateDataToDatabase(data, typeData)
 				if (document.getElementById("badPassword"))
 					document.getElementById("badPassword").remove();
 				let item = document.getElementById("password-update-container");
-				console.log(item);
 				if (!document.getElementById("newPasswordValidate"))
 				{
 					let newPasswordValidate = document.createElement("p");
@@ -277,7 +275,7 @@ async function updateDataToDatabase(data, typeData)
 	}
 }
 
-async function checkEmailIfExist(data, email)
+async function checkEmailIfExist(data)
 {
 	const dataCopy = data;
 	const csrftoken = getCookie('csrftoken');
@@ -320,7 +318,7 @@ async function checkEmailIfExist(data, email)
 	})
 }
 
-async function checkUsernameIfExist(data, username)
+async function checkUsernameIfExist(data)
 {
 	const dataCopy = data;
 	const csrftoken = getCookie('csrftoken');

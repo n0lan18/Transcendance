@@ -7,7 +7,6 @@ import { loadHistoryGamePage } from "./historic-game-page.js";
 
 export async function loadStatsPage(userStat)
 {
-	console.log(userStat)
 	let userStatsInfoAll;
 	if (userStat)
 		userStatsInfoAll = await getStatsInfoAllById(userStat);
@@ -94,7 +93,6 @@ export function  addEventListenerStats(userStatsInfoAll)
 		myDonutChart1 = addGraphics(numberVictory, numberDefeat, 'Victory', 'Defeat', ctx1);
 
 	const ctx2 = document.getElementById('myDonutChart2').getContext('2d');
-	console.log(userStatsInfoAll.numberGoalsWin, userStatsInfoAll.numberGoalLose);
 	let myDonutChart2;
 	if (userStatsInfoAll.numberGoalsWin == 0 && userStatsInfoAll.numberGoalLose == 0)
 		myDonutChart2 = addGraphics(1, 0, 'G.S', 'G.C', ctx2);
@@ -114,7 +112,6 @@ export function  addEventListenerStats(userStatsInfoAll)
 	const buttonSeeHistoricMatchPage = document.getElementById("send-historic-page-button");
 	if (buttonSeeHistoricMatchPage)
 	{
-		console.log("PAPAPAPA")
 		buttonSeeHistoricMatchPage.addEventListener('click', (event) => {
 			event.preventDefault();
 			loadHistoryGamePage();
@@ -183,7 +180,7 @@ function addLastMatchesAndResultats(userStatsInfoAll)
 			<div class="scoresAndResultats">
 				<h3>${userStatsInfoAll.scores[i]}</h3>
 				<h3 class="resultatsStatsMatches" style="background-color: ${backgroundColor};">${userStatsInfoAll.resultats[i]}</h3>
-				<p>${userStatsInfoAll.dates[i]}</p>
+				<p class="dates-stats-match">${userStatsInfoAll.dates[i]}</p>
 			</div>
 		`
 	}

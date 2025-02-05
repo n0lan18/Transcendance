@@ -30,7 +30,6 @@ export function addEventListenerEmailRegister()
 		{
 			event.preventDefault();
 			const email = document.getElementById("emailRegister");
-			console.log(email.value);
 			const data = {
 				email: email.value,
 			}

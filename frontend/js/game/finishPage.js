@@ -111,13 +111,13 @@ export async function finishPageHTML()
                 </div>
 				<div class="button-finish-page">
 					<button id="home-button-end-party" class="solo-finish-simple-match-button" style="background-color: #8ac926">
-						<i class="fa-solid fa-house" style="font-size: 100px;"></i>
+						<i class="fa-solid fa-house img-button-finish-page"></i>
 						<div class="item-name"
 							<h1 data-translate-key="home"></h1>
 						</div>
 					</button>
 					<button id="retry-button-end-party" class="solo-finish-simple-match-button" style="background-color: #1982c4">
-						<i class="fa-solid fa-rotate-right" style="font-size: 100px;"></i>
+						<i class="fa-solid fa-rotate-right img-button-finish-page"></i>
 						<div class="item-name"
 							<h1 data-translate-key="retry"></h1>
 						</div>

@@ -7,8 +7,6 @@ export async function loadPresentationMultiLocalPlayerPage()
 {
 	const dataTournament = await getTournamentInfo();
 	const matchInfo = await getMatchInfo();
-	console.log(matchInfo);
-	console.log(dataTournament)
 	const bodyPresentationHTML = generateBodyPresentationPageHTML(matchInfo.username1, matchInfo.username2, dataTournament.sizeTournament, matchInfo.heroPowerPlayer1, matchInfo.heroPowerPlayer2)
 
 	loadContent(document.getElementById("app"), bodyPresentationHTML , "tournament-match-presentation", true, 'Tournament Match Presentation Page', translation, "", addEventListenerPresentationSoloTournament);
@@ -27,7 +25,6 @@ window.addEventListener('popstate', async function(event) {
 async function addEventListenerPresentationSoloTournament()
 {
 	const matchInfo = await getMatchInfo();
-	console.log(matchInfo)
 	let imageHeroPlayer1;
 	switch (matchInfo.heroPowerPlayer1)
 	{
