@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  django:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - static_volume:/app/myproject/staticfiles
+      - ./frontend:/app/myproject/myapp/static/myapp
+      - media_volume:/app/myproject/media
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=myproject.settings
+    env_file: .env
+    networks:
+      - frontend
+      - backend
+
+  redis:
+    image: redis:6
+    networks:
+      - backend
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - media_volume:/usr/share/nginx/html/media
+      - static_volume:/usr/share/nginx/html/static
+      - ./frontend:/usr/share/nginx/html/frontend
+    ports:
+      - "8443:8443"
+    depends_on:
+      - django
+    networks:
+      - frontend
+      - backend
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  backend:
+  frontend:

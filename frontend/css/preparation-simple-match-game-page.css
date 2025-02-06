@@ -1,0 +1,307 @@
+
+.message-change-orientation {
+		display: none;
+	}
+
+.preparation-game-container {
+	max-width: 1024px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: calc(80vh - 70px);
+	margin-top: 150px;
+	margin-bottom: auto;
+	overflow-y: auto;
+}
+
+.player-preparation-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: auto;
+}
+
+.radio-superPower{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: auto;
+}
+
+.radio-isSuperPower, .radio-isNotSuperPower {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 1%;
+}
+
+.player-preparation-container-content {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: auto;
+}
+
+.player-left-preparation, .player-right-preparation {
+	display: flex;
+	flex-direction: column;
+	margin-left: 10px;
+	justify-content: center;
+	align-items: center;
+	width: 50%;
+	max-width: 300px;
+	height: auto;
+}
+
+.chose-superhero-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 10px;
+}
+
+.left-arrow, .right-arrow {
+	width: 40px;
+	height: 40px;
+	border: none;
+	cursor: pointer;
+	outline: none;
+	background-color: transparent;
+	color: white;
+}
+
+.color-picker {
+	-webkit-appearance: none; /* Masque le style par défaut sur Chrome/Safari */
+	appearance: none; /* Masque le style par défaut sur Firefox */
+	width: 100%; /* Largeur du cercle */
+	height: 100%; /* Hauteur du cercle */
+	border: none; /* Pas de bordure */
+	cursor: pointer; /* Curseur en forme de main */
+	outline: none; /* Pas de contour au focus */
+	background-color: transparent; /* Fond transparent */
+}
+
+.color-picker::-webkit-color-swatch {
+	border-radius: 50%; /* Arrondi pour le sélecteur de couleur */
+
+}
+
+.color-picker:hover, .color-button:hover {
+	transform: scale(1.1);
+}
+
+.invalid-username {
+	color: red;
+	font-size: 12px;
+}
+
+.color-picker-container1, .color-picker-container2 {
+    width: 30px; /* Largeur du conteneur */
+    height: 30px; /* Hauteur du conteneur */
+    border-radius: 50%; /* Arrondi pour former un cercle */
+    display: flex; /* Flexbox pour centrer le contenu */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+    overflow: hidden; /* Masque le débordement */
+	background-color: #EEDC1B;
+}
+
+.color-picker-container:hover {
+	transform: scale(1.1);
+}
+
+.superhero-power-text {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	vertical-align: middle;
+}
+
+.superhero-power-text p {
+	font-size: 12px;
+	margin-left: 5px;
+}
+
+.superhero-power-text i {
+	margin: 0;
+	position: relative;
+	top: -8px;
+}
+
+.environnement-preparation-container {
+	display: flex;
+	width: 100%;
+	height: auto;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.environnement-preparation-container-button {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 40%;
+	height: 40%;
+	max-width: 600px;
+}
+
+.environnement-preparation-container-button-orange, .environnement-preparation-container-button-dark-blue, .environnement-preparation-container-button-light-blue, .environnement-preparation-container-button-green {
+	width: 100%;
+	height: 100%;
+	aspect-ratio: 1 / 1;
+}
+
+.environnement-preparation-random-button {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 400px;
+	height: 50px;
+}
+
+.random-court-container {
+	width: 100%;
+	height: 100%;
+}
+
+.btn-court {
+	background: none;
+	border: none;
+	cursor: pointer;
+	margin: 5px;
+}
+
+.btn-court:active {
+	transform: scale(0.95);
+}
+
+.random-court-container {
+	position: relative;
+	max-width: 580px;	
+}
+
+.random-court-text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: black;
+	font-size: 20px;
+	font-weight: semi-bold;
+}
+
+.send-preparation-game-button {
+	margin-top: 20px;
+}
+
+.color-button-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: auto;
+}
+
+.color-button {
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	border: none;
+	cursor: pointer;
+	outline: none;
+	background-color: transparent;
+	margin-left: 4px;
+}
+
+.color-button:focus {
+	border: solid 3px white;
+	border-radius: 50%;
+}
+
+.color-button-text {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.text-under-color-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-size: 12px;
+	margin-bottom: 0;
+}
+
+.img-court-color {
+	width: 75px;
+	height: 75px;
+	border-radius: 10px;
+}
+
+@media (orientation: portrait) and (max-width: 900px)
+{
+    .preparation-game-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: calc(min(97vh - 70px, 1028px));
+        margin-top: 50px;
+        margin-bottom: auto;
+        overflow-y: auto;
+        max-width: 1090px;
+        box-sizing: border-box;
+    }
+
+	.environnement-preparation-random-button {
+		width: 100%;
+	}
+
+	.environnement-preparation-container-button-orange, .environnement-preparation-container-button-dark-blue, .environnement-preparation-container-button-light-blue, .environnement-preparation-container-button-green {
+		aspect-ratio: 1 / 1;
+	}
+
+	.img-court-color {
+		width: 50px;
+		height: 50px;
+		border-radius: 10px;
+	}
+
+	.send-preparation-game-button {
+		margin-top: 0px;
+	}
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+	.message-change-orientation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.preparation-game-container {
+		display: none;
+	}
+}

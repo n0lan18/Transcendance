@@ -1,0 +1,89 @@
+.preparation-username-players-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(min(80vh - 70px, 1028px));
+    margin-top: 150px;
+    margin-bottom: auto;
+    max-width: 850px;
+    max-height: 915px;
+    justify-content: center;
+    align-items: center;
+}
+
+.username-players-line {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.username-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 10px 10px 10px;
+}
+
+.superhero-container-for-username-tournament {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.chose-superhero-container-for-username-tournament {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+
+.btn-username-players-tournament {
+    width: 20%;
+}
+
+.button-launch-tournament {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (orientation: portrait) and (max-width: 900px)
+{
+    .preparation-username-players-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: calc(min(87vh - 70px, 1028px));
+        margin-top: 100px;
+        margin-bottom: auto;
+        overflow-y: auto;
+        max-width: 1090px;
+    }
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+	.message-change-orientation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.preparation-username-players-container {
+		display: none;
+	}
+}
