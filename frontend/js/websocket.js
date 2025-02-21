@@ -1,15 +1,28 @@
-import { getUserInfo } from "./utils.js";
+let gamesocket = null;
 
-export async function newWebSocket()
+export function InitializeGameSocket (roomname)
 {
-    let userInfo = await getUserInfo();  
+    if (!gamesocket)
+        gamesocket = new WebSocket(`wss://localhost:8443/ws/onlinegame/${roomname}/`);
+    gamesocket.onopen = () => console.log("Connexion WebSocket réussie !");
+    gamesocket.onerror = (error) => console.error("Erreur WebSocket :", error);
+    gamesocket.onclose = (event) => {
+        console.log(`WebSocket fermée pour la room: ${roomname} | Code: ${event.code} | Raison: ${event.reason}`);
+    };
+    return (gamesocket);
 
-    const roomname = `${userInfo.username}_session`;
+}
 
-    const socket = new WebSocket(`wss://localhost:8443/ws/game/${roomname}/`);
-    const url = `wss://localhost:8443/ws/game/${roomname}/`;
+export function CloseSocket()
+{
+    if (gamesocket)
+    {
+        gamesocket.close();
+        gamesocket = null;
+    }
+}
 
-    socket.onopen = () => console.log("Connexion WebSocket établie");
-    socket.onerror = (error) => console.error("Erreur WebSocket : ", error);
-    socket.onclose = () => console.log("Connexion WebSocket fermée");
+export function GetSocket()
+{
+    return gamesocket;
 }

@@ -3,6 +3,7 @@ from asgiref.sync import sync_to_async
 import asyncio
 import json
 import logging
+import redis
 
 
 logger = logging.getLogger(__name__)
@@ -190,3 +191,320 @@ class UserStatusConsumer(AsyncWebsocketConsumer):
                     "status": "error",
                     "message": "User does not exist."
                 })
+
+class OnlineGameConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_name = self.scope['url_route']['kwargs'].get('room_name', None)
+        self.username = None
+
+        print(f"🔍 [DEBUG] self.room_name défini dans connect() : {self.room_name}")
+
+        if not self.room_name:
+            print("Erreur : Aucun room_name reçu lors de la connexion WebSocket", flush=True)
+            await self.close()
+            return
+
+        self.room_group_name = f"game_{self.room_name}"
+
+        self.username = self.room_name.replace("room_", "").replace("_session", "")
+        print(f"✅ [DEBUG] Username extrait : {self.username} (room_name: {self.room_name})", flush=True)
+
+        if not hasattr(self.channel_layer, "active_channels"):
+            self.channel_layer.active_channels = {}
+
+        self.channel_layer.active_channels[self.username] = self.channel_name
+        print(f"✅ [DEBUG] {self.username} enregistré avec channel_name={self.channel_name}", flush=True)
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+        print(f"Connexion tentée : utilisateur={self.scope['user']} salle: {self.room_group_name}", flush=True)
+        await self.accept()
+        print(f"🔹 [DEBUG] Connexion WebSocket : utilisateur={self.username} → room_name={self.room_name} → channel_name={self.channel_name}", flush=True)
+
+
+        await self.send(text_data=json.dumps({
+            'action': 'assign_room',
+            'room_name': self.room_name,
+        }))
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        if self.room_name:
+            print(f"Déconnexion WebSocket pour {self.room_name}. Code de fermeture : {close_code}", flush=True)
+            await self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
+        if hasattr(self, 'room_name'):
+            del self.room_name
+
+        await self.close()
+
+    async def receive(self, text_data):
+        """
+        Cette méthode reçoit les messages envoyés via WebSocket et redirige
+        vers la bonne méthode en fonction du type d'action.
+        """
+        try:
+            text_data_json = json.loads(text_data)
+            #print(f"📩 [DEBUG] Message brut reçu : {text_data}", flush=True)  # 🔍 Voir la donnée brute
+            #print(f"📩 [DEBUG] JSON parsé : {text_data_json}", flush=True)  # 🔍 Voir l'objet JSON
+            action = text_data_json.get("type")  # "type" correspond à ce que tu envoies depuis JS
+
+            #print(f"📩 [DEBUG] Message reçu : {text_data_json}", flush=True)
+
+            if action == "start_search":
+                await self.start_search(text_data_json)
+            elif action == "move_paddle":
+                await self.move_paddle(text_data_json)
+            elif action == "update_ball":
+                await self.update_ball(text_data_json)
+
+        except json.JSONDecodeError:
+            print("❌ Erreur : Impossible de décoder le message JSON reçu.", flush=True)
+        except Exception as e:
+            print(f"❌ Erreur inconnue dans receive : {str(e)}", flush=True)
+
+    async def start_search(self, text_data_json):
+        action = text_data_json.get("type")
+        player_id = text_data_json['player_id']
+        username = text_data_json['username']
+        character = text_data_json['character']
+        court = text_data_json['court']
+        color = text_data_json['color']
+        superpower = text_data_json['superpower']
+
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+
+        try:
+            redis_client.ping()  # Vérifie la connexion
+            print("Message redis recu.", flush=True)
+        except redis.ConnectionError as e:
+            print(f"Erreur de message à Redis : {e}", flush=True)
+            return
+
+        
+        redis_client.rpush("player_queue", json.dumps({
+            "player_id": player_id,
+            "username": username,
+            "character": character,
+            "court" : court,
+            "color" : color,
+            "room_name": self.room_name,
+            "superpower": superpower
+        }))
+        print(f"Joueur ajouté à la file d'attente : {username}", flush=True)
+        print(f"Longueur actuelle de la file d'attente : {redis_client.llen('player_queue')}")
+
+        while redis_client.llen("player_queue") >= 2:
+            print("Deux joueurs trouvés dans la file d'attente.", flush=True)
+            
+            player1 = json.loads(redis_client.lpop("player_queue"))
+            player2 = json.loads(redis_client.lpop("player_queue"))
+            
+            print(f"Joueur 1 extrait : {player1}", flush=True)
+            print(f"Joueur 2 extrait : {player2}", flush=True)
+
+            if player1['player_id'] == player2['player_id']:
+                print(f"Match refusé : le joueur {player1['username']} s'est trouvé lui-même.", flush=True)
+                # Remettre uniquement le joueur 1 dans la file d'attente
+                redis_client.rpush("player_queue", json.dumps(player1))
+                continue  # Réessayer avec un autre joueur dans la file
+            
+            print(f"Match trouvé : {player1['username']} vs {player2['username']}", flush=True)
+
+            room_name = player1['room_name']
+            player2['room_name'] = room_name
+
+            player1["role"] = "player1"
+            player2["role"] = "player2"
+
+            self.room_name = room_name
+
+            redis_client.hset("active_games", room_name, json.dumps({
+                "player1": player1["username"],
+                "player2": player2["username"]
+            }))
+            print(f"✅ [DEBUG] Match enregistré dans active_games : {player1['username']} vs {player2['username']}", flush=True)
+            
+            await self.channel_layer.send(
+                self.channel_layer.active_channels[player1['username']], 
+                {
+                    'type': 'match_found',
+                    'username': player1['username'],
+                    'character': player1['character'],
+                    'opponent': player2,
+                    'role': "player1",
+                    'room_name': room_name,
+                    'court': player1['court'],
+                    'color': player1['color'],
+                    'superpower': player1['superpower']
+                }
+            )
+            await self.channel_layer.send(
+                self.channel_layer.active_channels[player2['username']], 
+                {
+                    'type': 'match_found',
+                    'username': player2['username'],
+                    'character': player2['character'],
+                    'opponent': player1,
+                    'role': "player2",
+                    'room_name': room_name,
+                    'court': player2['court'],
+                    'color': player2['color'],
+                    'superpower': player2['superpower']
+                }
+            )
+
+
+    async def match_found(self, event):
+        username = event['username']
+        opponent = event['opponent']
+        character = event['character']
+        role = event['role']
+        court = event['court']
+        color = event['color']
+        superpower = event['superpower']
+        room_name = event['room_name']
+
+        print(f"📢 [DEBUG] Envoi de match_found à {self.channel_name} pour utilisateur {self.username}", flush=True)
+
+        print("Match trouvé ! Envoi de :", json.dumps({
+            'action': 'match_found',
+            'username': username,
+            'character': character,
+            'court': court,
+            'color': color,
+            'opponent': opponent,
+            'role': role,
+            'superpower': superpower,
+            'room_name': room_name
+        }), flush=True)
+
+        await self.send(text_data=json.dumps({
+            'action': 'match_found',
+            'username': username,
+            'character': character,
+            'court': court,
+            'color': color,
+            'opponent': opponent,
+            'role': role,
+            'superpower': superpower,
+            'room_name': room_name
+        }))
+
+    async def move_paddle(self, text_data_json):
+        player = text_data_json['player']
+        position = text_data_json['position']
+
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+        active_game_data = redis_client.hget("active_games", self.room_name)
+
+        if not active_game_data:
+            print(f"❌ [DEBUG] Impossible de trouver une partie active pour {self.room_name}", flush=True)
+            return
+
+        active_game = json.loads(active_game_data)
+
+        player1 = active_game["player1"]
+        player2 = active_game["player2"]
+
+        # Identifier l'adversaire et le canal WebSocket
+        if player == "player1":
+            opponent = player2
+            opponent_role = "player2"
+        else:
+            opponent = player1
+            opponent_role = "player1"
+
+        if opponent not in self.channel_layer.active_channels:
+            print(f"❌ [DEBUG] Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            return
+
+        opponent_channel = self.channel_layer.active_channels[opponent]
+
+        #print(f"📡 [DEBUG] Envoi move_paddle → {opponent} ({opponent_role}) via {opponent_channel}", flush=True)
+
+        await self.channel_layer.send(
+            opponent_channel,
+            {
+                'type': 'update_paddle',
+                'player': player,  # L'adversaire reçoit le rôle qu'il doit mettre à jour
+                'position': position
+            }
+        )
+
+        #print(f"📢 [DEBUG] Envoi de move_paddle de {player} ({position}) vers {opponent} ({opponent_role})", flush=True)
+    
+    async def update_paddle(self, event):
+        #print(f"📡 [DEBUG] Mise à jour paddle reçue : {event}", flush=True)
+        await self.send(text_data=json.dumps(event))
+
+    async def update_ball(self, data):
+        print(f"⚽ [DEBUG] Mise à jour de la balle envoyée par {data['player']}", flush=True)
+        
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+        active_game_data = redis_client.hget("active_games", self.room_name)
+
+        if not active_game_data:
+            print(f"❌ [DEBUG] Impossible de trouver une partie active pour {self.room_name}", flush=True)
+            return
+
+        active_game = json.loads(active_game_data)
+        current_rally_count = int(redis_client.hget(f"rally_{self.room_name}", "current_rally_count") or 0)
+        longest_rally = int(redis_client.hget(f"rally_{self.room_name}", "longest_rally") or 0)
+
+        player1 = active_game["player1"]
+        player2 = active_game["player2"]
+
+        if data["player"] == "player1":
+            opponent = player2
+        else:
+            opponent = player1
+
+        if opponent not in self.channel_layer.active_channels:
+            print(f"❌ [DEBUG] Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            return
+
+        opponent_channel = self.channel_layer.active_channels[opponent]
+
+        print("Message reçu :", data)
+        print(f"📡 [DEBUG] Envoi update_ball → {opponent} via {opponent_channel}", flush=True)
+
+        if data["collision"] == "collision":
+            current_rally_count += 1
+            redis_client.hset(f"rally_{self.room_name}", "current_rally_count", current_rally_count)
+
+            if current_rally_count > longest_rally:
+                longest_rally = current_rally_count
+                redis_client.hset(f"rally_{self.room_name}", "longest_rally", longest_rally)
+                print("current_rally_count :", current_rally_count)
+                
+        elif data["collision"] == "goal":
+            current_rally_count = 0
+            redis_client.hset(f"rally_{self.room_name}", "current_rally_count", current_rally_count)
+            print("current_rally_count to 0 due to goal")
+
+        await self.channel_layer.send(
+            opponent_channel,
+            {
+                "type": "broadcast_ball",
+                "rally": longest_rally,
+                "position": data["position"],
+                "velocity": data["velocity"],
+                "superpowerleft": data["superpowerleft"],
+                "superpowerright": data["superpowerright"]
+            }
+        )
+
+        print(f"📢 [DEBUG] Envoi de update_ball de {data['player']} vers {opponent}", flush=True)
+
+    async def broadcast_ball(self, event):
+        print(f"📡 [DEBUG] Mise à jour de la balle reçue : {event}", flush=True)
+        await self.send(text_data=json.dumps(event))
+
+        

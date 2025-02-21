@@ -49,6 +49,28 @@ export function startCountdown(Game) {
 				backgrondCountdownContainer.remove();
                 countdownContainer.remove(); // Retire le conteneur de décompte
 				Game.start();
+                if (Game.isplayer1 && Game.modeGame == "Online")	 {  
+                    let message = {
+                        type: "update_ball",
+                        player: "player1",
+                        collision: "goal",
+                        position: { x: Game.ball.position.x, y: Game.ball.position.y },
+                        velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y }
+                    };
+                    Game.socket.send(JSON.stringify(message));
+                    console.log("Envoi WebSocket :", message);
+                } 
+                else if (!Game.isplayer1 && Game.modeGame == "Online")	 {  
+                    let message = {
+                        type: "update_ball",
+                        player: "player2",
+                        collision: "goal",
+                        position: { x: Game.ball.position.x, y: Game.ball.position.y },
+                        velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y }
+                    };
+                    Game.socket.send(JSON.stringify(message));
+                    console.log("Envoi WebSocket :", message);
+                }
             }, 500); // Attend un peu avant de commencer pour que "Go!" reste visible
 		}
     }, 1000); // Le décompte diminue toutes les secondes

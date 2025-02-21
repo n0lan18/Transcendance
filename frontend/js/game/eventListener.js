@@ -53,7 +53,7 @@ function resizeWindow(Game)
 function pauseGame(Game)
 {
 	window.addEventListener('keydown', (event) => {
-		if (event.key === 'Shift')
+		if (event.key === 'Shift' && Game.modeGame !== "Online")
 		{
 			if (Game.gameState === "stopped") return;
 			if (Game.gameState === "countdown") return;

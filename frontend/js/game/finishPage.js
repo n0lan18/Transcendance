@@ -29,16 +29,6 @@ function addEventListenerFinishPageSimpleMatch()
 		event.preventDefault();
 		loadHomePage();
 	});
-
-	const retryButtonFinishPage = document.getElementById("retry-button-end-party");
-	retryButtonFinishPage.addEventListener('click', async function (event) {
-		event.preventDefault();
-		const matchInfo = await getMatchInfo();
-		if (matchInfo.modeGame == "multiPlayerTwo")
-			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerTwo");
-		else if (matchInfo.modeGame == "multiPlayerFour")
-			loadPreparationSimpleMatchGamePage("multiplayer", "multiPlayerFour");
-	});
 }
 
 export async function finishPageHTML()
@@ -114,12 +104,6 @@ export async function finishPageHTML()
 						<i class="fa-solid fa-house img-button-finish-page"></i>
 						<div class="item-name"
 							<h1 data-translate-key="home"></h1>
-						</div>
-					</button>
-					<button id="retry-button-end-party" class="solo-finish-simple-match-button" style="background-color: #1982c4">
-						<i class="fa-solid fa-rotate-right img-button-finish-page"></i>
-						<div class="item-name"
-							<h1 data-translate-key="retry"></h1>
 						</div>
 					</button>
 				</div>

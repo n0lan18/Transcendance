@@ -7,6 +7,7 @@ import { loadProfilePage } from "./profile.js";
 import { loadRegisterEmailPage } from "./register/email-register.js";
 import { loadTournamentPresentation } from "./tournament-presentation.js";
 import { loadUsernamePlayersTournament } from "./username-players-tournament.js";
+import { loadOnlineGamePage } from "./online.js";
 import { loadContent } from "./utils.js";
 
 
@@ -27,6 +28,7 @@ const routes = {
 	},
 	"/preparation-game": loadPreparationSimpleMatchGamePage,
     "/register-email": loadRegisterEmailPage,
+	"/preparation-online-game": loadOnlineGamePage,
   };
 
 // Fonction pour ajouter de nouvelles routes

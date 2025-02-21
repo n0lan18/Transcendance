@@ -24,6 +24,20 @@ export async function handleCollisions(Game) {
 	{
 		Game.ball.position.x = Game.leftPaddle.position.x + 1.25;
 		paddleCollision(Game.leftPaddle, "left", Game);
+
+		if (Game.isplayer1 && Game.modeGame == "Online")	 {  
+			let message = {
+				type: "update_ball",
+				player: "player1",
+				collision: "collision",
+				position: { x: Game.ball.position.x, y: Game.ball.position.y },
+				velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y },
+				superpowerleft: parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width),
+				superpowerright: null
+			};
+			Game.socket.send(JSON.stringify(message));
+			console.log("Envoi WebSocket :", message);
+		}
 	}
 
 	// Vérification de la collision avec la raquette droite
@@ -34,6 +48,20 @@ export async function handleCollisions(Game) {
 	{
 		Game.ball.position.x = Game.rightPaddle.position.x - 1.25;
 		paddleCollision(Game.rightPaddle, "right", Game);
+
+		if (!Game.isplayer1 && Game.modeGame == "Online")	 {  
+			let message = {
+				type: "update_ball",
+				player: "player2",
+				collision: "collision",
+				position: { x: Game.ball.position.x, y: Game.ball.position.y },
+				velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y },
+				superpowerleft: null,
+				superpowerright: parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)
+			};
+			Game.socket.send(JSON.stringify(message));
+			console.log("Envoi WebSocket :", message);
+		}
 	}
 
 	if (Game.modeGame == "multiPlayerFour")
@@ -149,7 +177,7 @@ export async function handleCollisions(Game) {
 			}
 			else
 			{
-				InfoDataSimpleMatch(scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.modeGame)
+				InfoDataSimpleMatch(scores.leftPlayerScore, scores.rightPlayerScore, isWin, Game.modeGame, Game.isplayer1)
 				loadFinishPage();
 			}
 		}
@@ -164,7 +192,7 @@ export async function handleCollisions(Game) {
 			Game.rightPaddleMini.position.set(10.5 , 1, 0.5);
 		}
 		Game.numberPaddelCollision = 0;
-		Game.ballVelocity = {x: xBall, y: 0.02};
+		Game.ballVelocity = {x: xBall, y: 0.02};		
 	}
 }
 

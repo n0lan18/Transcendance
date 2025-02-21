@@ -8,6 +8,7 @@ import { translation } from "./translate.js";
 import { loadPreparationSimpleMatchGamePage } from "./preparation-simple-match-game-page.js";
 import { loadPreparationTournamentGamePage } from "./preparation-tournament-game-page.js";
 import { loadContinueOrNewTournamentPage } from "./continue-or-finish-page.js";
+import { loadOnlineGamePage } from "./online.js";
 
 
 let globalSocket = null;
@@ -84,6 +85,15 @@ export function addEventListenerHomePage()
 				loadContinueOrNewTournamentPage();
 			else
 				loadPreparationTournamentGamePage();
+		});
+	}
+
+	let switchPageToOnlinesPage = document.getElementById("online-button");
+	if (switchPageToOnlinesPage)
+	{
+		switchPageToOnlinesPage.addEventListener('click', function (event) {
+			event.preventDefault();
+			loadOnlineGamePage();
 		});
 	}
 
@@ -165,20 +175,26 @@ function generateBodyHomePageHTML(username, profile_photo)
 					</div>
 				</button>
 				<button id="tournament-button" class="flex-item box3">
-					<img class="img-box3" src="../images/trophy-logo-white.png" alt="logo solo" width="175" height="175">
+					<img class="img-box3-4" src="../images/trophy-logo-white.png" alt="logo solo" width="175" height="175">
 					<div class="item-name">
 						<h1 data-translate-key="tournament"></h1>
 					</div>
 				</button>
-				<button id="simple-match-button" class="flex-item box4">
-					<img class="img-box4-5" src="../images/multiplayer-logo-2-players-white.png" alt="logo 2 players" width="100" height="100">
+				<button id="online-button" class="flex-item box4">
+					<img class="img-box3-4" src="../images/online-logo-white.png" alt="logo solo" width="175" height="175">
+					<div class="item-name">
+						<h1 data-translate-key="online"></h1>
+					</div>
+				</button>
+				<button id="simple-match-button" class="flex-item box5">
+					<img class="img-box5-6" src="../images/multiplayer-logo-2-players-white.png" alt="logo 2 players" width="100" height="100">
 					<div class="item-name">
 						<h1 data-translate-key="simple"></h1>
 						<h3 data-translate-key="one-vs-one"></h3>
 					</div>
 				</button>
-				<button id="doubles-button" class="flex-item box5">
-					<img class="img-box4-5" src="../images/multiplayer-logo-4-players-white.png" alt="logo 4 players" width="100" height="100">
+				<button id="doubles-button" class="flex-item box6">
+					<img class="img-box5-6" src="../images/multiplayer-logo-4-players-white.png" alt="logo 4 players" width="100" height="100">
 					<div class="item-name">
 						<h1 data-translate-key="doubles"></h1>
 						<h3 data-translate-key="two-vs-two"></h3>

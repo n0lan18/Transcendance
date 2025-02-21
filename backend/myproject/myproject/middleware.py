@@ -14,6 +14,7 @@ class TokenAuthMiddleware(BaseMiddleware):
         from django.contrib.auth.models import AnonymousUser  # Importation retardée
         from django.contrib.auth import get_user_model
 
+        scope["user"] = AnonymousUser()
         token = None
         query_string = scope.get('query_string', b'').decode()
 

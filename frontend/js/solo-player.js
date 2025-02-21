@@ -8,13 +8,14 @@ export async function loadSoloPlayerPage(pathname, namePage)
 {
 	const matchInfo = await getMatchInfo();
 	let soloPlayerHTML = generateGamePageHTML(matchInfo.username1, matchInfo.username2);
+	console.log(`matchInf0=${matchInfo}`);
 
 	loadContent(document.getElementById('app'), soloPlayerHTML, `${pathname}`, true, `${namePage}`, translation, "", addEventListenerGamePage)
 
 	document.getElementById("app").innerHTML = soloPlayerHTML;
 }
 
-window.addEventListener('popstate', async function (event) {
+/*window.addEventListener('popstate', async function (event) {
     if (event.state && event.state.page) {
         const pathname = this.window.location.pathname;
 
@@ -22,15 +23,24 @@ window.addEventListener('popstate', async function (event) {
         switch (pathname) {
 
             case "/game-page-simple-match":
+				console.log("simple game started");
                 loadContent(document.getElementById('app'), event.state.page, '', false, `Game Page Simple Match`, translation, "", addEventListenerGamePage);
                 break;
 
             case "/game-page-double-match":
+				console.log("double game started");
                 loadContent(document.getElementById('app'), event.state.page, '', false, `Game Page Double Match`, translation, "", addEventListenerGamePage);
+                break;
+			
+			case "/game-page-online-match":
+				console.log("Online game started");
+                loadContent(document.getElementById('app'), event.state.page, '', false, `Game Page Online Match`, translation, "", addEventListenerGamePage);
                 break;
 
             default:
                 // Si on quitte les pages de jeu, arrête le jeu si nécessaire
+				if (Game.modeGame === "Online")
+					console.log("Online game left");
                 if (game && typeof game.destroy === "function") {
 					game.destroy()
                     game = null;
@@ -38,7 +48,7 @@ window.addEventListener('popstate', async function (event) {
         	}
     	}
 	}
-});
+});*/
 
 async function addEventListenerGamePage()
 {

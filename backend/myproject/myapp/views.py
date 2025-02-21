@@ -743,13 +743,13 @@ class MatchInfoView(APIView):
 			return Response({"error": "Invalid format heroPowerPlayer2"}, status=status.HTTP_400_BAD_REQUEST)
 		
 		typeOfGame = request.data.get('typeOfGame')
-		ALLOWED_TYPE_OF_GAME = {"multiplayer"}
+		ALLOWED_TYPE_OF_GAME = {"multiplayer", "Online"}
 		if not typeOfGame:
 			return Response({"error": "No typeOfHame provided"}, status=status.HTTP_400_BAD_REQUEST)		
 		if typeOfGame not in ALLOWED_TYPE_OF_GAME:
 			return Response({"error": "Invalid format tyeOfGame"}, status=status.HTTP_400_BAD_REQUEST)
 		
-		ALLOWED_MODE_GAME = {"multiPlayerTwo", "multiPlayerFour", "tournament-multi-local"}
+		ALLOWED_MODE_GAME = {"multiPlayerTwo", "multiPlayerFour", "tournament-multi-local", "Online"}
 		modeGame = request.data.get('modeGame')
 		if not modeGame:
 			return Response({"error": "No modeGame provided"}, status=status.HTTP_400_BAD_REQUEST)

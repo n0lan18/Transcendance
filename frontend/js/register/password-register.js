@@ -193,7 +193,7 @@ function generatePasswordPartHTML() {
 				</div>
 				<input type="submit" value="${buttonStr}" class="btn btn-success btn-block mb-4" id="buttonSend">
 				<div class="text-center">
-					<p style="color: #b3b3b3";>${accountStr} <a id="switchPagePasswordRegisterToLogin" href="#authentification"; text-decoration: underline; style="color: white;">${loginStr}</a></p>
+					<p style="color: #b3b3b3;">${accountStr} <a id="switchPagePasswordRegisterToLogin" href="#authentification" text-decoration: underline; style="color: white;">${loginStr}</a></p>
 				</div>
 			</form>
 		</div>

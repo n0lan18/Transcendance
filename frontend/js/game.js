@@ -21,6 +21,7 @@ import { duplication } from './game/characters/duplication.js';
 import { startCountdown } from './game/countdown.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
 import { cleanupScene } from './game/remove-game.js';
+import { GetSocket } from './websocket.js';
 
 export class Game {
     constructor(containerId, modeGame, colorPlayer1, colorPlayer2, colorCourt, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, superPower, numberMatch, tab, tabNewRound) {
@@ -78,6 +79,43 @@ export class Game {
         this.startMatch = 0;
         this.endMatch = 0;
         this.init(colorPlayer1, colorPlayer2, colorCourt, superPower, containerId, modeGame, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, numberMatch, tab, tabNewRound);
+    
+        this.isplayer1 = sessionStorage.getItem("role") === "player1";
+        console.log(`Rôle chargé depuis sessionStorage : ${this.isplayer1 ? "Player 1" : "Player 2"}`);
+        console.log(`mode de jeu : ${this.modeGame}`);
+
+        if (this.modeGame == "Online")
+        {
+            this.socket = GetSocket();
+            console.log("WebSocket est-il défini g.js ?", this.socket);
+            this.socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log("📩 Message reçu via WebSocket :", data);
+            
+                if (data.type === "update_paddle") {
+                    console.log(`🏓 Mise à jour des raquettes : ${data.player} → ${data.position}`);
+            
+                    if (data.player === "player1") {
+                        this.leftPaddle.position.y = data.position;
+                    } else if (data.player === "player2") {
+                        this.rightPaddle.position.y = data.position;
+                    }
+                }
+
+                if (data.type === "broadcast_ball") {
+                    console.log(`⚽ Mise à jour de la balle par ${data.player}, echange=${data.rally}, PBG=${this.containerProgressBarLeft.style.width} , PBD=${this.containerProgressBarRight.style.width}`);
+                    this.numberPaddelCollision = data.rally;
+                    this.ball.position.x = data.position.x;
+                    this.ball.position.y = data.position.y;
+                    this.ballVelocity.x = data.velocity.x;
+                    this.ballVelocity.y = data.velocity.y;
+                    if (data.superpowerleft !== null)
+                        this.containerProgressBarLeft.style.width = `${data.superpowerleft}%`;
+                    if (data.superpowerright !== null)                        
+                        this.containerProgressBarRight.style.width = `${data.superpowerright}%`;
+                }
+            };
+        }
     }
 
     init(colorPlayer1, colorPlayer2, colorCourt, superPower, containerId, modeGame, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, numberMatch, tab, tabNewRound) {

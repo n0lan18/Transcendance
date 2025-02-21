@@ -611,6 +611,7 @@ export async function putMatchInfo(username1, username2, courtColor, colorPlayer
 		superPower: superPower,
 		courtColor: courtColor,
 	};
+	console.log("Données envoyées à l'API :", JSON.stringify(data, null, 2));
 	try
 	{
 		const response = await fetch(`api/match-user-info/`, {
@@ -1271,7 +1272,7 @@ export async function InfoDataMatchTournamentFinale(username1, username2, number
 	await putStatsInfo(resultats, numberGoalsWin, numberGoalLose, numberVictoryTournament, numberPlayer);
 }
 
-export async function InfoDataSimpleMatch(scoreLeftPlayer, scoreRightPlayer, isWin, modeGame)
+export async function InfoDataSimpleMatch(scoreLeftPlayer, scoreRightPlayer, isWin, modeGame, isplayer1)
 {
 	if (modeGame == "multiPlayerTwo")
 	{
@@ -1281,6 +1282,25 @@ export async function InfoDataSimpleMatch(scoreLeftPlayer, scoreRightPlayer, isW
 		let numberGoalsWin = scoreLeftPlayer;
 		let numberGoalLose = scoreRightPlayer
 		await putStatsInfo(resultats, numberGoalsWin, numberGoalLose, 0, 32)
+	}
+	else if (modeGame == "Online")
+	{		
+		let resultats;
+		if(isplayer1 && scoreLeftPlayer > scoreRightPlayer)
+		{
+			resultats = "V";
+		}
+		else if (!isplayer1 && scoreRightPlayer > scoreLeftPlayer)
+		{
+			resultats = "V";
+		}
+		else
+		{
+			resultats = "D";
+		}
+		let numberGoalsWin = scoreLeftPlayer;
+		let numberGoalLose = scoreRightPlayer;
+		await putStatsInfo(resultats, numberGoalsWin, numberGoalLose, 0, 32)			
 	}
 }
 
