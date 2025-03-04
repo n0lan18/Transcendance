@@ -9,7 +9,16 @@ export function duplication(Game, player)
 		Game.ballVelocityReplica = {
 			x: Game.ballVelocity.x,
 			y: Game.ballVelocity.y * -1.02
-		};	
+		};
+		if (Game.isplayer1 && Game.modeGame == "Online")	 {  
+			let message = {
+				type: "duplication",
+				player: "player1",
+				velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y * -1.02 }
+			};
+			Game.socket.send(JSON.stringify(message));
+			console.log("Envoi WebSocket :", message);
+		}
 	}
 	else if (Game.ball.position.x < 23 && Game.ball.position.x >= 0 && player == "right" && Game.powerPlayer2 == "active")
 	{
@@ -21,5 +30,14 @@ export function duplication(Game, player)
 			x: Game.ballVelocity.x,
 			y: Game.ballVelocity.y * -1.02
 		};
+		if (!Game.isplayer1 && Game.modeGame == "Online")	 {  
+			let message = {
+				type: "duplication",
+				player: "player2",
+				velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y * -1.02 }
+			};
+			Game.socket.send(JSON.stringify(message));
+			console.log("Envoi WebSocket :", message);
+		}
 	}
 }

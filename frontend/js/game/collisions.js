@@ -23,6 +23,7 @@ export async function handleCollisions(Game) {
 		Game.ball.position.y > Game.leftPaddle.position.y - 3)
 	{
 		Game.ball.position.x = Game.leftPaddle.position.x + 1.25;
+		console.log(`Avant paddleCollision, BallVelocity.x=${Game.ballVelocity.x}`);
 		paddleCollision(Game.leftPaddle, "left", Game);
 
 		if (Game.isplayer1 && Game.modeGame == "Online")	 {  
@@ -32,7 +33,7 @@ export async function handleCollisions(Game) {
 				collision: "collision",
 				position: { x: Game.ball.position.x, y: Game.ball.position.y },
 				velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y },
-				superpowerleft: parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width),
+				superpowerleft: parseFloat(Game.containerProgressBarLeft.style.width),
 				superpowerright: null
 			};
 			Game.socket.send(JSON.stringify(message));
@@ -47,6 +48,7 @@ export async function handleCollisions(Game) {
 		Game.ball.position.y > Game.rightPaddle.position.y - 3)
 	{
 		Game.ball.position.x = Game.rightPaddle.position.x - 1.25;
+		console.log(`Avant paddleCollision, BallVelocity.x=${Game.ballVelocity.x}`);
 		paddleCollision(Game.rightPaddle, "right", Game);
 
 		if (!Game.isplayer1 && Game.modeGame == "Online")	 {  
@@ -57,7 +59,7 @@ export async function handleCollisions(Game) {
 				position: { x: Game.ball.position.x, y: Game.ball.position.y },
 				velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y },
 				superpowerleft: null,
-				superpowerright: parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)
+				superpowerright: parseFloat(Game.containerProgressBarRight.style.width)
 			};
 			Game.socket.send(JSON.stringify(message));
 			console.log("Envoi WebSocket :", message);
@@ -119,16 +121,20 @@ export async function handleCollisions(Game) {
 			xBall = 0.1;
 			incrementLeftScore(Game);
 			let widthLeft = parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width);
-			let newWidth = widthLeft + Game.sizeOfStep * 5;
-			Game.containerProgressBarLeft.style.width = newWidth + 'px';	
+			let containerWidth = Game.containerProgressBarLeft.parentElement.offsetWidth;
+			let newWidthpx = widthLeft + Game.sizeOfStep * 5;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarLeft.style.width = newWidthPercent + '%';
 		}
 		else if (Game.ball.position.x < -25)
 		{
 			xBall = -0.1;
 			incrementRightScore(Game);
 			let widthRight = parseInt(window.getComputedStyle(Game.containerProgressBarRight).width);
-			let newWidth = widthRight + Game.sizeOfStep * 5;
-			Game.containerProgressBarRight.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarRight.parentElement.offsetWidth;
+			let newWidthpx = widthRight + Game.sizeOfStep * 5;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarRight.style.width = newWidthPercent + '%';
 		}
 		changeColorIfBarIsFull(Game);
 		let scores = getScores(Game);
@@ -316,11 +322,11 @@ function paddleCollision(paddle, direction, Game)
 	let normalizedImpact = impactPoint / (paddle.geometry.parameters.height / 2);
 	Game.ballVelocity.x = -Game.ballVelocity.x;
 	let widthLeft;
-	let widthRight
+	let widthRight;
 	if (Game.containerProgressBarLeft && Game.containerProgressBarRight)
 	{
-		widthLeft = parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width);
-		widthRight = parseInt(window.getComputedStyle(Game.containerProgressBarRight).width);
+		widthLeft = parseFloat(window.getComputedStyle(Game.containerProgressBarLeft).width);
+		widthRight = parseFloat(window.getComputedStyle(Game.containerProgressBarRight).width);
 	}
 	let defensePoint = 0;
 	if (Game.ballVelocity.x < 30)
@@ -335,13 +341,17 @@ function paddleCollision(paddle, direction, Game)
 		let increment = Game.sizeOfStep / 2 + defensePoint;
 		if (direction === "left")
 		{
-			let newWidth = widthLeft + increment;
-			Game.containerProgressBarLeft.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarLeft.parentElement.offsetWidth;
+			let newWidthpx = widthLeft + increment;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarLeft.style.width = newWidthPercent + '%';
 		}
 		else
 		{
-			let newWidth = widthRight + increment;
-			Game.containerProgressBarRight.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarRight.parentElement.offsetWidth;
+			let newWidthpx = widthRight + increment;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarRight.style.width = newWidthPercent + '%';
 		}
 	}
 	else if ((impactPoint >= 0.5 && impactPoint < 1))
@@ -354,13 +364,17 @@ function paddleCollision(paddle, direction, Game)
 			Game.ballVelocity.x = -0.30;
 		if (direction === "left")
 		{
-			let newWidth = widthLeft + increment;
-			Game.containerProgressBarLeft.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarLeft.parentElement.offsetWidth;
+			let newWidthpx = widthLeft + increment;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarLeft.style.width = newWidthPercent + '%';
 		}
 		else
 		{
-			let newWidth = widthRight + increment;
-			Game.containerProgressBarRight.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarRight.parentElement.offsetWidth;
+			let newWidthpx = widthRight + increment;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarRight.style.width = newWidthPercent + '%';
 		}
 	}
 	else if (impactPoint < 0.5)
@@ -373,26 +387,34 @@ function paddleCollision(paddle, direction, Game)
 			Game.ballVelocity.x = -0.38;
 		if (direction === "left")
 		{
-			let newWidth = widthLeft + increment;
-			Game.containerProgressBarLeft.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarLeft.parentElement.offsetWidth;
+			let newWidthpx = widthLeft + increment;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarLeft.style.width = newWidthPercent + '%';
 		}
 		else
 		{
-			let newWidth = widthRight + increment;
-			Game.containerProgressBarRight.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarRight.parentElement.offsetWidth;
+			let newWidthpx = widthRight + increment;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarRight.style.width = newWidthPercent + '%';
 		}
 	}
 	else
 	{
 		if (direction === "left")
 		{
-			let newWidth = widthLeft + defensePoint;
-			Game.containerProgressBarLeft.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarLeft.parentElement.offsetWidth;
+			let newWidthpx = widthRight + defensePoint;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarRight.style.width = newWidthPercent + '%';
 		}
 		else
 		{
-			let newWidth = widthRight + defensePoint
-			Game.containerProgressBarRight.style.width = newWidth + 'px';
+			let containerWidth = Game.containerProgressBarRight.parentElement.offsetWidth;
+			let newWidthpx = widthRight + defensePoint;
+			let newWidthPercent = (newWidthpx / containerWidth) * 100;
+			Game.containerProgressBarRight.style.width = newWidthPercent + '%';
 		}
 	}
 	changeColorIfBarIsFull(Game);

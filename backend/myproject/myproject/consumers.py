@@ -197,7 +197,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs'].get('room_name', None)
         self.username = None
 
-        print(f"🔍 [DEBUG] self.room_name défini dans connect() : {self.room_name}")
+        print(f"self.room_name défini dans connect() : {self.room_name}")
 
         if not self.room_name:
             print("Erreur : Aucun room_name reçu lors de la connexion WebSocket", flush=True)
@@ -207,23 +207,22 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f"game_{self.room_name}"
 
         self.username = self.room_name.replace("room_", "").replace("_session", "")
-        print(f"✅ [DEBUG] Username extrait : {self.username} (room_name: {self.room_name})", flush=True)
+        print(f"Username extrait : {self.username} (room_name: {self.room_name})", flush=True)
 
         if not hasattr(self.channel_layer, "active_channels"):
             self.channel_layer.active_channels = {}
 
         self.channel_layer.active_channels[self.username] = self.channel_name
-        print(f"✅ [DEBUG] {self.username} enregistré avec channel_name={self.channel_name}", flush=True)
+        print(f"{self.username} enregistré avec channel_name={self.channel_name}", flush=True)
 
         # Join room group
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
-        
-        print(f"Connexion tentée : utilisateur={self.scope['user']} salle: {self.room_group_name}", flush=True)
+
         await self.accept()
-        print(f"🔹 [DEBUG] Connexion WebSocket : utilisateur={self.username} → room_name={self.room_name} → channel_name={self.channel_name}", flush=True)
+        print(f"Connexion WebSocket : utilisateur={self.username} → room_name={self.room_name} → channel_name={self.channel_name}", flush=True)
 
 
         await self.send(text_data=json.dumps({
@@ -233,8 +232,40 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave room group
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+        active_game_data = redis_client.hget("active_games", self.room_name)
+        if active_game_data is None:
+            return
+        active_game = json.loads(active_game_data)
+
+        player1 = active_game["player1"]
+        player2 = active_game["player2"]
+
+        if self.username == player1:
+            opponent = player2
+        else:
+            opponent = player1
+
+        opponent_channel = self.channel_layer.active_channels[opponent]
+        
+        print(f"Envoi de deconnexion au joueur adverse {opponent} par {self.username}", flush=True)
+        if opponent_channel:
+            print(f"Envoi de deconnexion au joueur adverse {opponent}", flush=True)
+            await self.channel_layer.send(
+                opponent_channel,
+                {
+                    'type': 'broadcast_disconnection'
+                }
+            )
+        else:
+            print(f"⚠️ [DEBUG] Aucun canal actif trouvé pour l'adversaire {opponent}", flush=True)
+        
         if self.room_name:
             print(f"Déconnexion WebSocket pour {self.room_name}. Code de fermeture : {close_code}", flush=True)
+            deleted = redis_client.delete(f"rally_{self.room_name}")
+
+
+            redis_client.hdel("active_games", self.room_name)
             await self.channel_layer.group_discard(
                 self.room_group_name,
                 self.channel_name
@@ -251,23 +282,29 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         """
         try:
             text_data_json = json.loads(text_data)
-            #print(f"📩 [DEBUG] Message brut reçu : {text_data}", flush=True)  # 🔍 Voir la donnée brute
-            #print(f"📩 [DEBUG] JSON parsé : {text_data_json}", flush=True)  # 🔍 Voir l'objet JSON
-            action = text_data_json.get("type")  # "type" correspond à ce que tu envoies depuis JS
-
-            #print(f"📩 [DEBUG] Message reçu : {text_data_json}", flush=True)
+            action = text_data_json.get("type")
 
             if action == "start_search":
                 await self.start_search(text_data_json)
+            elif action == "stop_search":
+                await self.stop_search(text_data_json)
             elif action == "move_paddle":
                 await self.move_paddle(text_data_json)
             elif action == "update_ball":
                 await self.update_ball(text_data_json)
+            elif action == "invisibility":
+                await self.invisibility(text_data_json)
+            elif action == "timelaps":
+                await self.timelaps(text_data_json)
+            elif action == "superstrengh":
+                await self.superstrengh(text_data_json)
+            elif action == "duplication":
+                await self.duplication(text_data_json)
 
         except json.JSONDecodeError:
-            print("❌ Erreur : Impossible de décoder le message JSON reçu.", flush=True)
+            print("Erreur : Impossible de décoder le message JSON reçu.", flush=True)
         except Exception as e:
-            print(f"❌ Erreur inconnue dans receive : {str(e)}", flush=True)
+            print(f"Erreur inconnue dans receive : {str(e)}", flush=True)
 
     async def start_search(self, text_data_json):
         action = text_data_json.get("type")
@@ -329,7 +366,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
                 "player1": player1["username"],
                 "player2": player2["username"]
             }))
-            print(f"✅ [DEBUG] Match enregistré dans active_games : {player1['username']} vs {player2['username']}", flush=True)
+            print(f"Match enregistré dans active_games : {player1['username']} vs {player2['username']}", flush=True)
             
             await self.channel_layer.send(
                 self.channel_layer.active_channels[player1['username']], 
@@ -360,6 +397,26 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
                 }
             )
 
+    async def stop_search(self, text_data_json):
+        player_id = text_data_json["player_id"]
+        username = text_data_json["username"]
+
+        print(f"stop_search reçu pour le joueur : {username} (ID : {player_id})", flush=True)
+
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+
+        queue_length = redis_client.llen("player_queue")
+
+        for i in range(queue_length):
+            player_data = redis_client.lindex("player_queue", i)
+            if player_data:
+                    player = json.loads(player_data)
+                    if player["player_id"] == player_id:
+                        redis_client.lrem("player_queue", 1, player_data)
+                        print(f"🗑️ Joueur {username} retiré de la file d'attente.", flush=True)
+                        break
+        else:
+            print(f"Joueur {username} non trouvé dans la file d'attente.", flush=True)
 
     async def match_found(self, event):
         username = event['username']
@@ -371,7 +428,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         superpower = event['superpower']
         room_name = event['room_name']
 
-        print(f"📢 [DEBUG] Envoi de match_found à {self.channel_name} pour utilisateur {self.username}", flush=True)
+        print(f"Envoi de match_found à {self.channel_name} pour utilisateur {self.username}", flush=True)
 
         print("Match trouvé ! Envoi de :", json.dumps({
             'action': 'match_found',
@@ -405,7 +462,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         active_game_data = redis_client.hget("active_games", self.room_name)
 
         if not active_game_data:
-            print(f"❌ [DEBUG] Impossible de trouver une partie active pour {self.room_name}", flush=True)
+            print(f"Impossible de trouver une partie active pour {self.room_name}", flush=True)
             return
 
         active_game = json.loads(active_game_data)
@@ -422,36 +479,31 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             opponent_role = "player1"
 
         if opponent not in self.channel_layer.active_channels:
-            print(f"❌ [DEBUG] Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            print(f"Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
             return
 
         opponent_channel = self.channel_layer.active_channels[opponent]
-
-        #print(f"📡 [DEBUG] Envoi move_paddle → {opponent} ({opponent_role}) via {opponent_channel}", flush=True)
-
+        
         await self.channel_layer.send(
             opponent_channel,
             {
                 'type': 'update_paddle',
-                'player': player,  # L'adversaire reçoit le rôle qu'il doit mettre à jour
+                'player': player,
                 'position': position
             }
         )
-
-        #print(f"📢 [DEBUG] Envoi de move_paddle de {player} ({position}) vers {opponent} ({opponent_role})", flush=True)
     
     async def update_paddle(self, event):
-        #print(f"📡 [DEBUG] Mise à jour paddle reçue : {event}", flush=True)
         await self.send(text_data=json.dumps(event))
 
     async def update_ball(self, data):
-        print(f"⚽ [DEBUG] Mise à jour de la balle envoyée par {data['player']}", flush=True)
+        print(f"Mise à jour de la balle envoyée par {data['player']}", flush=True)
         
         redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
         active_game_data = redis_client.hget("active_games", self.room_name)
 
         if not active_game_data:
-            print(f"❌ [DEBUG] Impossible de trouver une partie active pour {self.room_name}", flush=True)
+            print(f"Impossible de trouver une partie active pour {self.room_name}", flush=True)
             return
 
         active_game = json.loads(active_game_data)
@@ -467,13 +519,13 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             opponent = player1
 
         if opponent not in self.channel_layer.active_channels:
-            print(f"❌ [DEBUG] Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            print(f"Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
             return
 
         opponent_channel = self.channel_layer.active_channels[opponent]
 
         print("Message reçu :", data)
-        print(f"📡 [DEBUG] Envoi update_ball → {opponent} via {opponent_channel}", flush=True)
+        print(f"Envoi update_ball → {opponent} via {opponent_channel}", flush=True)
 
         if data["collision"] == "collision":
             current_rally_count += 1
@@ -482,7 +534,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             if current_rally_count > longest_rally:
                 longest_rally = current_rally_count
                 redis_client.hset(f"rally_{self.room_name}", "longest_rally", longest_rally)
-                print("current_rally_count :", current_rally_count)
+            print("current_rally_count :", current_rally_count)
                 
         elif data["collision"] == "goal":
             current_rally_count = 0
@@ -493,7 +545,8 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             opponent_channel,
             {
                 "type": "broadcast_ball",
-                "rally": longest_rally,
+                "rally": current_rally_count,
+                "longest_rally": longest_rally,
                 "position": data["position"],
                 "velocity": data["velocity"],
                 "superpowerleft": data["superpowerleft"],
@@ -501,10 +554,147 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        print(f"📢 [DEBUG] Envoi de update_ball de {data['player']} vers {opponent}", flush=True)
+        print(f"Envoi de update_ball de {data['player']} vers {opponent}", flush=True)
 
     async def broadcast_ball(self, event):
-        print(f"📡 [DEBUG] Mise à jour de la balle reçue : {event}", flush=True)
+        print(f"Mise à jour de la balle reçue : {event}", flush=True)
         await self.send(text_data=json.dumps(event))
 
+    async def broadcast_disconnection(self, event):
+        print(f"Deconnexion adverse recue : {event}", flush=True)
+        await self.send(text_data=json.dumps(event))
+    
+    async def invisibility(self, data):
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+        active_game_data = redis_client.hget("active_games", self.room_name)
+
+        active_game = json.loads(active_game_data)
+
+        player1 = active_game["player1"]
+        player2 = active_game["player2"]
+
+        if data["player"] == "player1":
+            opponent = player2
+        else:
+            opponent = player1
+
+        if opponent not in self.channel_layer.active_channels:
+            print(f"Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            return
+
+        opponent_channel = self.channel_layer.active_channels[opponent]
+
+        visibility = data["visibility"]
+        trail = data["trail"]
         
+        print("Message reçu :", data)
+        await self.channel_layer.send(
+            opponent_channel,
+            {
+                "type": "broadcast_invisibility",
+                "visibility": visibility,
+                "trail": trail
+            }
+        )
+    async def broadcast_invisibility(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def timelaps(self, data):
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+        active_game_data = redis_client.hget("active_games", self.room_name)
+
+        active_game = json.loads(active_game_data)
+
+        player1 = active_game["player1"]
+        player2 = active_game["player2"]
+
+        if data["player"] == "player1":
+            opponent = player2
+        else:
+            opponent = player1
+
+        if opponent not in self.channel_layer.active_channels:
+            print(f"Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            return
+
+        opponent_channel = self.channel_layer.active_channels[opponent]
+
+        velocity = data["velocity"]
+        
+        print("Message reçu :", data)
+        await self.channel_layer.send(
+            opponent_channel,
+            {
+                "type": "broadcast_timelaps",
+                "velocity": velocity
+            }
+        )
+    async def broadcast_timelaps(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def superstrengh(self, data):
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+        active_game_data = redis_client.hget("active_games", self.room_name)
+
+        active_game = json.loads(active_game_data)
+
+        player1 = active_game["player1"]
+        player2 = active_game["player2"]
+
+        if data["player"] == "player1":
+            opponent = player2
+        else:
+            opponent = player1
+
+        if opponent not in self.channel_layer.active_channels:
+            print(f"Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            return
+
+        opponent_channel = self.channel_layer.active_channels[opponent]
+
+        velocity = data["velocity"]
+        
+        print("Message reçu :", data)
+        await self.channel_layer.send(
+            opponent_channel,
+            {
+                "type": "broadcast_superstrengh",
+                "velocity": velocity
+            }
+        )
+    async def broadcast_superstrengh(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def duplication(self, data):
+        redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
+        active_game_data = redis_client.hget("active_games", self.room_name)
+
+        active_game = json.loads(active_game_data)
+
+        player1 = active_game["player1"]
+        player2 = active_game["player2"]
+
+        if data["player"] == "player1":
+            opponent = player2
+        else:
+            opponent = player1
+
+        if opponent not in self.channel_layer.active_channels:
+            print(f"Impossible de trouver l'adversaire {opponent} dans active_channels", flush=True)
+            return
+
+        opponent_channel = self.channel_layer.active_channels[opponent]
+
+        velocity = data["velocity"]
+        
+        print("Message reçu :", data)
+        await self.channel_layer.send(
+            opponent_channel,
+            {
+                "type": "broadcast_duplication",
+                "velocity": velocity
+            }
+        )
+    async def broadcast_duplication(self, event):
+        await self.send(text_data=json.dumps(event))
+

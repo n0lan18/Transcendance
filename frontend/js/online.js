@@ -35,7 +35,7 @@ export async function addEventListenerPreparationOnlineGame()
 	let userInfo = await getUserInfo();
 	let courtColor = "#CF5A30";
 	let colorPlayer1 = "#E23F22";
-	let heroPowerPlayer1 = "Invisible";
+	let heroPowerPlayer1 = "Duplication";
 	let superPower = "isNotSuperPower";
 
 	document.querySelectorAll('.color-button-player1').forEach(button => {
@@ -146,7 +146,7 @@ export async function addEventListenerPreparationOnlineGame()
 		"../images/super4.png",
 	];
 
-	let currentImageIndex = 0;
+	let currentImageIndex = 1;
 
 	const prevBtn = document.getElementById("left-arrow1");
 	if (prevBtn)
@@ -155,7 +155,7 @@ export async function addEventListenerPreparationOnlineGame()
 			const albumImage = document.getElementById("superhero-image");
 			const superheroPlayerText = document.getElementById("superhero-power-text-player1");
 			currentImageIndex--;
-			if (currentImageIndex < 0)
+			if (currentImageIndex < 1)
 				currentImageIndex = images.length - 1;
 			if (currentImageIndex === 0)
 			{
@@ -192,7 +192,7 @@ export async function addEventListenerPreparationOnlineGame()
 			const superheroPlayerText = document.getElementById("superhero-power-text-player1");
 			currentImageIndex++;
 			if (currentImageIndex >= images.length)
-				currentImageIndex = 0;
+				currentImageIndex = 1;
 			if (currentImageIndex === 0)
 			{
 				superheroPlayerText.innerHTML = "Invisible";
@@ -271,14 +271,14 @@ function generatePreparationOnlineGamePageHTML(username)
 								<button class="left-arrow" id="left-arrow1">
 									<i class="fa-solid fa-arrow-left"></i>
 								</button>
-								<img id="superhero-image" class="superhero-image" src="../images/super1.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
+								<img id="superhero-image" class="superhero-image" src="../images/super2.png" alt="Photo Album" style="width: 40%; height: 40%; border-radius: 10px;">
 								<button class="right-arrow" id="right-arrow1">
 									<i class="fa-solid fa-arrow-right"></i>
 								</button>
 							</div>
 							<div class="superhero-power-text" id="superhero-power-text">
 								<i class="fa-brands fa-superpowers" style="font-size: 15px; text-align: center;"></i>
-								<p id="superhero-power-text-player1">Invisible</p>
+								<p id="superhero-power-text-player1">Duplication</p>
 							</div>
 						</div>
 						<div class="color-button-container color-button-container-player1">

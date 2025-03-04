@@ -125,7 +125,7 @@ function specialShotComputerPlayer1(Game)
 	if (Game.superPower == "isSuperPower")
 	{
 		window.addEventListener('keypress', (event) => {
-			if (event.key === " ")
+			if (event.key === " " && (Game.modeGame != "Online" || (Game.modeGame == "Online" && Game.isplayer1)))
 			{
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarLeft).width)) == 0)
 				{
@@ -134,7 +134,21 @@ function specialShotComputerPlayer1(Game)
 					const gameBreakerLeft = document.getElementById("power-container-left");
 					Game.containerProgressBarLeft.style.backgroundColor = "green";
 					gameBreakerLeft.style.color = "grey";
-					Game.containerProgressBarLeft.style.width = Game.sizeOfStep + 'px';
+					Game.containerProgressBarLeft.style.width = Game.sizeOfStep + '%';
+
+					if (Game.isplayer1 && Game.modeGame == "Online")	 {  
+						let message = {
+							type: "update_ball",
+							player: "player1",
+							collision: "collision",
+							position: { x: Game.ball.position.x, y: Game.ball.position.y },
+							velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y },
+							superpowerleft: parseFloat(Game.containerProgressBarLeft.style.width),
+							superpowerright: null
+						};
+						Game.socket.send(JSON.stringify(message));
+						console.log("Envoi WebSocket :", message);
+					}
 				}
 			}
 		});
@@ -146,7 +160,7 @@ function specialShotComputerPlayer2(Game)
 	if (Game.superPower == "isSuperPower")
 	{
 		window.addEventListener('keypress', (event) => {
-			if (event.key === "0")
+			if (event.key === "0" && (Game.modeGame != "Online" || (Game.modeGame == "Online" && !Game.isplayer1)))
 			{
 				if (sizeOfAdvance(Game.fullSizePowerBar, parseInt(window.getComputedStyle(Game.containerProgressBarRight).width)) == 0)
 				{
@@ -155,7 +169,21 @@ function specialShotComputerPlayer2(Game)
 					const gameBreakerRight = document.getElementById("power-container-right");
 					Game.containerProgressBarRight.style.backgroundColor = "green";
 					gameBreakerRight.style.color = "grey";
-					Game.containerProgressBarRight.style.width = Game.sizeOfStep + 'px';
+					Game.containerProgressBarRight.style.width = Game.sizeOfStep + '%';
+
+					if (!Game.isplayer1 && Game.modeGame == "Online")	 {
+						let message = {
+							type: "update_ball",
+							player: "player2",
+							collision: "collision",
+							position: { x: Game.ball.position.x, y: Game.ball.position.y },
+							velocity: { x: Game.ballVelocity.x, y: Game.ballVelocity.y },
+							superpowerleft: null,
+							superpowerright: parseFloat(Game.containerProgressBarRight.style.width)
+						};
+						Game.socket.send(JSON.stringify(message));
+						console.log("Envoi WebSocket :", message);
+					}
 				}
 			}
 		});

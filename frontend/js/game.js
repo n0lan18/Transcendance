@@ -78,6 +78,7 @@ export class Game {
         this.numberGameBreaker = 0;
         this.startMatch = 0;
         this.endMatch = 0;
+        this.wbsckt = 0;
         this.init(colorPlayer1, colorPlayer2, colorCourt, superPower, containerId, modeGame, heroPowerPlayer1, heroPowerPlayer2, username1, username2, typeOfGame, numberPlayers, numberMatch, tab, tabNewRound);
     
         this.isplayer1 = sessionStorage.getItem("role") === "player1";
@@ -87,14 +88,10 @@ export class Game {
         if (this.modeGame == "Online")
         {
             this.socket = GetSocket();
-            console.log("WebSocket est-il défini g.js ?", this.socket);
             this.socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                console.log("📩 Message reçu via WebSocket :", data);
             
                 if (data.type === "update_paddle") {
-                    console.log(`🏓 Mise à jour des raquettes : ${data.player} → ${data.position}`);
-            
                     if (data.player === "player1") {
                         this.leftPaddle.position.y = data.position;
                     } else if (data.player === "player2") {
@@ -103,8 +100,9 @@ export class Game {
                 }
 
                 if (data.type === "broadcast_ball") {
-                    console.log(`⚽ Mise à jour de la balle par ${data.player}, echange=${data.rally}, PBG=${this.containerProgressBarLeft.style.width} , PBD=${this.containerProgressBarRight.style.width}`);
+                    console.log(`Mise à jour de la balle par ${data.player}, echange=${data.rally}, PBG=${this.containerProgressBarLeft.style.width} , PBD=${this.containerProgressBarRight.style.width}`);
                     this.numberPaddelCollision = data.rally;
+                    this.echangeLongueur = data.longest_rally;
                     this.ball.position.x = data.position.x;
                     this.ball.position.y = data.position.y;
                     this.ballVelocity.x = data.velocity.x;
@@ -113,6 +111,43 @@ export class Game {
                         this.containerProgressBarLeft.style.width = `${data.superpowerleft}%`;
                     if (data.superpowerright !== null)                        
                         this.containerProgressBarRight.style.width = `${data.superpowerright}%`;
+                }
+
+                if (data.type === "broadcast_invisibility")
+                {
+                    this.ball.visible = data.visibility;
+                    if(data.trail == "delete")
+                        this.scene.remove(this.trail);
+                }
+
+                if (data.type === "broadcast_timelaps")
+                {
+                    this.ballVelocity.x = data.velocity;
+                }
+
+                if (data.type === "broadcast_superstrengh")
+                {
+                    this.ballVelocity.x = data.velocity.x;
+                    this.ballVelocity.y = data.velocity.y;
+                }
+
+                if (data.type === "broadcast_duplication")
+                {
+                    this.ballReplica = this.ball.clone();
+                    this.ballReplica.position.copy(this.ball.position);
+                    this.scene.add(this.ballReplica);
+                    this.ballVelocityReplica = {
+                        x: data.velocity.x,
+                        y: data.velocity.y
+		            };
+
+                }
+
+                if (data.type === "broadcast_disconnection")
+                {
+                    console.log(`Deconnexion du joueur adverse`);
+                    alert('Votre adversaire a quitté la partie.');
+                    window.location.href = '/';
                 }
             };
         }

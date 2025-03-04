@@ -44,12 +44,8 @@ export function movePaddlesComputer(Game)
 					type: "move_paddle",
 					player: "player1",
 					position: Game.leftPaddle.position.y
-				};
-			
-				console.log("Envoi WebSocket :", message);			
+				};					
 				Game.socket.send(JSON.stringify(message));
-				console.log(`Message envoyé: ${JSON.stringify(message)}`);
-				console.log("WebSocket est-il défini p-m.js ?", Game.socket);
 			}
 		}
 		else
@@ -64,12 +60,8 @@ export function movePaddlesComputer(Game)
 					type: "move_paddle",
 					player: "player2",
 					position: Game.rightPaddle.position.y
-				};
-			
-				console.log("Envoi WebSocket :", message);			
+				};					
 				Game.socket.send(JSON.stringify(message));
-				console.log(`Message envoyé: ${JSON.stringify(message)}`);
-				console.log("WebSocket est-il défini p-m.js ?", Game.socket);
 			}
 		}
 	}
