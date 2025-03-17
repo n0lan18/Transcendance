@@ -14,7 +14,7 @@ import re
 from datetime import date
 import html
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.shortcuts import render
 
 from .models import User
 from .serializers import UserSerializer
@@ -1128,3 +1128,7 @@ class AddWinnerMatchTournamentView(APIView):
 		tournament_user.save()
 
 		return Response({"message": "Winner added successfully"}, status=status.HTTP_200_OK)
+
+
+def profile(request):
+	return render(request, 'user_app/profile.html')

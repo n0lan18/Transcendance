@@ -60,7 +60,6 @@ export function startCountdown(Game) {
                         superpowerright: null
                     };
                     Game.socket.send(JSON.stringify(message));
-                    console.log("Envoi WebSocket MaJ balle J1 :", message);
                 } 
                 else if (!Game.isplayer1 && Game.modeGame == "Online")	 {  
                     let message = {
@@ -73,7 +72,6 @@ export function startCountdown(Game) {
                         superpowerright: null
                     };
                     Game.socket.send(JSON.stringify(message));
-                    console.log("Envoi WebSocket MaJ balle J2 :", message);
                 }
             }, 500); // Attend un peu avant de commencer pour que "Go!" reste visible
 		}

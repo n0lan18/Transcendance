@@ -31,7 +31,8 @@ window.addEventListener('popstate', async function(event) {
 });
 
 export async function addEventListenerPreparationOnlineGame()
-{	
+{
+	console.log("entree caddeventlistener");
 	let userInfo = await getUserInfo();
 	let courtColor = "#CF5A30";
 	let colorPlayer1 = "#E23F22";
@@ -69,12 +70,15 @@ export async function addEventListenerPreparationOnlineGame()
 	if (sendPreparationGameButton)
 	{
 		sendPreparationGameButton.addEventListener('click', async function (event) {
+			console.log("entree button");
+			event.preventDefault();
 			let userId = userInfo.id;
 			let username = userInfo.username;
 			let roomname = `room_${userInfo.username}_session`;
 			sessionStorage.setItem("room_name", roomname);
 			const socket = InitializeGameSocket(roomname);
 			const url = `wss://localhost:8443/ws/onlinegame/${roomname}/`;
+			console.log(`socket:${socket}`);
 
 			socket.onopen = () => {
 				socket.send(JSON.stringify({

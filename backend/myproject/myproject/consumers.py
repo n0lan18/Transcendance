@@ -224,14 +224,12 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         await self.accept()
         print(f"Connexion WebSocket : utilisateur={self.username} → room_name={self.room_name} → channel_name={self.channel_name}", flush=True)
 
-
         await self.send(text_data=json.dumps({
             'action': 'assign_room',
             'room_name': self.room_name,
         }))
 
     async def disconnect(self, close_code):
-        # Leave room group
         redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
         active_game_data = redis_client.hget("active_games", self.room_name)
         if active_game_data is None:
@@ -245,7 +243,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             opponent = player2
         else:
             opponent = player1
-
+ 
         opponent_channel = self.channel_layer.active_channels[opponent]
         
         print(f"Envoi de deconnexion au joueur adverse {opponent} par {self.username}", flush=True)
@@ -335,7 +333,6 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             "superpower": superpower
         }))
         print(f"Joueur ajouté à la file d'attente : {username}", flush=True)
-        print(f"Longueur actuelle de la file d'attente : {redis_client.llen('player_queue')}")
 
         while redis_client.llen("player_queue") >= 2:
             print("Deux joueurs trouvés dans la file d'attente.", flush=True)
@@ -347,10 +344,8 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             print(f"Joueur 2 extrait : {player2}", flush=True)
 
             if player1['player_id'] == player2['player_id']:
-                print(f"Match refusé : le joueur {player1['username']} s'est trouvé lui-même.", flush=True)
-                # Remettre uniquement le joueur 1 dans la file d'attente
                 redis_client.rpush("player_queue", json.dumps(player1))
-                continue  # Réessayer avec un autre joueur dans la file
+                continue
             
             print(f"Match trouvé : {player1['username']} vs {player2['username']}", flush=True)
 
@@ -366,7 +361,6 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
                 "player1": player1["username"],
                 "player2": player2["username"]
             }))
-            print(f"Match enregistré dans active_games : {player1['username']} vs {player2['username']}", flush=True)
             
             await self.channel_layer.send(
                 self.channel_layer.active_channels[player1['username']], 
@@ -401,8 +395,6 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         player_id = text_data_json["player_id"]
         username = text_data_json["username"]
 
-        print(f"stop_search reçu pour le joueur : {username} (ID : {player_id})", flush=True)
-
         redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
 
         queue_length = redis_client.llen("player_queue")
@@ -427,8 +419,6 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         color = event['color']
         superpower = event['superpower']
         room_name = event['room_name']
-
-        print(f"Envoi de match_found à {self.channel_name} pour utilisateur {self.username}", flush=True)
 
         print("Match trouvé ! Envoi de :", json.dumps({
             'action': 'match_found',
@@ -497,7 +487,6 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event))
 
     async def update_ball(self, data):
-        print(f"Mise à jour de la balle envoyée par {data['player']}", flush=True)
         
         redis_client = redis.StrictRedis(host='redis', port=6379, decode_responses=True)
         active_game_data = redis_client.hget("active_games", self.room_name)
@@ -554,10 +543,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        print(f"Envoi de update_ball de {data['player']} vers {opponent}", flush=True)
-
     async def broadcast_ball(self, event):
-        print(f"Mise à jour de la balle reçue : {event}", flush=True)
         await self.send(text_data=json.dumps(event))
 
     async def broadcast_disconnection(self, event):
@@ -620,8 +606,7 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
         opponent_channel = self.channel_layer.active_channels[opponent]
 
         velocity = data["velocity"]
-        
-        print("Message reçu :", data)
+
         await self.channel_layer.send(
             opponent_channel,
             {
@@ -654,7 +639,6 @@ class OnlineGameConsumer(AsyncWebsocketConsumer):
 
         velocity = data["velocity"]
         
-        print("Message reçu :", data)
         await self.channel_layer.send(
             opponent_channel,
             {

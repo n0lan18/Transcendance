@@ -67,6 +67,12 @@ INSTALLED_APPS = [
 	'corsheaders',
 	'channels',
     'myapp',
+	#42auth
+	'django.contrib.sites',
+	'allauth',
+	'allauth.account',
+	'allauth.socialaccount',
+	'oauth2_provider_42'
 ]
 
 # Different application for protecting middlewares
@@ -79,6 +85,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'corsheaders.middleware.CorsMiddleware',
+ 	'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -200,7 +207,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
     'myapp.backends.UsernameOrEmailBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+SITE_ID = 1
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 # Keep traces and logs for production
 LOGGING = {

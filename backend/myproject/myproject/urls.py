@@ -21,6 +21,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from myapp import views
 
 from myapp.views import LoginView
 from myapp.views import RegisterView
@@ -85,8 +86,13 @@ urlpatterns = [
     path('api/match-user-info/', MatchInfoView.as_view(), name='match-userinfo'),
     path('api/gamestats-update-list/', GameStatsLocalListUpdateView.as_view(), name='gamestats-update-list'),
     path('api/history-games/', MatchHistoryUserView.as_view(), name='match-history'),
-    path('api/add-winner-match-tournament/', AddWinnerMatchTournamentView.as_view(), name='add-winner-match-tournament')
+    path('api/add-winner-match-tournament/', AddWinnerMatchTournamentView.as_view(), name='add-winner-match-tournament'),
+    
+    # 42auth
+    path('api/accounts/', include('allauth.urls')), # this will include all the urls provided by django-allauth
+	# path('accounts/profile/', views.profile, name='profile'), # this is the profile page after the user is authenticated
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

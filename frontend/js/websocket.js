@@ -13,7 +13,7 @@ export function InitializeGameSocket (roomname)
 
 }
 
-export function CloseSocket()
+export function CloseSocket(gamesocket)
 {
     if (gamesocket)
     {
