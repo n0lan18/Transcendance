@@ -90,7 +90,7 @@ urlpatterns = [
     
     # 42auth
     path('api/accounts/', include('allauth.urls')), # this will include all the urls provided by django-allauth
-	# path('accounts/profile/', views.profile, name='profile'), # this is the profile page after the user is authenticated
+	path('api/accounts/profile/', views.profile, name='profile'), # this is the profile page after the user is authenticated
 ]
 
 

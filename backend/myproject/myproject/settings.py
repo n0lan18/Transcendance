@@ -176,7 +176,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGIN_URL = "/api/accounts/login/"
+LOGIN_REDIRECT_URL = "/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"
+# SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -239,3 +242,16 @@ LOGGING = {
 
 # Model for authentification
 AUTH_USER_MODEL = 'myapp.User'
+
+SOCIALACCOUNT_PROVIDERS = {
+    '42': {
+        'SCOPE': ['public'],
+        'AUTH_PARAMS': {'grant_type': 'authorization_code'},
+    }
+}
+
+# SOCIAL_AUTH_42_KEY = "u-s4t2ud-b97b0db1e00350b47d617f27f71bb2d308e79fdc7aab34f91e993902e3342516"
+# SOCIAL_AUTH_42_SECRET = "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"
+# SOCIAL_AUTH_42_REDIRECT_URI = "https://localhost:8443/api/accounts/42/login/callback/"
+
+logger = logging.getLogger(__name__)

@@ -29,6 +29,12 @@ from .serializers import MatchSerializer
 from .models import MatchHistoryUser
 from .serializers import MatchHistoryUserSerializer
 
+
+
+import logging
+from django.http import JsonResponse
+from allauth.socialaccount.providers.oauth2.views import OAuth2LoginView
+
 class RegisterView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request, *args, **kwargs):
@@ -1131,4 +1137,13 @@ class AddWinnerMatchTournamentView(APIView):
 
 
 def profile(request):
-	return render(request, 'user_app/profile.html')
+	return render(request, 'myapp/profile.html')
+
+
+logger = logging.getLogger(__name__)
+
+class CustomOAuth2LoginView(OAuth2LoginView):
+    def dispatch(self, request, *args, **kwargs):
+        redirect_uri = request.GET.get("redirect_uri")
+        logger.info(f"Redirect URI: {redirect_uri}")
+        return super().dispatch(request, *args, **kwargs)
