@@ -89,8 +89,9 @@ urlpatterns = [
     path('api/add-winner-match-tournament/', AddWinnerMatchTournamentView.as_view(), name='add-winner-match-tournament'),
     
     # 42auth
-    path('api/accounts/', include('allauth.urls')), # this will include all the urls provided by django-allauth
+    # path('api/accounts/', include('allauth.urls')), # this will include all the urls provided by django-allauth
 	path('api/accounts/profile/', views.profile, name='profile'), # this is the profile page after the user is authenticated
+	path('api/', include('myapp.urls')),
 ]
 
 

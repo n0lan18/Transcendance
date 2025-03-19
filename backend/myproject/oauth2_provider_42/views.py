@@ -2,6 +2,7 @@ from django.shortcuts import render
 from allauth.socialaccount import app_settings
 from allauth.socialaccount.adapter import get_adapter
 from allauth.socialaccount.providers.oauth2.views import OAuth2Adapter, OAuth2CallbackView, OAuth2LoginView
+from django.views.decorators.csrf import csrf_exempt
 
 
 class OAuth2Adapter42(OAuth2Adapter):
@@ -24,5 +25,5 @@ class OAuth2Adapter42(OAuth2Adapter):
 		return self.get_provider().sociallogin_from_response(request, extra_data)
 
 
-oauth2_login = OAuth2LoginView.adapter_view(OAuth2Adapter42)
-oauth2_callback = OAuth2CallbackView.adapter_view(OAuth2Adapter42)
+oauth2_login = csrf_exempt(OAuth2LoginView.adapter_view(OAuth2Adapter42))
+oauth2_callback = csrf_exempt(OAuth2CallbackView.adapter_view(OAuth2Adapter42))

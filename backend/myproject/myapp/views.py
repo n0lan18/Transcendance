@@ -14,7 +14,11 @@ import re
 from datetime import date
 import html
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+
+
+import requests
+import urllib.parse
 
 from .models import User
 from .serializers import UserSerializer
@@ -1147,3 +1151,37 @@ class CustomOAuth2LoginView(OAuth2LoginView):
         redirect_uri = request.GET.get("redirect_uri")
         logger.info(f"Redirect URI: {redirect_uri}")
         return super().dispatch(request, *args, **kwargs)
+    
+def login_42(request):
+    client_id = "u-s4t2ud-b97b0db1e00350b47d617f27f71bb2d308e79fdc7aab34f91e993902e3342516"
+    redirect_uri = settings.SOCIAL_AUTH_42_REDIRECT_URI
+    scope = "public"
+    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&redirect_uri={urllib.parse.quote(redirect_uri)}&response_type=code&scope={scope}"
+    return redirect(auth_url)
+
+
+
+def callback_42(request):
+    code = request.GET.get('code')
+    if not code:
+        return JsonResponse({"error": "No code provided"}, status=400)
+
+    token_url = "https://api.intra.42.fr/oauth/token"
+    client_id = "u-s4t2ud-b97b0db1e00350b47d617f27f71bb2d308e79fdc7aab34f91e993902e3342516"
+    client_secret = "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"
+    redirect_uri = settings.SOCIAL_AUTH_42_REDIRECT_URI
+
+    data = {
+        "grant_type": "authorization_code",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "code": code,
+        "redirect_uri": redirect_uri,
+    }
+
+    response = requests.post(token_url, data=data)
+    if response.status_code == 200:
+        token_data = response.json()
+        return JsonResponse(token_data)
+    else:
+        return JsonResponse({"error": "Failed to fetch token", "details": response.json()}, status=response.status_code)

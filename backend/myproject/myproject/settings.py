@@ -41,17 +41,22 @@ LOCAL_ADDRESS = os.getenv('LOCAL_ADDRESS')
 DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.11.8.2", "c1r8s2.42lausanne.ch", "backend", "django-1"]
 
 # Securisation http request
 CSRF_TRUSTED_ORIGINS = [
 	LOCAL_ADDRESS,
-	IP_ADDRESS
+	IP_ADDRESS,
+ 	"https://localhost:8443",
+    "https://c1r8s2.42lausanne.ch",  # 사용 중인 도메인 추가
+    "https://10.11.8.2",
 ]
 
 # Only local_address and Ip_address can access API
 CORS_ALLOWED_ORIGINS = [
     LOCAL_ADDRESS,
-    IP_ADDRESS
+    IP_ADDRESS,
+	'https://localhost'
 ]
 
 # Application definition
@@ -101,6 +106,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -176,8 +182,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOGIN_URL = "/api/accounts/login/"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "accounts/login/"
+# LOGIN_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 # SOCIALACCOUNT_ADAPTER = "allauth.socialaccount.adapter.DefaultSocialAccountAdapter"
 # Internationalization
@@ -246,12 +252,21 @@ AUTH_USER_MODEL = 'myapp.User'
 SOCIALACCOUNT_PROVIDERS = {
     '42': {
         'SCOPE': ['public'],
-        'AUTH_PARAMS': {'grant_type': 'authorization_code'},
+        'AUTH_PARAMS': {'approval_prompt': 'auto'},
     }
 }
 
 # SOCIAL_AUTH_42_KEY = "u-s4t2ud-b97b0db1e00350b47d617f27f71bb2d308e79fdc7aab34f91e993902e3342516"
 # SOCIAL_AUTH_42_SECRET = "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"
-# SOCIAL_AUTH_42_REDIRECT_URI = "https://localhost:8443/api/accounts/42/login/callback/"
-
+SOCIAL_AUTH_42_REDIRECT_URI = "http://localhost:8000/api/accounts/42/login/callback/"
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/"
+SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
+# SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
 logger = logging.getLogger(__name__)
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "10.11.8.2", "c1r8s2.42lausanne.ch"]
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_HTTPONLY = False  # False로 설정하면 JS에서도 접근 가능
+CSRF_USE_SESSIONS = False
