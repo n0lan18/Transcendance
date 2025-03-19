@@ -41,6 +41,16 @@ export function addRoute(path, routeConfig) {
 	}
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const login42Button = document.getElementById("login-42-button");
+    if (login42Button) {
+        login42Button.addEventListener("click", () => {
+            window.location.href = "/api/accounts/42/login/";
+        });
+    }
+})
+
+
 // Fonction unique pour charger les routes
 export function loadRoute(pathname) {
 	const route = routes[pathname];  // Chercher la route dans l'objet 'routes'
