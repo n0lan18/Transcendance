@@ -1,0 +1,153 @@
+
+.statsContainer
+{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+	height: calc(80vh - 70px, 1028px);
+	max-width: 900px;
+	max-height: 800px;
+	overflow-y: auto;
+}
+
+.lastMatches
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.resultsLastMatches
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	width: 100%;	
+}
+
+.scoresAndResultats
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;	
+}
+
+.bestHeroAndTotalMatches
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+.bestHero
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 40%;	
+}
+
+.totalMatches, .bestScoreTournament
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;		
+}
+
+.resultatsStatsMatches
+{
+	width: 30px;
+	height: 30px;
+	padding: 2px;
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.graphics
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	width: 100%;
+}
+
+.victoryDefeat
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 200px;
+	margin: 5px;
+}
+
+.graphicDonut {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+@media (orientation: portrait) and (max-width: 900px)
+{
+    .statsContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: calc(min(97vh - 70px, 1028px));
+        overflow-y: auto;
+        box-sizing: border-box;
+		margin-top: 0;
+		margin-bottom: 0;
+    }
+
+	.graphics {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: row;
+		height: 100%;
+		width: 70%;
+	}
+
+	.dates-stats-match {
+		font-size: 0.5rem;
+	}
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+	.message-change-orientation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.statsContainer {
+		display: none;
+	}
+}

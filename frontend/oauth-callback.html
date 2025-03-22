@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>42 로그인 - 처리 중</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/authentification-register.css">
+    <style>
+        .oauth-container {
+            text-align: center;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .spinner {
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 186, 188, 0.3);
+            border-radius: 50%;
+            border-top-color: #00babc;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #ff5252;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="oauth-container">
+        <h2>42 로그인 처리 중</h2>
+        <div class="spinner"></div>
+        <p>로그인 정보를 확인하는 중입니다...</p>
+        <div id="oauth-error" class="error-message"></div>
+    </div>
+    
+    <script type="module">
+        import { handleOAuth42Callback } from '/js/Oauth.js';
+        document.addEventListener('DOMContentLoaded', handleOAuth42Callback);
+    </script>
+</body>
+</html>

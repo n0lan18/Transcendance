@@ -1,0 +1,195 @@
+.finish-page {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+	height: calc(100vh - 70px, 1028px);
+	max-width: 900px;
+	margin-top: 150px;
+	margin-bottom: auto;
+	overflow-y: auto;
+}
+
+.finish-page-tournament {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 100%;
+	height: calc(100vh - 70px, 1028px);
+	max-width: 900px;
+	max-height: 800px;
+	margin: 0 auto;
+	overflow-y: auto;
+}
+
+.continue-or-new-tournament-page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	height: auto;
+	width: 80%;
+}
+
+.button-finish-page {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	height: auto;
+	width: auto;
+}
+
+.home-button-end-party, .retry-button-end-party {
+	margin: 5px;
+	padding: 5px;
+	font-size: 70px;
+	margin-left: 20px;
+	margin-right: 20px;
+	margin: 10px;
+	border-radius: 3px;
+	border: none;
+	height: 100%;
+	width: 100%;
+	margin: 5px;
+	color: white;
+	aspect-ratio: 1/1;
+}
+
+.endmatch-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding: 0 10px;
+}
+
+.recap-match-finish-page {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    background-color: rgb(100, 99, 99, 0.3);
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.recap-match-finish {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.home-button-end-party:hover, .retry-button-end-party:hover {
+	transform: scale(1.03);
+}
+
+.retry-button-end-party {
+	background-color: #1982c4;
+}
+
+.home-button-end-party {
+	background-color: #ffca3a;
+}
+
+.home-button-finish-page {
+	height: 100%;
+	width: 100%;
+}
+
+.solo-finish-simple-match-button {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 160px;
+	width: 160px;
+	margin: 15px;
+	color: white;
+	border-radius: 3px;
+	border: none;
+	aspect-ratio: 1/1;
+}
+
+.img-button-finish-page {
+	font-size: 100px;
+}
+
+@media (orientation: portrait) and (max-width: 900px)
+{
+    .finish-page {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: calc(95vh - 70px, 1028px);
+        margin-top: 50px;
+        margin-bottom: auto;
+        overflow-y: auto;
+        max-width: 1090px;
+        box-sizing: border-box;
+    }
+
+	.finish-page-tournament {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		width: 100%;
+		height: 100vh;
+		max-width: 900px;
+		max-height: 800px;
+		margin: 0 auto;
+		overflow-y: auto;
+	}
+
+	.button-finish-page {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: row;
+		height: 60px;
+		width: 100%;
+		font-size: 20px;
+	}
+
+	.solo-finish-simple-match-button {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+		width: 100%;
+		margin: 0 15px;
+		color: white;
+		border-radius: 3px;
+		border: none;
+		aspect-ratio: 1 / 1;
+	}
+
+	.img-button-finish-page {
+		font-size: 20px;
+	}
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+	.message-change-orientation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.finish-page, .finish-page-tournament {
+		display: none;
+	}
+}
