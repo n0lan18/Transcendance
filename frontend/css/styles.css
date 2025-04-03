@@ -1,0 +1,112 @@
+button:focus {
+    outline: none;
+}
+
+.button-center-items {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    flex-direction: column;
+    border: transparent;
+    margin-top: 12px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: white;
+    background: black;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+/*    min-width: 415px;
+*/}
+
+#app {
+    display: flex; /* Optionnel, pour centrer le contenu */
+    justify-content: center; /* Optionnel, pour centrer horizontalement */
+    align-items: center; /* Optionnel, pour centrer verticalement */
+    width: 100%; /* Largeur de la fenêtre */
+    height: 100%; /* Hauteur de la fenêtre */
+    overflow: hidden; /* Empêcher le débordement */
+    box-sizing: border-box;
+}
+
+#game {
+    width: 100%;
+    height: auto;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+
+@media (max-width: 1200px)
+{
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px)
+{
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.10rem;
+    }
+
+    h3 {
+        font-size: 0.9rem;
+    }
+
+    p {
+        font-size: 0.5;
+    }
+}
+
+@media (max-width: 900px) {
+
+    body {
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+        display: flex;
+        overflow: hidden;
+        margin: 0;
+    }
+
+}
+
+@media (orientation: landscape) {
+    body {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        overflow: hidden;
+        margin: 0;
+    }
+}

@@ -1,0 +1,276 @@
+.message-change-orientation-game {
+	display: none;
+}
+
+.page-game-container {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	max-width: 2300px;
+	max-height: 1400px;
+}
+
+.flex-game-container {
+	width: 100%;
+	height: 100%;	
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.display-score-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: nowrap;
+	width: 100%;
+	padding: 0 10px;
+}
+
+.player1-container, .player2-container {
+	flex: 1;
+}
+
+.score-container {
+	display: flex;
+	justify-content: center;
+	flex: 2;
+}
+
+.player1-container {
+	display: flex;
+	justify-content: flex-start;
+	font-size: 5px;
+}
+
+.player2-container {
+	display: flex;
+	justify-content: flex-end;
+	font-size: 5px;
+}
+
+.progress-bar-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 30px;
+	margin-bottom: 5px;
+	padding: 0 10px;
+}
+
+.progress-bar-left-container, .progress-bar-right-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 45%;
+	height: 100%;
+	background: white;
+	border-radius: 10px;
+}
+
+.progress-bar-left-container {
+	margin-right: auto;
+}
+
+.progress-bar-right-container {
+	margin-left: auto;
+}
+
+.progress-bar-left {
+	width: 5%;
+	height: 80%;
+	background: green;
+	border-radius: 10px;
+	margin-right: auto;
+}
+
+.progress-bar-right {
+	width: 5%;
+	height: 80%;
+	background: green;
+	border-radius: 10px;
+	margin-left: auto;
+}
+
+.power-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 20px;
+	margin-bottom: 5px;
+	padding: 0 10px;
+}
+
+.power-container-left, .power-container-right {
+	height: 100%;
+	color: grey;
+}
+
+.game-container {
+	width: 100%;
+	height: 80%;
+	aspect-ratio: 16/9;
+}
+
+.button-controller {
+	display: none;
+}
+
+@media screen and (orientation: portrait) and (max-width: 900px) {
+	.message-change-orientation-game {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.flex-game-container {
+		display: none;
+	}
+
+
+	.pause-button, .camera-button, .up-button, .down-button {
+		display: none;
+	}
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+	.message-change-orientation-game {
+		display: none;
+	}
+
+	.flex-game-container {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.display-score-container {
+		width: 100%;
+		height: 5%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: nowrap;
+		position: absolute;
+		top: 5px;
+	}
+
+	.player1-container, .player2-container {
+		flex: 1;
+	}
+	
+	.score-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		flex: 2;
+	}
+	
+	.player1-container {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+	
+	.player2-container {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.player1-username, .player2-username
+	{
+		font-size: 20px;
+	}
+
+	.progress-bar-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		height: 10px;
+		margin-bottom: 5px;
+		margin-right: 2px;
+		margin-left: 2px;
+		position: absolute;
+		top: 30px;
+	}
+
+	.game-container {
+		width: 100%;
+		height: 70%;
+	}
+
+	.button-controller-left {
+		margin-top: 30px;
+		left: 0;
+	}
+
+	.button-controller-right {
+		margin-top: 30px;
+		right: 0;
+	}
+
+	.button-controller-left, .button-controller-right {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		align-items: center;
+		position: fixed;
+		width: 7%;
+		height: 70%;
+	}
+
+	.power-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		height: 20px;
+		margin-bottom: 5px;
+		padding: 0 10px;
+		position: absolute;
+		top: 40px;
+	}
+
+	.up-button {
+		display: flex;
+		justify-content: flex-start;
+	}
+
+	.down-button {
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.button-controller-settings {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.pause-button {
+		margin-right: 2px;
+		padding-top: 6px;
+		padding-bottom: 6px;
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+
+	.pause-button, .camera-button, .up-button, .down-button {
+		border: 1px solid white;
+		color: white;
+		transform: rotate(90deg);
+		background-color: black;
+	}
+}

@@ -1,0 +1,135 @@
+.historic-game-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+	width: 100%;
+	height: calc(80vh - 70px, 1028px);
+	max-width: 900px;
+	max-height: 800px;
+	overflow-y: auto;
+}
+
+.list-history-game-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.match-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin: 10px;
+    background-color: rgb(100, 99, 99, 0.3);
+	border-radius: 5px;
+    padding: 5px;
+}
+
+.recap-match {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;  
+}
+
+.recap-match-user1, .recap-match-scores, .recap-match-user2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 100%;     
+}
+
+.recap-match-user1 {
+    justify-content: flex-end;
+}
+
+.recap-match-scores {
+    justify-content: center;
+}
+
+.recap-match-user2 {
+    justify-content: flex-start;
+}
+
+.send-match-history-button {
+    margin-top: 20px;
+}
+
+@media (orientation: portrait) and (max-width: 900px)
+{
+    .historic-game-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: calc(min(92vh - 70px, 1028px));
+        margin-top: 50px;
+        margin-bottom: auto;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .list-history-game-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .match-line {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: auto;
+        margin: 10px;
+        background-color: rgb(100, 99, 99, 0.3);
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    .page-match-button {
+        display: flex;
+        justify-content: flex-end;
+        width: 20%;
+        height: 100%;
+    }
+
+    .recap-match {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 70%;
+        height: 100%;
+        margin: 0 10px;
+    }
+}
+
+@media screen and (orientation: landscape) and (max-width: 1024px) {
+	.message-change-orientation {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+	}
+
+	.historic-game-container {
+		display: none;
+	}
+}

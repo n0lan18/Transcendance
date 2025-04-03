@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>42 로그인 - 처리 중</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/authentification-register.css">
+    <style>
+        .oauth-container {
+            text-align: center;
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .spinner {
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 186, 188, 0.3);
+            border-radius: 50%;
+            border-top-color: #00babc;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #ff5252;
+            margin-top: 15px;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background-color: #00babc;
+            border-color: #00babc;
+        }
+        .btn-primary:hover {
+            background-color: #009e9f;
+            border-color: #009e9f;
+        }
+    </style>
+</head>
+<body>
+    <div class="oauth-container">
+        <h2>42 로그인 처리 중</h2>
+        <div id="loading-spinner" class="spinner"></div>
+        <p id="status-message">로그인 정보를 확인하는 중입니다...</p>
+        <div id="oauth-error" class="error-message" style="display: none;"></div>
+        <div id="return-button" class="button-container" style="display: none;">
+            <button class="btn btn-primary" onclick="window.location.href='/login'">로그인 페이지로 돌아가기</button>
+        </div>
+    </div>
+    
+    <script>
+        // URL에서 파라미터 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        
+        const statusMessage = document.getElementById('status-message');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const oauthError = document.getElementById('oauth-error');
+        const returnButton = document.getElementById('return-button');
+        
+        // 에러가 있거나 코드가 없는 경우
+        if (error || !code) {
+            loadingSpinner.style.display = 'none';
+            statusMessage.style.display = 'none';
+            oauthError.style.display = 'block';
+            returnButton.style.display = 'block';
+            
+            if (error) {
+                oauthError.textContent = '42 로그인 권한이 거부되었습니다.';
+            } else {
+                oauthError.textContent = '로그인 정보를 가져올 수 없습니다.';
+            }
+            
+            // 5초 후 로그인 페이지로 자동 리다이렉트
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 5000);
+        } else {
+            // 인증 코드가 있으면 모듈 스크립트 로드
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.textContent = `
+                import { handleOAuth42Callback } from '/js/Oauth.js';
+                handleOAuth42Callback();
+            `;
+            document.body.appendChild(script);
+        }
+    </script>
+</body>
+</html>
